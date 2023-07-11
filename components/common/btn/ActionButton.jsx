@@ -28,12 +28,12 @@ const fixStyles = StyleSheet.create({
 const dynamicStyles = (width, height, color, round) =>
   StyleSheet.create({
     buttonContainer: {
-      borderWidth: 1,
       borderRadius: round ? 15 : 0,
       width,
       height,
       backgroundColor: color,
 
+      fontWeight: 600,
       justifyContent: 'center',
       alignItems: 'center',
     },
