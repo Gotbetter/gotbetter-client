@@ -1,9 +1,12 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useMemo } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
 function SubMenu() {
+  const navigation = useNavigation();
+
   const subMenuItems = useMemo(
     () => [
       {
@@ -28,7 +31,11 @@ function SubMenu() {
   return (
     <View style={styles.subMenuContainer}>
       {subMenuItems.map((item, index) => (
-        <TouchableOpacity key={item.id} style={menuStyle(index === 1).menu}>
+        <TouchableOpacity
+          key={item.id}
+          style={menuStyle(index === 1).menu}
+          onPress={() => navigation.navigate(item.path)}
+        >
           <Text style={styles.menuText}>{item.title}</Text>
         </TouchableOpacity>
       ))}

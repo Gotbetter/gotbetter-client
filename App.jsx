@@ -1,5 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import SignUpScreen from '@screens/auth/SignUpScreen';
 import React from 'react';
 
 import LoginScreen from './screens/auth/LoginScreen';
@@ -11,6 +12,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="login">
         <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="sign-up" component={SignUpScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
