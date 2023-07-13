@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -8,6 +9,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 function HomeFooter(props) {
+  const navigation = useNavigation();
+
   const iconSize = useMemo(() => RFValue(24), []);
   return (
     <View style={styles.container}>
@@ -19,7 +22,7 @@ function HomeFooter(props) {
         <Ionicons name="md-search-sharp" size={iconSize} color={'#979797'} />
         <Text style={styles.title}>방코드 검색</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.iconGroup}>
+      <TouchableOpacity style={styles.iconGroup} onPress={() => navigation.navigate('category')}>
         <SimpleLineIcons name="plus" size={iconSize} color={'#979797'} />
         <Text style={styles.title}>방 만들기</Text>
       </TouchableOpacity>
