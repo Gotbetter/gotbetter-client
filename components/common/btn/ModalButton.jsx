@@ -6,22 +6,23 @@ ModalButton.propTypes = {
   onPress: PropTypes.func,
   title: PropTypes.string,
   highlight: PropTypes.bool,
+  width: PropTypes.number,
+  height: PropTypes.number,
 };
 
-function ModalButton({ title, onPress, highlight = false }) {
+function ModalButton({ title, onPress, width = wp(25), height = hp(5), highlight = false }) {
   return (
-    <TouchableOpacity style={styles(highlight).buttonContainer} onPress={onPress}>
+    <TouchableOpacity style={styles(highlight, width, height).buttonContainer} onPress={onPress}>
       <Text style={styles(highlight).text}>{title}</Text>
     </TouchableOpacity>
   );
 }
 
-const styles = (highlight) =>
+const styles = (highlight, width, height) =>
   StyleSheet.create({
     buttonContainer: {
-      width: wp(25),
-      height: hp(5),
-
+      width,
+      height,
       borderRadius: 40,
       borderWidth: highlight ? 0 : 1,
       borderColor: highlight ? null : '#979797',
