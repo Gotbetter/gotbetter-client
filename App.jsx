@@ -3,6 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '@screens/HomeScreen';
 import SignUpScreen from '@screens/auth/SignUpScreen';
+import StudyRoomDetail from '@screens/room/StudyRoomDetail';
+import StudyRoomRank from '@screens/room/StudyRoomRank';
 import AccountScreen from '@screens/room/create/AccountScreen';
 import CategoryScreen from '@screens/room/create/CategoryScreen';
 import DescriptionScreen from '@screens/room/create/DescriptionScreen';
@@ -18,13 +20,35 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="home">
+      <Stack.Navigator initialRouteName="study-room">
         <Stack.Group>
           <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="sign-up" component={SignUpScreen} />
         </Stack.Group>
 
         <Stack.Screen name="home" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen
+          name="study-room"
+          component={StudyRoomDetail}
+          options={{
+            headerTitleAlign: 'center',
+            headerBackVisible: false,
+            headerLeft: () => <BackButton />,
+            headerStyle: { borderBottomWidth: '1', borderBottomColor: '#EEEEEE' },
+            headerTitleStyle: { color: '#000000', fontWeight: '700' },
+          }}
+        />
+        <Stack.Screen
+          name="rank"
+          component={StudyRoomRank}
+          options={{
+            headerTitleAlign: 'center',
+            headerBackVisible: false,
+            headerLeft: () => <BackButton />,
+            headerStyle: { borderBottomWidth: '1', borderBottomColor: '#EEEEEE' },
+            headerTitleStyle: { color: '#000000', fontWeight: '700' },
+          }}
+        />
 
         <Stack.Group
           screenOptions={{
