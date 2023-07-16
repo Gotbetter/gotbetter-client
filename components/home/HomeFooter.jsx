@@ -18,7 +18,7 @@ function HomeFooter(props) {
         <Foundation name="home" size={iconSize} />
         <Text style={[styles.title, { color: '#000000' }]}>홈</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.iconGroup}>
+      <TouchableOpacity style={styles.iconGroup} onPress={() => navigation.navigate('join')}>
         <Ionicons name="md-search-sharp" size={iconSize} color={'#979797'} />
         <Text style={styles.title}>방코드 검색</Text>
       </TouchableOpacity>

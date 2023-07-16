@@ -2,6 +2,7 @@ import BackButton from '@components/common/btn/BackButton';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '@screens/HomeScreen';
+import JoinScreen from '@screens/JoinScreen';
 import SignUpScreen from '@screens/auth/SignUpScreen';
 import StudyRoomDetail from '@screens/room/StudyRoomDetail';
 import StudyRoomRank from '@screens/room/StudyRoomRank';
@@ -20,13 +21,25 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="study-room">
+      <Stack.Navigator initialRouteName="home">
         <Stack.Group>
           <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="sign-up" component={SignUpScreen} />
         </Stack.Group>
 
         <Stack.Screen name="home" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen
+          name="join"
+          component={JoinScreen}
+          options={{
+            title: '방코드 검색',
+            headerTitleAlign: 'center',
+            headerBackVisible: false,
+            headerLeft: () => <BackButton />,
+            headerStyle: { borderBottomWidth: '1', borderBottomColor: '#EEEEEE' },
+            headerTitleStyle: { color: '#000000', fontWeight: '700' },
+          }}
+        />
         <Stack.Screen
           name="study-room"
           component={StudyRoomDetail}
