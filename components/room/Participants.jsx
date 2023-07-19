@@ -47,7 +47,11 @@ function Participants() {
       </View>
       <View style={styles.listContainer}>
         {participants.slice(0, 6).map((participant) => (
-          <TouchableOpacity key={participant.participant_id} style={styles.participant}>
+          <TouchableOpacity
+            key={participant.participant_id}
+            style={styles.participant}
+            onPress={() => navigation.navigate('plan')}
+          >
             <View style={{ width: 50, height: 50, borderRadius: 50, backgroundColor: '#C4C4C4' }} />
             <Text style={{ fontSize: RFValue(10), fontWeight: 600 }} numberOfLines={1}>
               {participant.username}

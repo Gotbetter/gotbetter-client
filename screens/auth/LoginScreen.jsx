@@ -4,6 +4,7 @@ import AndroidSafeAreaView from '@components/common/AndroidSafeAreaView';
 import InfoMessage from '@components/common/InfoMessage';
 import ActionButton from '@components/common/btn/ActionButton';
 import GoogleLoginButton from '@components/common/btn/GoogleLoginButton';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -11,6 +12,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
 function LoginScreen() {
+  const { navigate } = useNavigation();
   return (
     <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <AndroidSafeAreaView>
@@ -20,7 +22,14 @@ function LoginScreen() {
             <InfoMessage message="아이디 비밀번호를 확인하세요" />
           </LoginForm>
           <View style={{ marginTop: RFValue(12) }}>
-            <ActionButton title={'로그인'} width={wp(90)} height={hp(8)} color={'#3333FF'} round={true} />
+            <ActionButton
+              title={'로그인'}
+              width={wp(90)}
+              height={hp(8)}
+              color={'#3333FF'}
+              round={true}
+              onPress={() => navigate('home')}
+            />
           </View>
           <View style={{ marginTop: RFValue(20) }}>
             <SubMenu />
