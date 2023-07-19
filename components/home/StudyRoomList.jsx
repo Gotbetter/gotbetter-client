@@ -6,8 +6,10 @@ import { Shadow } from 'react-native-shadow-2';
 
 import StudyRoom from './StudyRoom';
 import StudyRoomStatus from './StudyRoomStatus';
+import { useNavigation } from '@react-navigation/native';
 
 function StudyRoomList(props) {
+  const { navigate } = useNavigation();
   const studyRoomItems = useMemo(
     () => [
       {
@@ -84,7 +86,7 @@ function StudyRoomList(props) {
       <ScrollView contentContainerStyle={styles.scrollView}>
         {studyRoomItems.map((room) => (
           <Shadow key={room.room_id} distance={4} offset={[0, 5]}>
-            <TouchableOpacity style={styles.studyRoom} activeOpacity={0.8}>
+            <TouchableOpacity style={styles.studyRoom} activeOpacity={0.8} onPress={() => navigate('study-room')}>
               <StudyRoom room={room}>
                 <StudyRoomStatus room={room} />
               </StudyRoom>

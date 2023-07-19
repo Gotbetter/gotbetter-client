@@ -4,6 +4,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '@screens/HomeScreen';
 import JoinScreen from '@screens/JoinScreen';
 import SignUpScreen from '@screens/auth/SignUpScreen';
+import PlanCertificationFormScreen from '@screens/plan/PlanCertificationFormScreen';
+import PlanDetailScreen from '@screens/plan/PlanDetailScreen';
+import PlanScreen from '@screens/plan/PlanScreen';
 import StudyRoomDetail from '@screens/room/StudyRoomDetail';
 import StudyRoomRank from '@screens/room/StudyRoomRank';
 import AccountScreen from '@screens/room/create/AccountScreen';
@@ -21,7 +24,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="home">
+      <Stack.Navigator initialRouteName="login">
         <Stack.Group>
           <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="sign-up" component={SignUpScreen} />
@@ -79,6 +82,40 @@ export default function App() {
           <Stack.Screen name="numeric-info" component={NumericInfoScreen} />
           <Stack.Screen name="rule" component={RuleScreen} />
           <Stack.Screen name="account" component={AccountScreen} />
+        </Stack.Group>
+
+        <Stack.Group>
+          <Stack.Screen
+            name="plan"
+            component={PlanScreen}
+            options={{
+              headerTitleAlign: 'center',
+              headerBackVisible: false,
+              headerTitleStyle: { color: '#000000', fontWeight: '700' },
+            }}
+          />
+          <Stack.Screen
+            name="confirm"
+            component={PlanCertificationFormScreen}
+            options={{
+              title: '계획 인증하기',
+              headerLeft: () => <BackButton />,
+              headerTitleAlign: 'center',
+              headerBackVisible: false,
+              headerTitleStyle: { color: '#000000', fontWeight: '700' },
+            }}
+          />
+          <Stack.Screen
+            name="detail"
+            component={PlanDetailScreen}
+            options={{
+              title: '[매일 인증] 토익 스터디',
+              headerLeft: () => <BackButton />,
+              headerTitleAlign: 'center',
+              headerBackVisible: false,
+              headerTitleStyle: { color: '#000000', fontWeight: '700' },
+            }}
+          />
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
