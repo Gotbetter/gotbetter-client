@@ -2,10 +2,9 @@ import SignUpForm from '@components/auth/SignUpForm';
 import ActionButton from '@components/common/btn/ActionButton';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-
+import styled from 'styled-components/native';
 function SignUpScreen() {
   const navigation = useNavigation();
   const [requirementsFulfilled] = useState(false);
@@ -33,10 +32,10 @@ function SignUpScreen() {
 
   return (
     <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <View style={styles.container}>
+      <Container>
         <SignUpForm />
 
-        <View style={{ marginTop: hp(4) }}>
+        <ButtonContainer>
           <ActionButton
             title={'회원가입'}
             width={wp(90)}
@@ -44,18 +43,20 @@ function SignUpScreen() {
             color={requirementsFulfilled ? '#3333FF' : '#979797'}
             round={true}
           />
-        </View>
-      </View>
+        </ButtonContainer>
+      </Container>
     </KeyboardAwareScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
-  },
-});
+const Container = styled.View`
+  flex: 1;
+  align-items: center;
+  background-color: #ffffff;
+`;
+
+const ButtonContainer = styled.View`
+  margin-top: ${hp(4)}px;
+`;
 
 export default SignUpScreen;
