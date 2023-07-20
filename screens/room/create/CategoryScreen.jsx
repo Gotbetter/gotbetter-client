@@ -2,11 +2,12 @@ import ActionButton from '@components/common/btn/ActionButton';
 import BackButton from '@components/common/btn/BackButton';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
-import RoomCreateFormTemplate from './RoomCreateFormTemplate';
+import styled from 'styled-components/native';
+import RoomCreateForm from './RoomCreateForm';
 
 function CategoryScreen(props) {
   const navigation = useNavigation();
@@ -86,49 +87,65 @@ function CategoryScreen(props) {
   );
 
   return (
-    <RoomCreateFormTemplate title={'어떤 종류의 방인가요?'} buttonActivate={true} nextScreen={'title'}>
-      <View style={styles.categoryContainer}>
+    <RoomCreateForm>
+      <Label>어떤 종류의 방인가요?</Label>
+      <CategoryContainer>
         {categoryItems.map((item) => (
-          <TouchableOpacity key={item.title} style={styles.category}>
+          <Category key={item.title}>
             {item.img}
-            <Text style={styles.categoryText}>{item.title}</Text>
-          </TouchableOpacity>
+            <CategoryLabel>{item.title}</CategoryLabel>
+          </Category>
         ))}
-      </View>
-      <View style={{ alignSelf: 'center', marginTop: 'auto', marginBottom: hp(4) }}>
+      </CategoryContainer>
+      <ButtonContainer>
         <ActionButton
-          onPress={() => navigation.navigate('description')}
+          onPress={() => navigation.navigate('title')}
           title={'다음'}
           width={wp(90)}
           height={hp(8)}
           color={requireFulfilled ? '#3333FF' : '#E0E0E0'}
           round={true}
         />
-      </View>
-    </RoomCreateFormTemplate>
+      </ButtonContainer>
+    </RoomCreateForm>
   );
 }
-const styles = StyleSheet.create({
-  categoryContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignContent: 'space-around',
-    flexWrap: 'wrap',
-    height: '60%',
-    marginTop: hp(2),
-  },
-  category: {
-    width: '30%',
-    height: '30%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
 
-  categoryText: {
-    marginTop: RFValue(4),
-    color: '#5F5F5F',
-    fontWeight: 700,
-  },
-});
+const Label = styled.Text`
+  padding: ${RFValue(12)}px;
+  margin-top: ${hp(3)}px;
+  font-size: ${RFValue(18)}px;
+  font-weight: 600;
+`;
+
+const CategoryContainer = styled.View`
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  align-content: space-around;
+
+  height: 60%;
+  margin-top: ${hp(2)}px;
+`;
+
+const Category = styled.TouchableOpacity`
+  width: 30%;
+  height: 30%;
+
+  justify-content: center;
+  align-items: center;
+`;
+
+const CategoryLabel = styled.Text`
+  color: #5f5f5f;
+  font-weight: 700;
+  margin-top: ${RFValue(4)}px;
+`;
+
+const ButtonContainer = styled.View`
+  align-self: center;
+  margin-top: auto;
+  margin-bottom: ${hp(4)}px;
+`;
 
 export default CategoryScreen;
