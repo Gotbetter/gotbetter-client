@@ -1,15 +1,11 @@
 import React, { useMemo } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Shadow } from 'react-native-shadow-2';
+import styled from 'styled-components/native';
 
 import StudyRoom from './StudyRoom';
 import StudyRoomStatus from './StudyRoomStatus';
-import { useNavigation } from '@react-navigation/native';
 
 function StudyRoomList(props) {
-  const { navigate } = useNavigation();
   const studyRoomItems = useMemo(
     () => [
       {
@@ -82,48 +78,31 @@ function StudyRoomList(props) {
   );
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollView}>
+    <Container>
+      <StudyRoomScrollView contentContainerStyle={{ alignItems: 'center' }}>
         {studyRoomItems.map((room) => (
-          <Shadow key={room.room_id} distance={4} offset={[0, 5]}>
-            <TouchableOpacity style={styles.studyRoom} activeOpacity={0.8} onPress={() => navigate('study-room')}>
-              <StudyRoom room={room}>
-                <StudyRoomStatus room={room} />
-              </StudyRoom>
-            </TouchableOpacity>
-          </Shadow>
+          <MarginBottom key={room.room_id}>
+            <StudyRoom room={room}>
+              <StudyRoomStatus room={room} />
+            </StudyRoom>
+          </MarginBottom>
         ))}
-      </ScrollView>
-    </View>
+      </StudyRoomScrollView>
+    </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  scrollView: {
-    padding: RFValue(12),
-    alignItems: 'center',
-  },
-  studyRoom: {
-    width: wp(88),
-    height: hp(18),
+const Container = styled.View`
+  flex: 1;
+  background-color: #f5f5f5;
+`;
 
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+const MarginBottom = styled.View`
+  margin-bottom: ${RFValue(20)}px;
+`;
 
-    backgroundColor: '#FFFFFF',
-    borderRadius: 15,
-
-    padding: RFValue(12),
-    marginBottom: RFValue(20),
-
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    alignContent: 'space-around',
-  },
-});
+const StudyRoomScrollView = styled.ScrollView`
+  padding: ${RFValue(12)}px;
+`;
 
 export default StudyRoomList;

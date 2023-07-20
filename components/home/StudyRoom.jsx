@@ -1,7 +1,11 @@
+import RoomEntryInfo from '@components/room/RoomEntryInfo';
+import RoomInfo from '@components/room/RoomInfo';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { Shadow } from 'react-native-shadow-2';
+import styled from 'styled-components/native';
 
 StudyRoom.propTypes = {
   room: PropTypes.shape({
@@ -19,70 +23,63 @@ StudyRoom.propTypes = {
 function StudyRoom({ room, children }) {
   const { title, description, week, room_category, entry_fee, max_user_num, current_user_num } = room;
   return (
-    <>
-      <Text style={styles.title} numberOfLines={1}>
-        {title}
-      </Text>
-      {children}
-      <Text style={styles.description} numberOfLines={2}>
-        {description}
-      </Text>
-      <View style={styles.subInfoGroup}>
-        <View style={styles.subInfo}>
-          <Text style={styles.subInfoText}>{week}주</Text>
-        </View>
-        <View style={styles.subInfo}>
-          <Text style={styles.subInfoText}>{room_category}</Text>
-        </View>
-        <View style={styles.subInfo}>
-          <Text style={styles.subInfoText}>{entry_fee}원</Text>
-        </View>
-        <View style={[styles.subInfo, { flexDirection: 'row', alignItems: 'center', backgroundColor: '#697176' }]}>
-          <Image
-            source={require('@assets/user-background-icon.png')}
-            resizeMode="contain"
-            style={{ width: RFValue(10), height: RFValue(10), marginRight: RFValue(4) }}
+    <Shadow style={{ borderRadius: 15 }} distance={1} offset={[0, 3]}>
+      <Container activeOpacity={0.8}>
+        <RoomTitle numberOfLines={1}>{title}</RoomTitle>
+        {children}
+        <Description numberOfLines={2}>{description}</Description>
+        <SubInfoContainer>
+          <RoomInfo label={`${week}주`} />
+          <RoomInfo label={room_category} />
+          <RoomInfo label={`${entry_fee.toLocaleString('ko-KR')}원`} />
+
+          <RoomEntryInfo
+            img={require('@assets/user-background-icon.png')}
+            label={`${current_user_num}명/${max_user_num}명`}
           />
-          <Text style={[styles.subInfoText, { color: '#ffffff' }]}>
-            {current_user_num}명/{max_user_num}명
-          </Text>
-        </View>
-      </View>
-    </>
+        </SubInfoContainer>
+      </Container>
+    </Shadow>
   );
 }
 
-const styles = StyleSheet.create({
-  subInfoGroup: {
-    justifyContent: 'space-between',
-    flexDirection: 'row',
+const Container = styled.TouchableOpacity`
+  width: ${wp(88)}px;
+  height: ${hp(18)}px;
 
-    width: '76%',
-    marginRight: 'auto',
-  },
-  subInfo: {
-    padding: RFValue(4),
-    borderRadius: 4,
-    backgroundColor: '#F2F3F5',
-  },
-  title: {
-    maxWidth: '60%',
-    fontSize: RFValue(14),
-    fontWeight: 700,
-  },
-  description: {
-    width: '100%',
-    height: '30%',
+  background-color: #ffffff;
+  border-radius: 15px;
 
-    fontSize: RFValue(10),
-    fontWeight: 600,
-    color: '#848484',
-  },
-  subInfoText: {
-    fontSize: RFValue(10),
-    color: '#979797',
-    fontWeight: 700,
-  },
-});
+  padding: ${RFValue(12)}px;
+
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  align-content: space-around;
+`;
+
+const RoomTitle = styled.Text`
+  max-width: 60%;
+  font-size: ${RFValue(14)}px;
+  font-weight: 700;
+`;
+
+const Description = styled.Text`
+  width: 100%;
+
+  font-size: ${RFValue(10)}px;
+  font-weight: 600;
+  color: #848484;
+`;
+
+const SubInfoContainer = styled.View`
+  width: 76%;
+
+  flex-direction: row;
+  justify-content: space-between;
+
+  margin-right: auto;
+`;
 
 export default StudyRoom;
