@@ -1,18 +1,18 @@
 import ActionButton from '@components/common/btn/ActionButton';
 import JoinRequestModal from '@components/join/JoinRequestModal';
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import styled from 'styled-components/native';
 
 function JoinScreen() {
   const [requireFulfilled] = useState(true);
   const [visible, setVisible] = useState(false);
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>참여코드를 입력해주세요</Text>
-      <TextInput style={styles.input} placeholder="참여코드를 입력해주세요." />
-      <View style={{ alignSelf: 'center', marginTop: 'auto', marginBottom: hp(4) }}>
+    <Form>
+      <Label>참여코드를 입력해주세요</Label>
+      <Input placeholder="참여코드를 입력해주세요." />
+      <ButtonContainer>
         <ActionButton
           onPress={() => requireFulfilled && setVisible(true)}
           title={'참여하기'}
@@ -21,35 +21,44 @@ function JoinScreen() {
           color={requireFulfilled ? '#3333FF' : '#E0E0E0'}
           round={true}
         />
-      </View>
+      </ButtonContainer>
 
       <JoinRequestModal request="" visible={visible} close={() => setVisible(false)} />
-    </View>
+    </Form>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-  title: {
-    marginTop: hp(3),
-    padding: RFValue(12),
-    fontSize: RFValue(18),
-    fontWeight: 600,
-  },
-  input: {
-    width: wp(90),
-    height: hp(7),
-    marginTop: hp(1),
-    paddingLeft: RFValue(12),
-    alignSelf: 'center',
+const Form = styled.View`
+  flex: 1;
+  background-color: #ffffff;
+`;
 
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: '#E0E0E0',
-  },
-});
+const Label = styled.Text`
+  font-size: ${RFValue(18)}px;
+  font-weight: 600;
+
+  padding: ${RFValue(12)}px;
+  margin-top: ${hp(3)}px;
+`;
+
+const Input = styled.TextInput`
+  width: ${wp(90)}px;
+  height: ${hp(7)}px;
+
+  margin-top: ${hp(1)}px;
+  padding-left: ${RFValue(12)}px;
+
+  align-self: center;
+
+  border-width: 1px;
+  border-radius: 10px;
+  border-color: #e0e0e0;
+`;
+
+const ButtonContainer = styled.View`
+  align-self: center;
+  margin-top: auto;
+  margin-bottom: ${hp(4)}px;
+`;
 
 export default JoinScreen;
