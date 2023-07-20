@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import styled from 'styled-components/native';
 
 LoginForm.propTypes = {
   children: PropTypes.node,
@@ -9,30 +10,28 @@ LoginForm.propTypes = {
 
 function LoginForm({ children }) {
   return (
-    <View style={styles.formContainer}>
-      <TextInput style={styles.input} placeholder="아이디" />
-      <TextInput style={styles.input} placeholder="비밀번호" secureTextEntry />
+    <Form>
+      <Input placeholder="아이디" />
+      <Input placeholder="비밀번호" secureTextEntry />
       {children}
-    </View>
+    </Form>
   );
 }
 
-const styles = StyleSheet.create({
-  formContainer: {
-    height: hp(20),
+const Form = styled.View`
+  justify-content: space-around;
+  align-items: center;
+  height: ${hp(20)}px;
+`;
 
-    alignItems: 'center',
-    justifyContent: 'space-around',
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: '#EEEEEE',
-    width: wp(90),
-    height: hp(8),
+const Input = styled.TextInput`
+  border-width: 1px;
+  border-radius: 10px;
+  border-color: #eeeeee;
 
-    paddingLeft: 12,
-  },
-});
+  width: ${wp(90)}px;
+  height: ${hp(8)}px;
+  padding-left: ${RFValue(10)}px;
+`;
 
 export default LoginForm;

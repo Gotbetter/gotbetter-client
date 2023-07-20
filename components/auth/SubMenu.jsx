@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useMemo } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import styled from 'styled-components/native';
 
 function SubMenu() {
   const navigation = useNavigation();
@@ -29,45 +29,37 @@ function SubMenu() {
   );
 
   return (
-    <View style={styles.subMenuContainer}>
+    <Container>
       {subMenuItems.map((item, index) => (
-        <TouchableOpacity
-          key={item.id}
-          style={menuStyle(index === 1).menu}
-          onPress={() => navigation.navigate(item.path)}
-        >
-          <Text style={styles.menuText}>{item.title}</Text>
-        </TouchableOpacity>
+        <Menu key={item.id} side={index === 1} onPress={() => navigation.navigate(item.path)}>
+          <Label>{item.title}</Label>
+        </Menu>
       ))}
-    </View>
+    </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  subMenuContainer: {
-    justifyContent: 'space-between',
-    flexDirection: 'row',
+const Container = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
 
-    width: wp(80),
-  },
-  menuText: {
-    fontSize: RFValue(10),
-    color: '#979797',
-  },
-});
+  width: ${wp(80)}px;
+`;
 
-const menuStyle = (borderSide) =>
-  StyleSheet.create({
-    menu: {
-      width: '30%',
-      alignItems: 'center',
+const Menu = styled.TouchableOpacity`
+  width: 30%;
+  align-items: center;
 
-      borderLeftWidth: borderSide ? 1 : 0,
-      borderRightWidth: borderSide ? 1 : 0,
+  border-left-width: ${({ side }) => (side ? 1 : 0)}px;
+  border-right-width: ${({ side }) => (side ? 1 : 0)}px;
 
-      borderRightColor: '#D9D9D9',
-      borderLeftColor: '#D9D9D9',
-    },
-  });
+  border-right-color: #d9d9d9;
+  border-left-color: #d9d9d9;
+`;
+
+const Label = styled.Text`
+  font-size: ${RFValue(10)}px;
+  color: #979797;
+`;
 
 export default SubMenu;
