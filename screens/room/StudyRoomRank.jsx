@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import styled from 'styled-components/native';
 
 function StudyRoomRank(props) {
   const items = useMemo(
@@ -25,81 +26,97 @@ function StudyRoomRank(props) {
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>랭킹</Text>
-        <Text style={styles.date}>2023년 6월 29일 기준</Text>
-      </View>
-      <View style={styles.scrollViewContainer}>
+    <Container>
+      <LabelContainer>
+        <Label>랭킹</Label>
+      </LabelContainer>
+      <DateContainer>
+        <Date>2023년 6월 29일 기준</Date>
+      </DateContainer>
+
+      <ContentContainer>
         <ScrollView>
           {items.map((item) => (
-            <View key={item.rank} style={styles.item}>
-              <Text style={styles.rank}>{item.rank}</Text>
+            <Item key={item.rank}>
+              <Rank>{item.rank}</Rank>
               <View style={{ width: 50, height: 50, borderRadius: 50, backgroundColor: '#C4C4C4' }} />
-              <Text style={styles.username}>{item.username}</Text>
-              <Text style={styles.refund}>{item.refund.toLocaleString('ko-KR')}원</Text>
-            </View>
+              <Name>{item.username}</Name>
+              <Refund>{item.refund.toLocaleString('ko-KR')}원</Refund>
+            </Item>
           ))}
         </ScrollView>
-      </View>
-    </View>
+      </ContentContainer>
+    </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    padding: RFValue(18),
-  },
+const Container = styled.View`
+  flex: 1;
+  background-color: #ffffff;
+  padding: ${RFValue(18)}px;
 
-  titleContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
+  flex-wrap: wrap;
+  flex-direction: row;
+`;
 
-  title: {
-    fontSize: 24,
-    fontWeight: 600,
-    marginRight: RFValue(12),
-  },
-  date: {
-    fontSize: 16,
-    color: '#848484',
-  },
+const LabelContainer = styled.View`
+  width: 20%;
+  height: 10%;
+  justify-content: center;
+  align-items: center;
+`;
 
-  scrollViewContainer: {
-    marginTop: RFValue(12),
-    flex: 1,
-  },
+const DateContainer = styled.View`
+  width: 80%;
+  height: 10%;
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: ${RFValue(4)}px;
+`;
 
-  item: {
-    padding: RFValue(15),
-    borderBottomColor: '#D9D9D9',
-    borderBottomWidth: 1,
-    width: '100%',
+const Label = styled.Text`
+  font-size: ${RFValue(22)}px;
+  font-weight: 600;
+`;
 
-    justifyContent: 'space-between',
+const Date = styled.Text`
+  font-size: ${RFValue(14)}px;
+  color: #848484;
+`;
 
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+const ContentContainer = styled.View`
+  width: 100%;
+  height: 80%;
+  margin-top: ${RFValue(12)}px;
+`;
 
-  rank: {
-    color: '#848484',
-    fontSize: 20,
-    fontWeight: 700,
-  },
+const Item = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 
-  username: {
-    width: '50%',
-    fontSize: 15,
-    fontWeight: 700,
-  },
-  refund: {
-    fontSize: 12,
-    fontWeight: 600,
-  },
-});
+  width: 100%;
+  border-bottom-width: 1px;
+  border-bottom-color: #d9d9d9;
+
+  padding: ${RFValue(15)}px;
+`;
+
+const Rank = styled.Text`
+  color: #848484;
+  font-size: ${RFValue(18)}px;
+  font-weight: 700;
+`;
+
+const Name = styled.Text`
+  width: 50%;
+  font-size: ${RFValue(13)}px;
+  font-weight: 700;
+`;
+
+const Refund = styled.Text`
+  font-size: ${RFValue(10)}px;
+  font-weight: 600;
+`;
 
 export default StudyRoomRank;
