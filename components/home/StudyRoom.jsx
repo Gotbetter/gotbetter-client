@@ -1,5 +1,6 @@
 import RoomEntryInfo from '@components/room/RoomEntryInfo';
 import RoomInfo from '@components/room/RoomInfo';
+import { useNavigation } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -21,10 +22,11 @@ StudyRoom.propTypes = {
 };
 
 function StudyRoom({ room, children }) {
+  const navigation = useNavigation();
   const { title, description, week, room_category, entry_fee, max_user_num, current_user_num } = room;
   return (
     <Shadow style={{ borderRadius: 15 }} distance={1} offset={[0, 3]}>
-      <Container activeOpacity={0.8}>
+      <Container activeOpacity={0.8} onPress={() => navigation.navigate('study-room')}>
         <RoomTitle numberOfLines={1}>{title}</RoomTitle>
         {children}
         <Description numberOfLines={2}>{description}</Description>
