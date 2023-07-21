@@ -94,7 +94,7 @@ const Rule = styled.View`
   align-items: center;
 
   padding-left: ${RFValue(2)}px;
-  padding-right: ${RFValue(2)};
+  padding-right: ${RFValue(2)}px;
 
   border-width: 1px;
   border-radius: 25px;

@@ -50,7 +50,7 @@ const Example = styled.Text`
   width: ${wp(90)}px;
   align-self: center;
   margin-top: ${RFValue(4)}px;
-  padding-left: ${RFValue(4)};
+  padding-left: ${RFValue(4)}px;
 
   font-size: ${RFValue(10)}px;
   color: #979797;
