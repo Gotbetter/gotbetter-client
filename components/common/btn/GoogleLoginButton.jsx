@@ -1,35 +1,38 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import styled from 'styled-components/native';
 
 function GoogleLoginButton() {
   return (
-    <TouchableOpacity style={styles.buttonContainer}>
-      <Image source={require('@assets/google-icon.png')} resizeMode="contain" />
-      <Text style={styles.buttonText}>Google 로그인</Text>
-    </TouchableOpacity>
+    <GoogleButton>
+      <GoogleLogo source={require('@assets/google-icon.png')} resizeMode="contain" />
+      <Label>Google 로그인</Label>
+    </GoogleButton>
   );
 }
 
-const styles = StyleSheet.create({
-  buttonContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    width: wp(90),
-    height: hp(8),
-    borderWidth: 1,
-    borderRadius: 15,
-    borderColor: '#E4E4E4',
-  },
+const GoogleButton = styled.TouchableOpacity`
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 
-  buttonText: {
-    color: '#697176',
-    fontSize: RFValue(12),
-    fontWeight: 500,
-    marginLeft: RFValue(12),
-  },
-});
+  width: ${wp(90)}px;
+  height: ${hp(8)}px;
+
+  border-width: 1px;
+  border-radius: 15px;
+  border-color: #e4e4e4;
+`;
+
+const GoogleLogo = styled.Image``;
+
+const Label = styled.Text`
+  color: #697176;
+  font-size: ${RFValue(12)}px;
+  font-weight: 500;
+
+  margin-left: ${RFValue(12)}px;
+`;
 
 export default GoogleLoginButton;

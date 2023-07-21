@@ -1,7 +1,9 @@
+import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Feather from 'react-native-vector-icons/Feather';
+import styled from 'styled-components/native';
+
 function ThisWeekDetailPlans(props) {
   const detailPlans = useMemo(
     () => [
@@ -46,16 +48,16 @@ function ThisWeekDetailPlans(props) {
   );
 
   return (
-    <View style={styles.myDetailPlanContainer}>
-      <Text style={styles.title}>이번주 나의 계획</Text>
-      <Text style={styles.leftDay}>D-4</Text>
+    <Container>
+      <Label>이번주 나의 계획</Label>
+      <LeftDay>D-4</LeftDay>
 
-      <View style={styles.detailPlanContainer}>
+      <DetailPlanContainer>
         {detailPlans.map((detailPlan) => (
           <DetailPlanItem key={detailPlan.detail_plan_id} detailPlan={detailPlan} />
         ))}
-      </View>
-    </View>
+      </DetailPlanContainer>
+    </Container>
   );
 }
 
@@ -63,52 +65,66 @@ const DetailPlanItem = ({ detailPlan }) => {
   const { content, complete } = detailPlan;
 
   return (
-    <View style={styles.detailPlan}>
-      <View style={styles.checkbox}>
+    <DetailPlan>
+      <CheckBox>
         <Feather name={'check'} color={'#000000'} size={RFValue(20)} />
-      </View>
-      <Text style={{ marginLeft: RFValue(12), fontSize: RFValue(14) }} numberOfLines={1}>
-        {content}
-      </Text>
-    </View>
+      </CheckBox>
+      <Description numberOfLines={1}>{content}</Description>
+    </DetailPlan>
   );
 };
 
-const styles = StyleSheet.create({
-  myDetailPlanContainer: {
-    width: '100%',
+DetailPlanItem.propTypes = {
+  detailPlan: PropTypes.shape({
+    plan_id: PropTypes.number,
+    detail_plan_id: PropTypes.number,
+    content: PropTypes.string,
+    complete: PropTypes.bool,
+    rejected: PropTypes.bool,
+    detail_plan_dislike_count: PropTypes.number,
+    detail_plan_dislike_checked: PropTypes.bool,
+  }),
+};
 
-    padding: RFValue(10),
-    backgroundColor: '#ffffff',
+const Container = styled.View`
+  width: 100%;
 
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: RFValue(16),
-    fontWeight: 700,
-  },
-  leftDay: {
-    color: '#979797',
-    fontWeight: 600,
-    marginLeft: RFValue(4),
-  },
+  padding: ${RFValue(10)}px;
+  background-color: #ffffff;
 
-  detailPlanContainer: {
-    marginTop: RFValue(12),
-    width: '100%',
-  },
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+`;
 
-  detailPlan: {
-    paddingVertical: RFValue(12),
-    flexDirection: 'row',
-  },
+const Label = styled.Text`
+  font-size: ${RFValue(16)}px;
+  font-weight: 700;
+`;
 
-  checkbox: {
-    borderRadius: 5,
-    backgroundColor: '#E7E7E7',
-  },
-});
+const LeftDay = styled.Text`
+  color: #979797;
+  font-weight: 600;
+  margin-left: ${RFValue(4)}px;
+`;
+
+const DetailPlanContainer = styled.View`
+  width: 100%;
+  margin-top: ${RFValue(12)}px;
+`;
+const DetailPlan = styled.View`
+  padding-vertical: ${RFValue(12)}px;
+  flex-direction: row;
+`;
+
+const Description = styled.Text`
+  font-size: ${RFValue(14)}px;
+  margin-left: ${RFValue(12)}px;
+`;
+
+const CheckBox = styled.View`
+  border-radius: 5px;
+  background-color: #e7e7e7;
+`;
 
 export default ThisWeekDetailPlans;

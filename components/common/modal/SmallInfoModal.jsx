@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal, StyleSheet, View } from 'react-native';
+import { Modal } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import styled from 'styled-components/native';
 
 SmallInfoModal.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
@@ -13,34 +14,32 @@ SmallInfoModal.propTypes = {
 function SmallInfoModal({ children, visible, onRequestClose }) {
   return (
     <Modal visible={visible} transparent={true} animationType="fade" onRequestClose={onRequestClose}>
-      <View style={styles.outerView}>
-        <View style={styles.modalView}>{children}</View>
-      </View>
+      <CenterView>
+        <Container>{children}</Container>
+      </CenterView>
     </Modal>
   );
 }
 
-const styles = StyleSheet.create({
-  outerView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+const CenterView = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
 
-    backgroundColor: '#9797979C',
-  },
+  background-color: #9797979c;
+`;
 
-  modalView: {
-    width: wp(78),
-    height: hp(32),
-    borderRadius: 10,
-    backgroundColor: '#ffffff',
+const Container = styled.View`
+  width: ${wp(78)}px;
+  height: ${hp(32)}px;
+  border-radius: 10px;
+  background-color: #ffffff;
 
-    justifyContent: 'center',
-    alignItems: 'center',
+  justify-content: center;
+  align-items: center;
 
-    padding: RFValue(12),
-    marginBottom: hp(8),
-  },
-});
+  padding: ${RFValue(12)}px;
+  margin-bottom: ${hp(8)}px;
+`;
 
 export default SmallInfoModal;

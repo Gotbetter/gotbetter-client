@@ -2,10 +2,9 @@ import ModalButton from '@components/common/btn/ModalButton';
 import ListModal from '@components/common/modal/ListModal';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Shadow } from 'react-native-shadow-2';
-
+import styled from 'styled-components/native';
 StudyRoomInfoModal.propTypes = {
   visible: PropTypes.bool,
   close: PropTypes.func,
@@ -14,77 +13,84 @@ StudyRoomInfoModal.propTypes = {
 function StudyRoomInfoModal({ visible, close }) {
   return (
     <ListModal visible={visible} onRequestClose={close}>
-      <View style={styles.container}>
-        <Text style={styles.title}>방 정보</Text>
-        <Shadow distance={1} offset={[0, 5]}>
-          <View style={styles.infoContainer}>
-            <View style={styles.infoGroup}>
-              <Text style={styles.infoTitle}>방 이름</Text>
-              <Text style={styles.info}>[홍익대학교 개발자 모임] 코딩 스터디</Text>
-            </View>
-            <View style={styles.infoGroup}>
-              <Text style={styles.infoTitle}>방 코드</Text>
-              <Text style={styles.info}>zy9xrx</Text>
-            </View>
-            <View style={styles.infoGroup}>
-              <Text style={styles.infoTitle}>계좌 번호</Text>
-              <Text style={styles.info}>국민 000000-00-000000</Text>
-            </View>
-            <View style={styles.infoGroup}>
-              <Text style={styles.infoTitle}>시작 날짜</Text>
-              <Text style={styles.info}>2023년 6월 29일</Text>
-            </View>
-            <View style={styles.infoGroup}>
-              <Text style={styles.infoTitle}>최대 인원</Text>
-              <Text style={styles.info}>10명</Text>
-            </View>
-            <View style={[styles.infoGroup, { borderBottomWidth: 0 }]}>
-              <Text style={styles.infoTitle}>현재 인원</Text>
-              <Text style={styles.info}>9명</Text>
-            </View>
-          </View>
+      <Container>
+        <Label>방 정보</Label>
+        <Shadow style={{ borderRadius: 10 }} distance={1} offset={[0, 2]}>
+          <InfoContainer>
+            <InfoGroup>
+              <InfoLabel>방 이름</InfoLabel>
+              <Description>[홍익대학교 개발자 모임] 코딩 스터디</Description>
+            </InfoGroup>
+            <InfoGroup>
+              <InfoLabel>방 코드</InfoLabel>
+              <Description>zy9xrx</Description>
+            </InfoGroup>
+            <InfoGroup>
+              <InfoLabel>계좌 번호</InfoLabel>
+              <Description>국민 000000-00-000000</Description>
+            </InfoGroup>
+            <InfoGroup>
+              <InfoLabel>시작 날짜</InfoLabel>
+              <Description>2023년 6월 29일</Description>
+            </InfoGroup>
+            <InfoGroup>
+              <InfoLabel>최대 인원</InfoLabel>
+              <Description>10명</Description>
+            </InfoGroup>
+            <InfoGroup>
+              <InfoLabel>현재 인원</InfoLabel>
+              <Description>9명</Description>
+            </InfoGroup>
+          </InfoContainer>
         </Shadow>
-        <View style={{ alignSelf: 'center', marginTop: RFValue(24) }}>
-          <ModalButton title={'닫기'} />
-        </View>
-      </View>
+        <ButtonContainer>
+          <ModalButton title={'닫기'} onPress={close} />
+        </ButtonContainer>
+      </Container>
     </ListModal>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-  },
-  title: {
-    fontWeight: 700,
-    fontSize: RFValue(16),
-    marginBottom: RFValue(20),
-  },
+const Container = styled.View`
+  width: 100%;
+`;
 
-  infoContainer: {
-    width: 280,
-    borderRadius: 10,
-    borderColor: '#F3F3F3',
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-  },
-  infoGroup: {
-    justifyContent: 'space-around',
-    height: RFValue(56),
-    padding: RFValue(8),
-    borderBottomColor: '#F3F3F3',
-    borderBottomWidth: 1,
-  },
-  infoTitle: {
-    fontSize: RFValue(12),
-    fontWeight: 600,
-  },
-  info: {
-    color: '#5B5B5B',
-    fontWeight: 600,
-    fontSize: RFValue(10),
-  },
-});
+const Label = styled.Text`
+  font-weight: 700;
+  font-size: ${RFValue(16)}px;
+  margin-bottom: ${RFValue(20)}px;
+`;
+
+const InfoContainer = styled.View`
+  width: ${RFValue(260)}px;
+  border-width: 1px;
+  border-color: #f3f3f3;
+  border-radius: 10px;
+  background-color: #ffffff;
+`;
+
+const InfoGroup = styled.View`
+  justify-content: space-around;
+  height: ${RFValue(56)}px;
+  padding: ${RFValue(8)}px;
+  border-bottom-color: #f3f3f3;
+  border-bottom-width: 1px;
+`;
+
+const InfoLabel = styled.Text`
+  font-weight: 600;
+  font-size: ${RFValue(12)}px;
+`;
+
+const Description = styled.Text`
+  color: #5b5b5b;
+  font-weight: 600;
+  font-size: ${RFValue(10)}px;
+`;
+
+const ButtonContainer = styled.View`
+  align-self: center;
+  margin-top: ${RFValue(24)}px;
+`;
 
 export default StudyRoomInfoModal;

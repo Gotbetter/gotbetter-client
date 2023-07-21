@@ -6,18 +6,19 @@ import ActionButton from '@components/common/btn/ActionButton';
 import GoogleLoginButton from '@components/common/btn/GoogleLoginButton';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import styled from 'styled-components/native';
 
 function LoginScreen() {
   const { navigate } = useNavigation();
   return (
     <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <AndroidSafeAreaView>
-        <View style={styles.container}>
-          <Image style={styles.logo} source={require('@assets/logo.png')} resizeMode="contain" />
+        <Container>
+          <Logo source={require('@assets/logo.png')} resizeMode="contain" />
           <LoginForm>
             <InfoMessage message="아이디 비밀번호를 확인하세요" />
           </LoginForm>
@@ -31,40 +32,35 @@ function LoginScreen() {
               onPress={() => navigate('home')}
             />
           </View>
-          <View style={{ marginTop: RFValue(20) }}>
+          <MarginTopMiddle>
             <SubMenu />
-          </View>
-          <View style={{ marginTop: RFValue(20) }}>
+          </MarginTopMiddle>
+          <MarginTopHigh>
             <GoogleLoginButton />
-          </View>
-        </View>
+          </MarginTopHigh>
+        </Container>
       </AndroidSafeAreaView>
     </KeyboardAwareScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoContainer: {
-    width: wp(80),
-    height: hp(30),
+const Container = styled.View`
+  justify-content: center;
+  align-items: center;
+`;
 
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  logo: {
-    marginTop: hp(12),
-    width: RFValue(280),
-  },
-  formContainer: {
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'blue',
-    flex: 2,
-  },
-});
+const Logo = styled.Image`
+  width: ${wp(80)}px;
+  height: ${hp(30)}px;
 
+  justify-content: center;
+  align-items: center;
+`;
+
+const MarginTopMiddle = styled.View`
+  margin-top: ${RFValue(12)}px;
+`;
+const MarginTopHigh = styled.View`
+  margin-top: ${RFValue(20)}px;
+`;
 export default LoginScreen;

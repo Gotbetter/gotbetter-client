@@ -2,10 +2,11 @@ import ModalButton from '@components/common/btn/ModalButton';
 import ListModal from '@components/common/modal/ListModal';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
-import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { Shadow } from 'react-native-shadow-2';
+import styled from 'styled-components/native';
 
 StudyRoomInviteModal.propTypes = {
   visible: PropTypes.bool,
@@ -39,69 +40,80 @@ function StudyRoomInviteModal({ visible, close }) {
 
   return (
     <ListModal visible={visible} onRequestClose={close}>
-      <View style={styles.container}>
-        <Text style={styles.title}>초대하기</Text>
-        <View style={styles.scrollViewContainer}>
+      <Container>
+        <Label>초대하기</Label>
+        <ContentContainer>
           <ScrollView>
             {waitParticipants.map((participant) => (
-              <Shadow
-                key={participant.participant_id}
-                distance={1}
-                offset={[0, 2]}
-                style={{ marginBottom: RFValue(12) }}
-              >
-                <View style={styles.waitParticipant}>
-                  <View style={{ width: 50, height: 50, backgroundColor: '#C4C4C4', borderRadius: 50 }}>
-                    {participant.profile}
-                  </View>
-                  <Text style={styles.username}>{participant.username}</Text>
-                  <View style={{ height: '100%', justifyContent: 'space-around' }}>
-                    <ModalButton title={'수락'} width={wp(18)} height={RFValue(24)} highlight />
-                    <ModalButton title={'거절'} width={wp(18)} height={RFValue(24)} />
-                  </View>
-                </View>
-              </Shadow>
+              <MarginBottom key={participant.participant_id}>
+                <Shadow distance={1} offset={[0, 2]} style={{ borderRadius: 10 }}>
+                  <WaitParticipant>
+                    <View style={{ width: 50, height: 50, backgroundColor: '#C4C4C4', borderRadius: 50 }}>
+                      {participant.profile}
+                    </View>
+                    <Name>{participant.username}</Name>
+                    <ButtonGroup>
+                      <ModalButton title={'수락'} width={wp(18)} height={RFValue(24)} highlight />
+                      <ModalButton title={'거절'} width={wp(18)} height={RFValue(24)} />
+                    </ButtonGroup>
+                  </WaitParticipant>
+                </Shadow>
+              </MarginBottom>
             ))}
           </ScrollView>
-        </View>
-        <View style={{ marginTop: RFValue(24) }}>
+        </ContentContainer>
+        <ButtonContainer>
           <ModalButton title={'닫기'} onPress={close} />
-        </View>
-      </View>
+        </ButtonContainer>
+      </Container>
     </ListModal>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  title: {
-    fontWeight: 700,
-    fontSize: RFValue(16),
-    marginBottom: RFValue(20),
-  },
-  scrollViewContainer: {
-    height: hp(50),
-  },
-  waitParticipant: {
-    width: wp(76),
-    height: hp(12),
-    borderRadius: 10,
-    backgroundColor: '#ffffff',
-    padding: RFValue(12),
-    flexDirection: 'row',
+const Container = styled.View`
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+`;
 
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  username: {
-    fontWeight: 600,
-    fontSize: 16,
-    width: '40%',
-  },
-});
+const Label = styled.Text`
+  font-size: ${RFValue(16)}px;
+  font-weight: 700;
+  margin-bottom: ${RFValue(20)}px;
+`;
 
+const ContentContainer = styled.View`
+  height: ${hp(50)}px;
+`;
+
+const Name = styled.Text`
+  font-size: ${RFValue(14)}px;
+  font-weight: 600;
+  width: 40%;
+`;
+
+const ButtonContainer = styled.View`
+  margin-top: ${RFValue(24)}px;
+`;
+
+const WaitParticipant = styled.View`
+  width: ${wp(76)}px;
+  height: ${hp(12)}px;
+  background-color: #ffffff;
+
+  border-radius: 10px;
+  padding: ${RFValue(12)}px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const ButtonGroup = styled.View`
+  height: 100%;
+  justify-content: space-around;
+`;
+
+const MarginBottom = styled.View`
+  margin-bottom: ${RFValue(12)}px;
+`;
 export default StudyRoomInviteModal;

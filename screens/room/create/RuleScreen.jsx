@@ -1,13 +1,12 @@
 import ActionButton from '@components/common/btn/ActionButton';
 import { useNavigation } from '@react-navigation/native';
 import React, { useMemo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { Shadow } from 'react-native-shadow-2';
-
-import RoomCreateFormTemplate from './RoomCreateFormTemplate';
+import styled from 'styled-components/native';
+import RoomCreateForm from './RoomCreateForm';
 
 function RuleScreen(props) {
   const [selected, select] = useState(0);
@@ -35,29 +34,30 @@ function RuleScreen(props) {
   );
 
   return (
-    <RoomCreateFormTemplate title={'방 규칙'} buttonActivate={true} nextScreen={'account'}>
-      <View style={styles.ruleSelectContainer}>
+    <RoomCreateForm>
+      <Label>방 규칙</Label>
+      <RuleList>
         {rules.map((rule) => (
-          <View key={rule.rule_code} style={styles.rule}>
-            <Text>{rule.rule_description}</Text>
+          <Rule key={rule.rule_code}>
+            <RuleLabel>{rule.rule_description}</RuleLabel>
             <RadioButton
               value={rule.rule_code}
               status={selected === rule.rule_code ? 'checked' : 'unchecked'}
               onPress={() => select(rule.rule_code)}
             />
-          </View>
+          </Rule>
         ))}
-      </View>
-      <View style={{ alignSelf: 'center', marginTop: hp(10) }}>
-        <Shadow distance={4} offset={[0, 5]}>
-          <View style={styles.ruleSelectedContainer}>
-            <Text style={{ fontWeight: 600 }}>{rules[0].rule_description}</Text>
-            <Text style={{ color: '#959595' }}>{rules[0].rule_attribute1}</Text>
-            <Text style={styles.highlight}>{rules[0].rule_attribute2}</Text>
-          </View>
+      </RuleList>
+      <MarginTop>
+        <Shadow style={{ borderRadius: 18 }} distance={1} offset={[0, 5]}>
+          <RuleDescriptionContainer>
+            <RuleTitle>{rules[0].rule_description}</RuleTitle>
+            <RuleDescription>{rules[0].rule_attribute1}</RuleDescription>
+            <RuleContents>{rules[0].rule_attribute2}</RuleContents>
+          </RuleDescriptionContainer>
         </Shadow>
-      </View>
-      <View style={{ alignSelf: 'center', marginTop: 'auto', marginBottom: hp(4) }}>
+      </MarginTop>
+      <ButtonContainer>
         <ActionButton
           onPress={() => navigation.navigate('account')}
           title={'다음'}
@@ -66,47 +66,79 @@ function RuleScreen(props) {
           color={requireFulfilled ? '#3333FF' : '#E0E0E0'}
           round={true}
         />
-      </View>
-    </RoomCreateFormTemplate>
+      </ButtonContainer>
+    </RoomCreateForm>
   );
 }
 
-const styles = StyleSheet.create({
-  ruleSelectContainer: {
-    width: wp(95),
-    marginTop: RFValue(8),
-    justifyContent: 'space-between',
-    alignSelf: 'center',
-    flexDirection: 'row',
-  },
-  ruleSelectedContainer: {
-    width: wp(90),
-    height: hp(30),
-    backgroundColor: '#ffffff',
-    borderRadius: 18,
+const Label = styled.Text`
+  padding: ${RFValue(12)}px;
+  margin-top: ${hp(3)}px;
+  font-size: ${RFValue(18)}px;
+  font-weight: 600;
+`;
 
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    padding: RFValue(12),
-  },
-  rule: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    paddingLeft: RFValue(2),
-    paddingRight: RFValue(2),
-    borderWidth: 1,
-    borderRadius: 25,
-    borderColor: '#E4E4E4',
-  },
+const RuleLabel = styled.Text``;
 
-  highlight: {
-    width: '80%',
-    height: '60%',
-    fontWeight: 600,
-    backgroundColor: '#F6F6F6',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-  },
-});
+const RuleList = styled.View`
+  width: ${wp(95)}px;
+  margin-top: ${RFValue(8)}px;
+
+  flex-direction: row;
+  justify-content: space-between;
+  align-self: center;
+`;
+
+const Rule = styled.View`
+  flex-direction: row;
+  align-items: center;
+
+  padding-left: ${RFValue(2)}px;
+  padding-right: ${RFValue(2)}px;
+
+  border-width: 1px;
+  border-radius: 25px;
+  border-color: #e4e4e4;
+`;
+
+const RuleDescriptionContainer = styled.View`
+  width: ${wp(90)}px;
+  height: ${hp(30)}px;
+
+  background-color: #ffffff;
+  border-radius: 18px;
+
+  justify-content: space-around;
+  align-items: center;
+  padding: ${RFValue(12)}px;
+`;
+
+const MarginTop = styled.View`
+  align-self: center;
+  margin-top: ${hp(10)}px;
+`;
+
+const RuleTitle = styled.Text`
+  font-weight: 600;
+`;
+
+const RuleDescription = styled.Text`
+  color: #959595;
+`;
+
+const RuleContents = styled.Text`
+  width: 80%;
+  height: 60%;
+  font-weight: 600;
+  background-color: #f6f6f6;
+  text-align: center;
+  text-align-vertical: center;
+`;
+
+const ButtonContainer = styled.View`
+  align-self: center;
+  margin-top: auto;
+  margin-bottom: ${hp(4)}px;
+`;
 
 export default RuleScreen;

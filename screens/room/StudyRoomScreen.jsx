@@ -6,11 +6,12 @@ import ThisWeekDetailPlans from '@components/room/ThisWeekDetailPlans';
 import StudyRoomCodeInfoModal from '@components/room/modal/StudyRoomCodeInfoModal';
 import StudyRoomInfoModal from '@components/room/modal/StudyRoomInfoModal';
 import React, { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import styled from 'styled-components/native';
 
-function StudyRoomDetail(props) {
+function StudyRoomScreen(props) {
   const roomDetail = useMemo(
     () => ({
       room_id: 1,
@@ -33,33 +34,24 @@ function StudyRoomDetail(props) {
   );
 
   const [roomCodeInfoModalVisible, setRoomCodeInfoModalVisible] = useState(false);
-  const [roomInfoModalVisible, setRoomInfoModalVisible] = useState(false);
+  const [roomInfoModalVisible, setRoomInfoModalVisible] = useState(true);
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={{ marginVertical: RFValue(2) }}>
-          <Schedules startDate={roomDetail.start_date} totalWeek={roomDetail.week} />
-        </View>
-        <View style={{ marginBottom: RFValue(2) }}>
-          <Participants />
-        </View>
-
-        <View style={{ marginBottom: RFValue(2) }}>
-          <ThisWeekDetailPlans />
-        </View>
-
+    <Container>
+      <ScrollView>
         <Description />
+        <SpacingVertical>
+          <Schedules startDate={roomDetail.start_date} totalWeek={roomDetail.week} />
+        </SpacingVertical>
+
+        <SpacingBottom>
+          <Participants />
+        </SpacingBottom>
+
+        <SpacingBottom>
+          <ThisWeekDetailPlans />
+        </SpacingBottom>
       </ScrollView>
-      <View
-        style={{
-          width: '100%',
-          height: hp(10),
-          alignSelf: 'center',
-          backgroundColor: '#ffffff',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
+      <ButtonConatiner>
         <ActionButton
           title={'초대하기'}
           width={wp(90)}
@@ -68,21 +60,36 @@ function StudyRoomDetail(props) {
           round={true}
           onPress={() => setRoomCodeInfoModalVisible(true)}
         />
-      </View>
+      </ButtonConatiner>
 
       {/* 방 정보 모달 */}
       <StudyRoomInfoModal visible={roomInfoModalVisible} close={() => setRoomInfoModalVisible(false)} />
       {/* 초대코드 정보 모달 */}
       <StudyRoomCodeInfoModal visible={roomCodeInfoModalVisible} close={() => setRoomCodeInfoModalVisible(false)} />
-    </View>
+    </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#D9D9D9',
-  },
-});
+const Container = styled.View`
+  flex: 1;
+  background-color: #d9d9d9;
+`;
 
-export default StudyRoomDetail;
+const SpacingBottom = styled.View`
+  margin-bottom: ${RFValue(2)}px;
+`;
+
+const SpacingVertical = styled.View`
+  margin-vertical: ${RFValue(2)}px;
+`;
+
+const ButtonConatiner = styled.View`
+  width: 100%;
+  height: ${hp(10)}px;
+  align-self: center;
+  background-color: #ffffff;
+  justify-content: center;
+  align-items: center;
+`;
+
+export default StudyRoomScreen;

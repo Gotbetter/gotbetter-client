@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import styled from 'styled-components/native';
 
 ActionButton.propTypes = {
   onPress: PropTypes.func,
@@ -11,32 +11,28 @@ ActionButton.propTypes = {
   round: PropTypes.bool,
 };
 
-function ActionButton({ title, width, height, round, color, onPress }) {
+function ActionButton(props) {
   return (
-    <TouchableOpacity style={dynamicStyles(width, height, color, round).buttonContainer} onPress={onPress}>
-      <Text style={fixStyles.buttonText}>{title}</Text>
-    </TouchableOpacity>
+    <Container {...props}>
+      <Label>{props.title}</Label>
+    </Container>
   );
 }
 
-const fixStyles = StyleSheet.create({
-  buttonText: {
-    color: '#ffffff',
-  },
-});
+const Container = styled.TouchableOpacity`
+  ${({ width, height, color, round }) => `
+    width: ${width}px;
+    height: ${height}px;
+    background-color: ${color};
+    border-radius: ${round ? 15 : 0}px;
+  `};
 
-const dynamicStyles = (width, height, color, round) =>
-  StyleSheet.create({
-    buttonContainer: {
-      borderRadius: round ? 15 : 0,
-      width,
-      height,
-      backgroundColor: color,
+  justify-content: center;
+  align-items: center;
+`;
 
-      fontWeight: 600,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-  });
+const Label = styled.Text`
+  color: #ffffff;
+`;
 
 export default ActionButton;

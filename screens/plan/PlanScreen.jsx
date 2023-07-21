@@ -1,11 +1,12 @@
-import AddButton from '@components/common/btn/AddButton';
+import AddButtonIcon from '@components/common/icon/AddButtonIcon';
 import OppositeButton from '@components/plan/OppositeButton';
 import OppositeModal from '@components/plan/OppositeModal';
 import WeekList from '@components/plan/WeekList';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import styled from 'styled-components/native';
 
 import PlanList from '../../components/plan/PlanList';
 
@@ -17,45 +18,46 @@ function PlanScreen(props) {
   }, [navigation]);
 
   return (
-    <View style={styles.screenContainer}>
+    <Container>
       <WeekList />
 
-      <View style={styles.contentContainer}>
+      <ContentContainer>
         <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}>
           <PlanList />
 
-          <AddButton />
+          <AddButtonIcon />
         </ScrollView>
-      </View>
-      <View style={styles.buttonContainer}>
+      </ContentContainer>
+      <ButtonContainer>
         <OppositeButton />
-      </View>
+      </ButtonContainer>
 
       <OppositeModal />
-    </View>
+    </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  contentContainer: {
-    paddingVertical: RFValue(24),
-    paddingHorizontal: RFValue(12),
-    width: '100%',
-    height: '64%',
+const Container = styled.View`
+  flex: 1;
+  background-color: #f5f5f5;
+`;
 
-    alignItems: 'center',
-  },
-  buttonContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+const ContentContainer = styled.View`
+  width: 100%;
+  height: 64%;
 
-    height: '24%',
-    width: '100%',
-  },
-});
+  align-items: center;
+
+  padding-vertical: ${RFValue(24)}px;
+  padding-horizontal: ${RFValue(12)}px;
+`;
+
+const ButtonContainer = styled.View`
+  width: 100%;
+  height: 24%;
+
+  justify-content: center;
+  align-items: center;
+`;
 
 export default PlanScreen;

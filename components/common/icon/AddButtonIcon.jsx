@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Svg, { Rect, Path } from 'react-native-svg';
 
-function AddButton(props) {
+function AddButtonIcon(props) {
   return (
     <Svg width={42} height={42} viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <Rect width={42} height={42} rx={10} fill="#D9D9D9" />
@@ -11,4 +11,4 @@ function AddButton(props) {
   );
 }
 
-export default AddButton;
+export default AddButtonIcon;

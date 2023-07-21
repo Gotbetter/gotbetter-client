@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import styled from 'styled-components/native';
 
 Schedules.propTypes = {
   startDate: PropTypes.string,
@@ -11,63 +11,77 @@ Schedules.propTypes = {
 
 function Schedules({ startDate, totalWeek }) {
   return (
-    <View style={styles.scheduleContainer}>
-      <Text style={styles.title}>진행 일정</Text>
-      <View style={{ width: '100%', justifyContent: 'space-around', flexDirection: 'row', marginTop: RFValue(12) }}>
-        <View style={styles.itemContainer}>
-          <Text style={styles.scheduleTitle}>시작{'\n'}날짜</Text>
-          <Text style={styles.scheduleContent}>{startDate}</Text>
-        </View>
-        <View style={styles.itemContainer}>
-          <Text style={styles.scheduleTitle}>전체{'\n'}주차</Text>
-          <Text style={styles.scheduleContent}>{totalWeek}주</Text>
-        </View>
-      </View>
-    </View>
+    <Container>
+      <Label>진행 일정</Label>
+      <Schedule>
+        <ScheduleLabelView>
+          <ScheduleLabel>시작{'\n'}날짜</ScheduleLabel>
+        </ScheduleLabelView>
+        <ScheduleDescriptionView>
+          <ScheduleDescription>{startDate}</ScheduleDescription>
+        </ScheduleDescriptionView>
+      </Schedule>
+      <Schedule>
+        <ScheduleLabelView>
+          <ScheduleLabel>전체{'\n'}주차</ScheduleLabel>
+        </ScheduleLabelView>
+        <ScheduleDescriptionView>
+          <ScheduleDescription>{totalWeek}주</ScheduleDescription>
+        </ScheduleDescriptionView>
+      </Schedule>
+    </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  scheduleContainer: {
-    width: '100%',
-    height: hp(16),
-    backgroundColor: '#ffffff',
-    padding: RFValue(10),
-    justifyContent: 'space-around',
-  },
-  title: {
-    fontSize: RFValue(16),
-    fontWeight: 700,
-  },
-  scheduleTitle: {
-    width: RFValue(48),
-    height: RFValue(44),
-    color: '#ffffff',
-    fontSize: RFValue(10),
-    fontWeight: 600,
+const Container = styled.View`
+  width: 100%;
+  height: ${hp(16)}px;
+  background-color: #ffffff;
+  padding: ${RFValue(10)}px;
+  justify-content: space-around;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: space-around;
+`;
 
-    textAlign: 'center',
-    textAlignVertical: 'center',
+const Label = styled.Text`
+  width: 100%;
+  font-weight: 700;
+  font-size: ${RFValue(16)}px;
+`;
 
-    backgroundColor: '#C4C4C4',
-    borderTopLeftRadius: RFValue(18),
-    borderBottomLeftRadius: RFValue(18),
-  },
-  scheduleContent: {
-    width: RFValue(92),
-    height: RFValue(44),
-    color: '#697176',
-    fontSize: RFValue(10),
-    fontWeight: 600,
+const ScheduleLabelView = styled.View`
+  width: ${RFValue(48)}px;
+  background-color: #c4c4c4;
+  border-top-left-radius: ${RFValue(16)}px;
+  border-bottom-left-radius: ${RFValue(16)}px;
+  justify-content: center;
+  align-items: center;
+`;
 
-    textAlign: 'center',
-    textAlignVertical: 'center',
-  },
-  itemContainer: {
-    borderRadius: RFValue(18),
-    backgroundColor: '#F3F3F3',
+const ScheduleLabel = styled.Text`
+  color: #ffffff;
+  font-size: ${RFValue(10)}px;
+  font-weight: 600;
+`;
 
-    flexDirection: 'row',
-  },
-});
+const ScheduleDescriptionView = styled.View`
+  width: ${RFValue(92)}px;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ScheduleDescription = styled.Text`
+  color: #697176;
+  font-size: ${RFValue(10)}px;
+  font-weight: 600;
+`;
+
+const Schedule = styled.View`
+  flex-direction: row;
+  height: ${RFValue(44)}px;
+  background-color: #f3f3f3;
+  border-radius: ${RFValue(18)}px;
+`;
+
 export default Schedules;

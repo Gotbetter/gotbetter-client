@@ -7,7 +7,7 @@ import SignUpScreen from '@screens/auth/SignUpScreen';
 import PlanCertificationFormScreen from '@screens/plan/PlanCertificationFormScreen';
 import PlanDetailScreen from '@screens/plan/PlanDetailScreen';
 import PlanScreen from '@screens/plan/PlanScreen';
-import StudyRoomDetail from '@screens/room/StudyRoomDetail';
+import StudyRoomScreen from '@screens/room/StudyRoomScreen';
 import StudyRoomRank from '@screens/room/StudyRoomRank';
 import AccountScreen from '@screens/room/create/AccountScreen';
 import CategoryScreen from '@screens/room/create/CategoryScreen';
@@ -45,7 +45,7 @@ export default function App() {
         />
         <Stack.Screen
           name="study-room"
-          component={StudyRoomDetail}
+          component={StudyRoomScreen}
           options={{
             headerTitleAlign: 'center',
             headerBackVisible: false,

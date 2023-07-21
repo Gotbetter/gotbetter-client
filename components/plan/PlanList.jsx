@@ -1,10 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { Shadow } from 'react-native-shadow-2';
 import Feather from 'react-native-vector-icons/Feather';
+import styled from 'styled-components/native';
 
 function PlanList(props) {
   const navigation = useNavigation();
@@ -47,45 +47,47 @@ function PlanList(props) {
   return (
     <>
       {detailPlans.map((detailPlan) => (
-        <Shadow key={detailPlan.detail_plan_id} distance={2} offset={[0, 2]}>
-          <TouchableOpacity style={styles.detailPlan} onPress={() => navigation.navigate('detail')}>
-            <View style={styles.checkbox}>
-              <Feather name={'check'} color={'#000000'} size={RFValue(20)} />
-            </View>
-            <Text style={styles.content} numberOfLines={1}>
-              {detailPlan.content}
-            </Text>
-          </TouchableOpacity>
-        </Shadow>
+        <MarginBottom key={detailPlan.detail_plan_id}>
+          <Shadow distance={2} offset={[0, 2]} style={{ borderRadius: 10 }}>
+            <DetailPlan onPress={() => navigation.navigate('detail')}>
+              <CheckBox>
+                <Feather name={'check'} color={'#000000'} size={RFValue(20)} />
+              </CheckBox>
+              <Description numberOfLines={1}>{detailPlan.content}</Description>
+            </DetailPlan>
+          </Shadow>
+        </MarginBottom>
       ))}
     </>
   );
 }
 
-const styles = StyleSheet.create({
-  detailPlan: {
-    width: wp(90),
-    height: hp(12),
-    padding: RFValue(24),
-    marginBottom: RFValue(24),
+const DetailPlan = styled.TouchableOpacity`
+  width: ${wp(90)}px;
+  height: ${hp(12)}px;
+  padding: ${RFValue(24)}px;
 
-    borderRadius: 10,
-    backgroundColor: '#ffffff',
+  border-radius: 10px;
+  background-color: #ffffff;
 
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
 
-  content: {
-    fontSize: RFValue(14),
-    marginLeft: RFValue(12),
-    flexGrow: 1,
-  },
-  checkbox: {
-    borderRadius: 5,
-    backgroundColor: '#E7E7E7',
-  },
-});
+const Description = styled.Text`
+  font-size: ${RFValue(14)}px;
+  margin-left: ${RFValue(12)}px;
+  flex-grow: 1;
+`;
+
+const CheckBox = styled.View`
+  border-radius: 5px;
+  background-color: #e7e7e7;
+`;
+
+const MarginBottom = styled.View`
+  margin-bottom: ${RFValue(24)}px;
+`;
 
 export default PlanList;
