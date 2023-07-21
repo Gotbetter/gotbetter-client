@@ -1,4 +1,4 @@
-import AddButton from '@components/common/btn/AddButton';
+import AddButtonIcon from '@components/common/icon/AddButtonIcon';
 import OppositeButton from '@components/plan/OppositeButton';
 import OppositeModal from '@components/plan/OppositeModal';
 import WeekList from '@components/plan/WeekList';
@@ -25,7 +25,7 @@ function PlanScreen(props) {
         <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}>
           <PlanList />
 
-          <AddButton />
+          <AddButtonIcon />
         </ScrollView>
       </ContentContainer>
       <ButtonContainer>

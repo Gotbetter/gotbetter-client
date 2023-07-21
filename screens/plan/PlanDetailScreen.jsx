@@ -1,4 +1,4 @@
-import AddButton from '@components/common/btn/AddButton';
+import AddButtonIcon from '@components/common/icon/AddButtonIcon';
 import { useNavigation } from '@react-navigation/native';
 import React, { useMemo } from 'react';
 import { ScrollView, View } from 'react-native';
@@ -45,7 +45,7 @@ function PlanDetailScreen(props) {
           </View>
         ))}
         <ButtonContainer onPress={() => navigation.navigate('confirm')}>
-          <AddButton />
+          <AddButtonIcon />
         </ButtonContainer>
       </ScrollView>
     </Container>
