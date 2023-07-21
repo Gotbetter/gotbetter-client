@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
 import Feather from 'react-native-vector-icons/Feather';
+import styled from 'styled-components/native';
 
 function WeekList(props) {
   const [weekList] = useState(() => {
@@ -26,40 +27,41 @@ function WeekList(props) {
   });
 
   return (
-    <View style={styles.weekContainer}>
+    <Container>
       <Feather name="chevron-left" color={'#D9D9D9'} size={30} />
       {weekList[0].map((week) => (
-        <TouchableOpacity key={week} style={styles.week}>
-          <Text>{week}주차</Text>
-        </TouchableOpacity>
+        <Week key={week}>
+          <WeekLabel>{week}주차</WeekLabel>
+        </Week>
       ))}
       <Feather name="chevron-right" color={'#D9D9D9'} size={30} />
-    </View>
+    </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  weekContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+const Container = styled.View`
+  height: 12%;
 
-    alignItems: 'center',
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
 
-    backgroundColor: '#ffffff',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    height: '12%',
-  },
+  background-color: #ffffff;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+`;
 
-  week: {
-    width: 45,
-    height: 33,
-    borderRadius: 10,
-    backgroundColor: '#D9D9D9',
+const Week = styled.TouchableOpacity`
+  width: ${RFValue(42)}px;
+  height: ${RFValue(32)}px;
 
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+  border-radius: 10px;
+  background-color: #d9d9d9;
+
+  justify-content: center;
+  align-items: center;
+`;
+
+const WeekLabel = styled.Text``;
 
 export default WeekList;

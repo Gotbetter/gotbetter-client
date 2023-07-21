@@ -1,10 +1,11 @@
 import AddButton from '@components/common/btn/AddButton';
 import { useNavigation } from '@react-navigation/native';
 import React, { useMemo } from 'react';
-import { Image, ScrollView, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { Shadow } from 'react-native-shadow-2';
+import styled from 'styled-components/native';
 
 function PlanDetailScreen(props) {
   const navigation = useNavigation();
@@ -27,65 +28,84 @@ function PlanDetailScreen(props) {
   );
 
   return (
-    <View style={styles.container}>
+    <Container>
       <ScrollView contentContainerStyle={{ padding: RFValue(12), flexGrow: 1, alignItems: 'center' }}>
         {plans.map((plan, index) => (
           <View key={index} style={{ marginBottom: RFValue(12) }}>
-            <Shadow distance={2} offset={[0, 2]}>
-              <View style={styles.plan}>
-                <Text style={styles.date}>06/18</Text>
-                <Image style={styles.img} source={require('@assets/study-img.png')} resizeMode="contain" />
-                <View style={styles.infoGroup}>
-                  <Text style={{ width: '100%', fontWeight: 600, fontSize: 16 }}>{plan.title}</Text>
-                  <Text
-                    style={{ width: '100%', height: '80%', fontWeight: 600, fontSize: 12, paddingVertical: RFValue(8) }}
-                  >
-                    {plan.content}
-                  </Text>
-                </View>
-              </View>
+            <Shadow style={{ borderRadius: 10 }} distance={2} offset={[0, 2]}>
+              <Plan>
+                <Date>06/18</Date>
+                <Photo source={require('@assets/study-img.png')} resizeMode="contain" />
+                <InfoGroup>
+                  <PlanLabel>{plan.title}</PlanLabel>
+                  <PlanDescription>{plan.content}</PlanDescription>
+                </InfoGroup>
+              </Plan>
             </Shadow>
           </View>
         ))}
-        <TouchableOpacity style={{ marginTop: RFValue(24) }} onPress={() => navigation.navigate('confirm')}>
+        <ButtonContainer onPress={() => navigation.navigate('confirm')}>
           <AddButton />
-        </TouchableOpacity>
+        </ButtonContainer>
       </ScrollView>
-    </View>
+    </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#ffffff',
-    height: '100%',
-  },
-  date: {
-    fontWeight: 600,
-    fontSize: 12,
-    width: '100%',
-    textAlign: 'right',
-  },
-  plan: {
-    width: wp(90),
-    minHeight: hp(7),
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
-    padding: RFValue(12),
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    alignContent: 'space-between',
-  },
-  img: {
-    width: '30%',
-  },
+const Container = styled.View`
+  background-color: #ffffff;
+  height: 100%;
+`;
 
-  infoGroup: {
-    alignContent: 'space-around',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    width: '70%',
-    padding: RFValue(12),
-  },
-});
+const Plan = styled.View`
+  width: ${wp(90)}px;
+  min-height: ${hp(7)}px;
+
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: ${RFValue(12)}px;
+
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-content: space-between;
+`;
+
+const Photo = styled.Image`
+  width: 30%;
+`;
+
+const InfoGroup = styled.View`
+  width: 70%;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: space-around;
+
+  padding: ${RFValue(12)}px;
+`;
+
+const Date = styled.Text`
+  width: 100%;
+  font-size: ${RFValue(10)}px;
+  font-weight: 600;
+  text-align: right;
+`;
+
+const PlanLabel = styled.Text`
+  width: 100%;
+  font-size: ${RFValue(14)}px;
+  font-weight: 600;
+`;
+
+const PlanDescription = styled.Text`
+  width: 100%;
+  height: 80%;
+  font-weight: 600;
+  font-size: ${RFValue(10)}px;
+  padding-vertical: ${RFValue(8)}px;
+`;
+
+const ButtonContainer = styled.TouchableOpacity`
+  margin-top: ${RFValue(24)}px;
+`;
+
 export default PlanDetailScreen;
