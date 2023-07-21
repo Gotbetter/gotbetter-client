@@ -1,44 +1,38 @@
 import OppositeIcon from '@components/common/icon/OppositeIcon';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import styled from 'styled-components/native';
 
 function OppositeButton() {
   const opposite = false;
   const title = opposite ? '반대 누르기 완료' : '반대 누르기';
   return (
-    <TouchableOpacity style={styles(opposite ? '#848484' : '#3333FF').container}>
+    <Container opposite={opposite}>
       <OppositeIcon color={'#ffffff'} />
-      <Text style={styles().title}>{title}</Text>
-    </TouchableOpacity>
+      <Label>{title}</Label>
+    </Container>
   );
 }
 
-const styles = (backgroundColor) =>
-  StyleSheet.create({
-    container: {
-      flexDirection: 'row',
-      borderWidth: 1,
+const Container = styled.TouchableOpacity`
+  flex-direction: row;
 
-      width: wp(56),
-      height: RFValue(40),
+  border-width: 1px;
+  border-radius: 18px;
 
-      borderRadius: RFValue(18),
-      backgroundColor,
+  width: ${wp(56)}px;
+  height: ${RFValue(40)}px;
 
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    img: {
-      width: RFValue(20),
-      height: RFValue(20),
-    },
-    title: {
-      marginLeft: RFValue(12),
-      color: '#ffffff',
-      fontWeight: 700,
-    },
-  });
+  justify-content: center;
+  align-items: center;
 
+  background-color: ${({ opposite }) => (opposite ? '#848484' : '#3333FF')};
+`;
+
+const Label = styled.Text`
+  color: #ffffff;
+  font-weight: 700;
+  margin-left: ${RFValue(12)}px;
+`;
 export default OppositeButton;
