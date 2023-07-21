@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, Text } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import styled from 'styled-components/native';
+
 ModalButton.propTypes = {
   onPress: PropTypes.func,
   title: PropTypes.string,
@@ -10,32 +11,33 @@ ModalButton.propTypes = {
   height: PropTypes.number,
 };
 
-function ModalButton({ title, onPress, width = wp(25), height = hp(5), highlight = false }) {
+function ModalButton(props, { width = wp(25), height = hp(5), highlight = false }) {
   return (
-    <TouchableOpacity style={styles(highlight, width, height).buttonContainer} onPress={onPress}>
-      <Text style={styles(highlight).text}>{title}</Text>
-    </TouchableOpacity>
+    <Container width={width} height={height} highlight={highlight} {...props}>
+      <Label {...props}>{props.title}</Label>
+    </Container>
   );
 }
 
-const styles = (highlight, width, height) =>
-  StyleSheet.create({
-    buttonContainer: {
-      width,
-      height,
-      borderRadius: 40,
-      borderWidth: highlight ? 0 : 1,
-      borderColor: highlight ? null : '#979797',
-      backgroundColor: highlight ? '#3333FF' : '#ffffff',
+const Container = styled.TouchableOpacity`
+  ${({ width, height, highlight }) => `
+    width: ${width}px;
+    height: ${height}px;
+    border-width: ${highlight ? 0 : 1}px;
+    border-color: ${highlight ? '#ffffff' : '#979797'};
+    background-color: ${highlight ? '#3333ff' : '#ffffff'};
+  `};
 
-      fontWeight: 600,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    text: {
-      fontWeight: 600,
-      color: highlight ? '#ffffff' : '#979797',
-    },
-  });
+  font-weight: 600;
+  border-radius: 40px;
+
+  justify-content: center;
+  align-items: center;
+`;
+
+const Label = styled.Text`
+  font-weight: 600;
+  color: ${({ highlight }) => (highlight ? '#ffffff' : '#979797')};
+`;
 
 export default ModalButton;
