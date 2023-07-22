@@ -6,13 +6,14 @@ import styled from 'styled-components/native';
 
 LoginForm.propTypes = {
   children: PropTypes.node,
+  onChange: PropTypes.func,
 };
 
-function LoginForm({ children }) {
+function LoginForm({ children, onChange }) {
   return (
     <Form>
-      <Input placeholder="아이디" />
-      <Input placeholder="비밀번호" secureTextEntry />
+      <Input placeholder="아이디" onChangeText={(text) => onChange('auth_id', text)} />
+      <Input placeholder="비밀번호" onChangeText={(text) => onChange('password', text)} secureTextEntry />
       {children}
     </Form>
   );
