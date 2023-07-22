@@ -9,13 +9,12 @@ ActionButton.propTypes = {
   height: PropTypes.number,
   color: PropTypes.string,
   round: PropTypes.bool,
-  disabled: PropTypes.bool,
 };
 
-function ActionButton({ title, width, height, color, round, onPress, disabled }) {
+function ActionButton(props) {
   return (
-    <Container width={width} height={height} color={color} round={round} disabled={disabled} onPress={onPress}>
-      <Label>{title}</Label>
+    <Container {...props}>
+      <Label>{props.title}</Label>
     </Container>
   );
 }
