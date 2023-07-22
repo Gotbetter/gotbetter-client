@@ -1,7 +1,6 @@
 import LoginForm from '@components/auth/LoginForm';
 import SubMenu from '@components/auth/SubMenu';
 import AndroidSafeAreaView from '@components/common/AndroidSafeAreaView';
-import InfoMessage from '@components/common/InfoMessage';
 import ActionButton from '@components/common/btn/ActionButton';
 import GoogleLoginButton from '@components/common/btn/GoogleLoginButton';
 import { useNavigation } from '@react-navigation/native';
@@ -19,9 +18,7 @@ function LoginScreen() {
       <AndroidSafeAreaView>
         <Container>
           <Logo source={require('@assets/logo.png')} resizeMode="contain" />
-          <LoginForm>
-            <InfoMessage message="아이디 비밀번호를 확인하세요" />
-          </LoginForm>
+          <LoginForm></LoginForm>
           <View style={{ marginTop: RFValue(12) }}>
             <ActionButton
               title={'로그인'}
