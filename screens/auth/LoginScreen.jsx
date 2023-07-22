@@ -43,7 +43,7 @@ function LoginScreen() {
     onError: (err) => {
       const { status } = err.response;
       console.log(format(err.response));
-      setError((prev) => !prev);
+      setError(true);
       if (status === 400) {
         setMessage('모든 정보를 입력해 주세요.');
       }
