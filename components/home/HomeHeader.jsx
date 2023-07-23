@@ -1,27 +1,30 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { useRecoilState } from 'recoil';
+import { tabState } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
-
 HomeHeader.propTypes = {
   menu: PropTypes.string,
   onPress: PropTypes.func,
 };
 
 function HomeHeader({ menu, onPress }) {
+  const [tab, selectTab] = useRecoilState(tabState);
+
   return (
     <Container>
       <LogoContainer>
         <Logo source={require('@assets/logo.png')} resizeMode="contain" />
       </LogoContainer>
-      <MenuContainer>
-        <Menu selected={menu === '전체'} onPress={() => onPress('전체')}>
+      <TabContainer>
+        <Tab selected={tab === '전체'} onPress={() => selectTab('전체')}>
           <Label>전체</Label>
-        </Menu>
-        <Menu selected={menu === '진행중'} onPress={() => onPress('진행중')}>
+        </Tab>
+        <Tab selected={tab === '진행중'} onPress={() => selectTab('진행중')}>
           <Label style={{ color: '#3333FF' }}>진행중</Label>
-        </Menu>
-      </MenuContainer>
+        </Tab>
+      </TabContainer>
     </Container>
   );
 }
@@ -38,13 +41,13 @@ const Logo = styled.Image`
   height: ${RFValue(80)}px;
 `;
 
-const MenuContainer = styled.View`
+const TabContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 `;
 
-const Menu = styled.TouchableOpacity`
+const Tab = styled.TouchableOpacity`
   width: 50%;
   padding: ${RFValue(12)}px;
   border-bottom-width: ${({ selected }) => (selected ? 2 : 0)}px;

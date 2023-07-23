@@ -1,26 +1,15 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { End, Progress, Wait } from './status';
 
 StudyRoomStatus.propTypes = {
-  room: PropTypes.shape({
-    title: PropTypes.string,
-    description: PropTypes.string,
-    week: PropTypes.number,
-    room_category: PropTypes.string,
-    entry_fee: PropTypes.number,
-    max_user_num: PropTypes.number,
-    current_user_num: PropTypes.number,
-  }),
+  status: PropTypes.string,
+  startDate: PropTypes.string,
 };
 
-function StudyRoomStatus({ room }) {
-  const [status] = useState('PROGRESS');
-
-  useEffect(() => {}, []);
-
-  if (status === 'WAIT') return <Wait />;
+function StudyRoomStatus({ status, startDate }) {
+  if (status === 'WAIT') return <Wait startDate={startDate} />;
   if (status === 'PROGRESS') return <Progress />;
   if (status === 'END') return <End />;
 }
