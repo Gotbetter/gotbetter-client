@@ -1,90 +1,49 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
+import { RefreshControl } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { studyRoomListRefreshingState } from 'recoil/room/atoms';
+import { filteredStudyRoomListState } from 'recoil/room/selectors';
 import styled from 'styled-components/native';
 
-import StudyRoom from './StudyRoom';
+import StudyRoomListItem from './StudyRoomListItem';
 import StudyRoomStatus from './StudyRoomStatus';
 
-function StudyRoomList(props) {
-  const studyRoomItems = useMemo(
-    () => [
-      {
-        room_id: '87614186-6de0-5cb1-a8c9-eed112024de1',
-        title: '[매일 인증]토익 스터디',
-        max_user_num: 6,
-        current_user_num: 1,
-        start_date: '1/19/2038',
-        week: 25,
-        current_week: 2,
-        entry_fee: 31524,
-        room_code: 'gxhXgNeXXilHPZkB',
-        account: 'Roxie Palmer',
-        room_category: 'gasoline',
-        description: 'further rate deeply dot finest simplest sugar blood wild never boat ',
-        total_entry_fee: 31929,
-        rule: 53,
-      },
-      {
-        room_id: 'e9124506-7473-534f-a203-73a5aaf099dc',
-        title: '주 3회 러닝 인증방',
-        max_user_num: 6,
-        current_user_num: 2,
-        start_date: '10/17/2056',
-        week: 24,
-        current_week: 2,
-        entry_fee: 48025,
-        room_code: 'ZRmRGlLogEIIorTorz',
-        account: 'Catherine Simon',
-        room_category: 'explain',
-        description:
-          '매일 인증하는 토익 스터디 모입방입니다. 매일 인증하는 토익 스터디 모입방입니다. 매일 인증하는 토익 스터디 모입방입니다. 매일 인증하는 토익 스터디 모입방입니다.',
-        total_entry_fee: 73825,
-        rule: 82,
-      },
-      {
-        room_id: '8',
-        title: '코딩 스터디',
-        max_user_num: 3,
-        current_user_num: 2,
-        start_date: '5/30/2083',
-        week: 12,
-        current_week: 2,
-        entry_fee: 5000,
-        room_code: 'WGNnFEmuwfLHpX',
-        account: 'Caleb Potter',
-        room_category: 'bark',
-        description: 'whom bright case compound habit let clear salmon shine eaten joined ',
-        total_entry_fee: 55624,
-        rule: 12,
-      },
-      {
-        room_id: '12',
-        title: 'Sylvia Hall',
-        max_user_num: 4,
-        current_user_num: 1,
-        start_date: '3/22/2083',
-        week: 14,
-        current_week: 2,
-        entry_fee: 5000,
-        room_code: 'WGNnFEmuwfLHpX',
-        account: 'Caleb Potter',
-        room_category: 'bark',
-        description: 'whom bright case compound habit let clear salmon shine eaten joined ',
-        total_entry_fee: 55624,
-        rule: 12,
-      },
-    ],
-    [],
-  );
+function StudyRoomList() {
+  const studyRoomList = useRecoilValue(filteredStudyRoomListState);
+  const [refreshing, setRefresh] = useRecoilState(studyRoomListRefreshingState);
+  const today = useMemo(() => new Date(), []);
+
+  const onRefresh = useCallback(() => {
+    setRefresh(true);
+    setTimeout(() => {
+      setRefresh(false);
+    }, 1000);
+  }, []);
+
+  function getStudyRoomStatus(studyRoom) {
+    const startDate = new Date(studyRoom.start_date);
+
+    if (today < startDate) return 'WAIT';
+
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + 7 * studyRoom.week);
+
+    if (today <= endDate) return 'PROGRESS';
+    else return 'END';
+  }
 
   return (
     <Container>
-      <StudyRoomScrollView contentContainerStyle={{ alignItems: 'center' }}>
-        {studyRoomItems.map((room) => (
-          <MarginBottom key={room.room_id}>
-            <StudyRoom room={room}>
-              <StudyRoomStatus room={room} />
-            </StudyRoom>
+      <StudyRoomScrollView
+        contentContainerStyle={{ alignItems: 'center' }}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
+        {studyRoomList.map((studyRoom) => (
+          <MarginBottom key={studyRoom.room_id}>
+            <StudyRoomListItem room={studyRoom}>
+              <StudyRoomStatus status={getStudyRoomStatus(studyRoom)} startDate={studyRoom.start_date} />
+            </StudyRoomListItem>
           </MarginBottom>
         ))}
       </StudyRoomScrollView>

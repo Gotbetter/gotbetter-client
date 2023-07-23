@@ -19,9 +19,9 @@ import TitleScreen from '@screens/room/create/TitleScreen';
 import React from 'react';
 import { LogBox } from 'react-native';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { RecoilRoot } from 'recoil';
 
 import LoginScreen from './screens/auth/LoginScreen';
-
 const Stack = createNativeStackNavigator();
 const queryClient = new QueryClient();
 
@@ -31,118 +31,120 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-        <AutoLoginManager>
-          <Stack.Navigator initialRouteName={'login'}>
-            <Stack.Group navigationKey="notLogined">
-              <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
+        <RecoilRoot>
+          <AutoLoginManager>
+            <Stack.Navigator initialRouteName={'login'}>
+              <Stack.Group navigationKey="notLogined">
+                <Stack.Screen name="login" component={LoginScreen} options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="sign-up"
+                  component={SignUpScreen}
+                  options={{
+                    title: '회원가입',
+                    headerTitleAlign: 'center',
+                    headerBackVisible: false,
+                    headerStyle: {
+                      borderBottomWidth: '1',
+                      borderBottomColor: '#EEEEEE',
+                    },
+                    headerTitleStyle: {
+                      color: '#979797',
+                      fontWeight: '600',
+                    },
+                  }}
+                />
+              </Stack.Group>
+
+              <Stack.Screen name="home" component={HomeScreen} options={{ headerShown: false }} />
               <Stack.Screen
-                name="sign-up"
-                component={SignUpScreen}
+                name="join"
+                component={JoinScreen}
                 options={{
-                  title: '회원가입',
+                  title: '방코드 검색',
                   headerTitleAlign: 'center',
                   headerBackVisible: false,
-                  headerStyle: {
-                    borderBottomWidth: '1',
-                    borderBottomColor: '#EEEEEE',
-                  },
-                  headerTitleStyle: {
-                    color: '#979797',
-                    fontWeight: '600',
-                  },
-                }}
-              />
-            </Stack.Group>
-
-            <Stack.Screen name="home" component={HomeScreen} options={{ headerShown: false }} />
-            <Stack.Screen
-              name="join"
-              component={JoinScreen}
-              options={{
-                title: '방코드 검색',
-                headerTitleAlign: 'center',
-                headerBackVisible: false,
-                headerLeft: () => <BackButton />,
-                headerStyle: { borderBottomWidth: '1', borderBottomColor: '#EEEEEE' },
-                headerTitleStyle: { color: '#000000', fontWeight: '700' },
-              }}
-            />
-            <Stack.Screen
-              name="study-room"
-              component={StudyRoomScreen}
-              options={{
-                headerTitleAlign: 'center',
-                headerBackVisible: false,
-                headerLeft: () => <BackButton />,
-                headerStyle: { borderBottomWidth: '1', borderBottomColor: '#EEEEEE' },
-                headerTitleStyle: { color: '#000000', fontWeight: '700' },
-              }}
-            />
-            <Stack.Screen
-              name="rank"
-              component={StudyRoomRank}
-              options={{
-                headerTitleAlign: 'center',
-                headerBackVisible: false,
-                headerLeft: () => <BackButton />,
-                headerStyle: { borderBottomWidth: '1', borderBottomColor: '#EEEEEE' },
-                headerTitleStyle: { color: '#000000', fontWeight: '700' },
-              }}
-            />
-
-            <Stack.Group
-              screenOptions={{
-                title: '방 만들기',
-                headerTitleAlign: 'center',
-                headerBackVisible: false,
-                headerLeft: () => <BackButton />,
-                headerStyle: { borderBottomWidth: '1', borderBottomColor: '#EEEEEE' },
-                headerTitleStyle: { color: '#000000', fontWeight: '700' },
-              }}
-            >
-              <Stack.Screen name="category" component={CategoryScreen} />
-              <Stack.Screen name="title" component={TitleScreen} />
-              <Stack.Screen name="description" component={DescriptionScreen} />
-              <Stack.Screen name="numeric-info" component={NumericInfoScreen} />
-              <Stack.Screen name="rule" component={RuleScreen} />
-              <Stack.Screen name="account" component={AccountScreen} />
-            </Stack.Group>
-
-            <Stack.Group>
-              <Stack.Screen
-                name="plan"
-                component={PlanScreen}
-                options={{
-                  headerTitleAlign: 'center',
-                  headerBackVisible: false,
-                  headerTitleStyle: { color: '#000000', fontWeight: '700' },
-                }}
-              />
-              <Stack.Screen
-                name="confirm"
-                component={PlanCertificationFormScreen}
-                options={{
-                  title: '계획 인증하기',
                   headerLeft: () => <BackButton />,
-                  headerTitleAlign: 'center',
-                  headerBackVisible: false,
+                  headerStyle: { borderBottomWidth: '1', borderBottomColor: '#EEEEEE' },
                   headerTitleStyle: { color: '#000000', fontWeight: '700' },
                 }}
               />
               <Stack.Screen
-                name="detail"
-                component={PlanDetailScreen}
+                name="study-room"
+                component={StudyRoomScreen}
                 options={{
-                  title: '[매일 인증] 토익 스터디',
-                  headerLeft: () => <BackButton />,
                   headerTitleAlign: 'center',
                   headerBackVisible: false,
+                  headerLeft: () => <BackButton />,
+                  headerStyle: { borderBottomWidth: '1', borderBottomColor: '#EEEEEE' },
                   headerTitleStyle: { color: '#000000', fontWeight: '700' },
                 }}
               />
-            </Stack.Group>
-          </Stack.Navigator>
-        </AutoLoginManager>
+              <Stack.Screen
+                name="rank"
+                component={StudyRoomRank}
+                options={{
+                  headerTitleAlign: 'center',
+                  headerBackVisible: false,
+                  headerLeft: () => <BackButton />,
+                  headerStyle: { borderBottomWidth: '1', borderBottomColor: '#EEEEEE' },
+                  headerTitleStyle: { color: '#000000', fontWeight: '700' },
+                }}
+              />
+
+              <Stack.Group
+                screenOptions={{
+                  title: '방 만들기',
+                  headerTitleAlign: 'center',
+                  headerBackVisible: false,
+                  headerLeft: () => <BackButton />,
+                  headerStyle: { borderBottomWidth: '1', borderBottomColor: '#EEEEEE' },
+                  headerTitleStyle: { color: '#000000', fontWeight: '700' },
+                }}
+              >
+                <Stack.Screen name="category" component={CategoryScreen} />
+                <Stack.Screen name="title" component={TitleScreen} />
+                <Stack.Screen name="description" component={DescriptionScreen} />
+                <Stack.Screen name="numeric-info" component={NumericInfoScreen} />
+                <Stack.Screen name="rule" component={RuleScreen} />
+                <Stack.Screen name="account" component={AccountScreen} />
+              </Stack.Group>
+
+              <Stack.Group>
+                <Stack.Screen
+                  name="plan"
+                  component={PlanScreen}
+                  options={{
+                    headerTitleAlign: 'center',
+                    headerBackVisible: false,
+                    headerTitleStyle: { color: '#000000', fontWeight: '700' },
+                  }}
+                />
+                <Stack.Screen
+                  name="confirm"
+                  component={PlanCertificationFormScreen}
+                  options={{
+                    title: '계획 인증하기',
+                    headerLeft: () => <BackButton />,
+                    headerTitleAlign: 'center',
+                    headerBackVisible: false,
+                    headerTitleStyle: { color: '#000000', fontWeight: '700' },
+                  }}
+                />
+                <Stack.Screen
+                  name="detail"
+                  component={PlanDetailScreen}
+                  options={{
+                    title: '[매일 인증] 토익 스터디',
+                    headerLeft: () => <BackButton />,
+                    headerTitleAlign: 'center',
+                    headerBackVisible: false,
+                    headerTitleStyle: { color: '#000000', fontWeight: '700' },
+                  }}
+                />
+              </Stack.Group>
+            </Stack.Navigator>
+          </AutoLoginManager>
+        </RecoilRoot>
       </NavigationContainer>
     </QueryClientProvider>
   );

@@ -1,12 +1,19 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native';
-const Wait = () => {
+
+const Wait = ({ startDate }) => {
+  const [month, day] = startDate.split('-').slice(1);
   return (
     <Container>
-      <Label color={'#979797'}>&#183; 7/3부터 진행</Label>
+      <Label color={'#979797'}>&#183; {`${month}/${day}`}부터 진행</Label>
     </Container>
   );
+};
+
+Wait.propTypes = {
+  startDate: PropTypes.string,
 };
 
 const Progress = () => {
