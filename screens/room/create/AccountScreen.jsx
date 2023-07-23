@@ -1,40 +1,82 @@
 import ActionButton from '@components/common/btn/ActionButton';
-import StudyRoomCreateCompletedModal from '@components/room/modal/StudyRoomCreateCompletedModal';
+import StudyRoomCreateInfoModal from '@components/room/modal/StudyRoomCreateInfoModal';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import { createPlan } from 'api/plan';
+import { createStudyRoomRequest } from 'api/room';
+import React, { useEffect, useState } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { useMutation, useQueryClient } from 'react-query';
+import { useRecoilState, useResetRecoilState } from 'recoil';
+import { studyRoomCreateRequest } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
 import RoomCreateForm from './RoomCreateForm';
 
 function AccountScreen(props) {
   const navigation = useNavigation();
-  const [visible, setVisible] = useState(false);
-  const [requireFulfilled] = useState(false);
+  const queryClient = useQueryClient();
+
+  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [requireFulfilled, setRequireFulfilled] = useState(false);
+
+  const [request, setRequest] = useRecoilState(studyRoomCreateRequest);
+  const resetRequest = useResetRecoilState(studyRoomCreateRequest);
+
+  useEffect(() => {
+    setRequireFulfilled(request.account !== '');
+  }, [request.account]);
+
+  const onChange = (account) => {
+    setRequest((prev) => ({ ...prev, account }));
+  };
 
   const onClose = () => {
-    setVisible(false);
+    setError(false);
+    setSuccess(false);
+    resetRequest();
     navigation.navigate('home');
   };
+
+  const { mutate: createStudyRoom } = useMutation(() => createStudyRoomRequest(request), {
+    onError: () => {
+      setError(true);
+    },
+    onSuccess: (res) => {
+      const { data } = res;
+      queryClient.invalidateQueries(['studyRoomList']);
+      createLeaderPlan(data.participant_id);
+    },
+  });
+
+  const { mutate: createLeaderPlan } = useMutation((participant_id) => createPlan(participant_id), {
+    onError: () => {
+      setError(true);
+    },
+    onSuccess: (res) => {
+      setSuccess(true);
+    },
+  });
 
   return (
     <RoomCreateForm title={'계좌 번호 입력하기'}>
       <Label>계좌 번호 입력하기</Label>
-      <Input placeholder="계좌 번호를 입력해주세요.." />
+      <Input value={request.account} placeholder="계좌 번호를 입력해주세요.." onChangeText={onChange} />
       <Example>ex) 국민 000000-00-00000</Example>
       <ButtonContainer>
         <ActionButton
-          onPress={() => setVisible(true)}
+          onPress={() => createStudyRoom(request)}
           title={requireFulfilled ? '완료' : '계좌 번호 입력하기'}
           width={wp(90)}
           height={hp(8)}
           color={requireFulfilled ? '#3333FF' : '#E0E0E0'}
           round={true}
+          disabled={!requireFulfilled}
         />
       </ButtonContainer>
 
-      <StudyRoomCreateCompletedModal visible={visible} close={onClose} />
+      <StudyRoomCreateInfoModal error={error} success={success} close={onClose} />
     </RoomCreateForm>
   );
 }

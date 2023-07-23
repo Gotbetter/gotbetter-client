@@ -1,99 +1,94 @@
 import ActionButton from '@components/common/btn/ActionButton';
-import BackButton from '@components/common/btn/BackButton';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Image } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-
+import { useRecoilState } from 'recoil';
+import { studyRoomCreateRequest } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
+
 import RoomCreateForm from './RoomCreateForm';
 
 function CategoryScreen(props) {
   const navigation = useNavigation();
-  const [requireFulfilled] = useState(true);
-
-  const headerOptions = useMemo(
-    () => ({
-      title: '방 만들기',
-      headerTitleAlign: 'center',
-      headerBackVisible: false,
-      headerLeft: () => <BackButton />,
-      headerStyle: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#EEEEEE',
-      },
-      headerTitleStyle: {
-        color: '#000000',
-        fontWeight: 700,
-      },
-    }),
-    [],
-  );
-
-  useEffect(() => {
-    navigation.setOptions(headerOptions);
-  }, [navigation, headerOptions]);
+  const [request, setRequest] = useRecoilState(studyRoomCreateRequest);
+  const [requireFulfilled, setRequireFulfilled] = useState(false);
 
   const categoryItems = useMemo(
     () => [
       {
-        title: '공부',
+        label: '공부',
         value: 'STUDY',
         img: <Image source={require('@assets/category/study.png')} />,
       },
       {
-        title: '운동',
+        label: '운동',
         value: 'EXERCISE',
         img: <Image source={require('@assets/category/exercise.png')} />,
       },
       {
-        title: '개발',
+        label: '개발',
         value: 'DEVELOP',
         img: <Image source={require('@assets/category/develop.png')} />,
       },
       {
-        title: '다이어트',
+        label: '다이어트',
         value: 'DIET',
         img: <Image source={require('@assets/category/diet.png')} />,
       },
       {
-        title: '수험생',
+        label: '수험생',
         value: 'EXAM',
         img: <Image source={require('@assets/category/exam.png')} />,
       },
       {
-        title: '자격증',
-        value: 'CERTIFICATES',
+        label: '자격증',
+        value: 'CERTIFICATE',
         img: <Image source={require('@assets/category/certificates.png')} />,
       },
       {
-        title: '정서관리',
-        value: 'MIND',
+        label: '정서관리',
+        value: 'EMOTION',
         img: <Image source={require('@assets/category/mind-control.png')} />,
       },
       {
-        title: '생활습관',
+        label: '생활습관',
         value: 'LIFESTYLE',
         img: <Image source={require('@assets/category/lifestyle.png')} />,
       },
       {
-        title: '기타',
-        value: 'OTHERS',
+        label: '기타',
+        value: 'ETC',
         img: <Image source={require('@assets/category/others.png')} />,
       },
     ],
     [],
   );
 
+  useEffect(() => {
+    setRequireFulfilled(request.room_category_code !== '');
+  }, [request.room_category_code]);
+
+  const onPressCategory = (value) => {
+    setRequest((prev) => ({
+      ...request,
+      room_category_code: prev.room_category_code !== value ? value : '',
+    }));
+  };
+
   return (
     <RoomCreateForm>
       <Label>어떤 종류의 방인가요?</Label>
       <CategoryContainer>
         {categoryItems.map((item) => (
-          <Category key={item.title}>
+          <Category
+            key={item.label}
+            selected={request.room_category_code === item.value}
+            onPress={() => onPressCategory(item.value)}
+          >
             {item.img}
-            <CategoryLabel>{item.title}</CategoryLabel>
+            <CategoryLabel>{item.label}</CategoryLabel>
           </Category>
         ))}
       </CategoryContainer>
@@ -105,6 +100,7 @@ function CategoryScreen(props) {
           height={hp(8)}
           color={requireFulfilled ? '#3333FF' : '#E0E0E0'}
           round={true}
+          disabled={!requireFulfilled}
         />
       </ButtonContainer>
     </RoomCreateForm>
@@ -132,6 +128,7 @@ const Category = styled.TouchableOpacity`
   width: 30%;
   height: 30%;
 
+  background-color: ${({ selected }) => (selected ? '#E0E0E0' : '#ffffff')};
   justify-content: center;
   align-items: center;
 `;

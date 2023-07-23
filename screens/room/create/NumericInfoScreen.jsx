@@ -2,37 +2,59 @@ import ActionButton from '@components/common/btn/ActionButton';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Text } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { useRecoilState } from 'recoil';
+import { studyRoomCreateRequest } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
 import RoomCreateForm from './RoomCreateForm';
 
 function NumericInfoScreen(props) {
-  const [dateSelect, setDateSelect] = useState(false);
-  const [date, setDate] = useState('');
-  const [requireFulfilled] = useState(true);
+  const [request, setRequest] = useRecoilState(studyRoomCreateRequest);
 
+  const [dateSelect, setDateSelect] = useState(false);
+  const [requireFulfilled, setRequireFulfilled] = useState(true);
+
+  const today = useMemo(() => new Date(), []);
+
+  useEffect(() => {
+    setRequireFulfilled(request.start_date !== '');
+  }, [request]);
   const navigation = useNavigation();
   const onChange = (e, date) => {
+    setDateSelect(false);
     const { type } = e;
 
     switch (type) {
       case 'set':
-        setDate(
-          `${date.getFullYear()}-${('00' + (date.getMonth() + 1)).slice(-2)}-${('00' + date.getDate()).slice(-2)}`,
-        );
-        setDateSelect(false);
+        setRequest((prev) => ({
+          ...prev,
+          start_date: `${date.getFullYear()}-${('00' + (date.getMonth() + 1)).slice(-2)}-${(
+            '00' + date.getDate()
+          ).slice(-2)}`,
+        }));
         break;
-      case 'dismissed':
-        setDateSelect(false);
+      default:
         break;
     }
   };
 
-  const peopleLimeits = useMemo(() => [1, 2, 3, 4, 5, 6], []);
+  const selectMaxUserNum = (max_user_num) => {
+    setRequest((prev) => ({ ...prev, max_user_num }));
+  };
+
+  const selectProgressWeek = (week) => {
+    setRequest((prev) => ({ ...prev, week }));
+  };
+
+  const selectEntryFee = (entry_fee) => {
+    setRequest((prev) => ({ ...prev, entry_fee }));
+  };
+
+  const peopleLimeits = useMemo(() => [1, 2, 3, 4, 5, 6, 7, 8], []);
 
   /** 참가비 리스트 **/
   const entryFeeList = useMemo(() => {
@@ -43,6 +65,7 @@ function NumericInfoScreen(props) {
     }
     return items;
   }, []);
+
   /** 주차 리스트 **/
   const weekList = useMemo(() => {
     const MAX_WEEK_COUNT = 47;
@@ -57,7 +80,11 @@ function NumericInfoScreen(props) {
     <RoomCreateForm title={'인원 선택'} nextScreen={'rule'}>
       <Label>인원 선택</Label>
       <SubLabel>인원 제한</SubLabel>
-      <FullSizePicker dropdownIconColor={'#ffffff'}>
+      <FullSizePicker
+        dropdownIconColor={'#ffffff'}
+        onValueChange={selectMaxUserNum}
+        selectedValue={request.max_user_num}
+      >
         {peopleLimeits.map((count) => (
           <Picker.Item key={count} label={`${count}명`} value={count} />
         ))}
@@ -68,16 +95,16 @@ function NumericInfoScreen(props) {
         <PickerLabel>시작일</PickerLabel>
         <PickerLabel>진행주차</PickerLabel>
         <DatePicker onPress={() => setDateSelect(true)}>
-          <Text>{date}</Text>
+          <Text>{request.start_date}</Text>
         </DatePicker>
-        <HalfSizePicker dropdownIconColor={'#ffffff'}>
+        <HalfSizePicker dropdownIconColor={'#ffffff'} onValueChange={selectProgressWeek} selectedValue={request.week}>
           {weekList.map((week) => (
             <Picker.Item key={week.key} label={week.label} value={week.value} />
           ))}
         </HalfSizePicker>
       </PickerGroup>
       <Label>금액 선택</Label>
-      <FullSizePicker dropdownIconColor={'#ffffff'}>
+      <FullSizePicker dropdownIconColor={'#ffffff'} onValueChange={selectEntryFee} selectedValue={request.entry_fee}>
         {entryFeeList.map((entryFee) => (
           <Picker.Item key={entryFee} label={entryFee.label} value={entryFee.value} />
         ))}
@@ -91,10 +118,11 @@ function NumericInfoScreen(props) {
           height={hp(8)}
           color={requireFulfilled ? '#3333FF' : '#E0E0E0'}
           round={true}
+          disabled={!requireFulfilled}
         />
       </ButtonContainer>
 
-      {dateSelect && <RNDateTimePicker mode="date" value={new Date()} onChange={onChange} />}
+      {dateSelect && <RNDateTimePicker mode="date" value={today} onChange={onChange} minimumDate={today} />}
     </RoomCreateForm>
   );
 }
