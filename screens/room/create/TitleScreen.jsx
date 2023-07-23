@@ -1,20 +1,31 @@
 import ActionButton from '@components/common/btn/ActionButton';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-
+import { useRecoilState } from 'recoil';
+import { studyRoomCreateRequest } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
+
 import RoomCreateForm from './RoomCreateForm';
 
 function TitleScreen(props) {
-  const [requireFulfilled] = useState(true);
+  const [request, setRequest] = useRecoilState(studyRoomCreateRequest);
+  const [requireFulfilled, setRequireFulfilled] = useState(true);
+
+  useEffect(() => {
+    setRequireFulfilled(request.title !== '');
+  }, [request.title]);
+
+  const onChange = (title) => {
+    setRequest((prev) => ({ ...prev, title }));
+  };
 
   const navigation = useNavigation();
   return (
     <RoomCreateForm>
       <Label>방 이름을 지어주세요.</Label>
-      <Input placeholder="방 이름을 지어주세요." />
+      <Input value={request.title} placeholder="방 이름을 지어주세요." onChangeText={onChange} />
 
       <ButtonContainer>
         <ActionButton
@@ -24,6 +35,7 @@ function TitleScreen(props) {
           height={hp(8)}
           color={requireFulfilled ? '#3333FF' : '#E0E0E0'}
           round={true}
+          disabled={!requireFulfilled}
         />
       </ButtonContainer>
     </RoomCreateForm>

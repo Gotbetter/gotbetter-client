@@ -1,62 +1,86 @@
 import ActionButton from '@components/common/btn/ActionButton';
 import { useNavigation } from '@react-navigation/native';
-import React, { useMemo, useState } from 'react';
+import { fetchStudyRoomRuleList } from 'api/room';
+import React, { useEffect, useState } from 'react';
+import { Text, View } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { Shadow } from 'react-native-shadow-2';
+import { useQuery } from 'react-query';
+import { useRecoilState } from 'recoil';
+import { studyRoomCreateRequest } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
+
 import RoomCreateForm from './RoomCreateForm';
 
 function RuleScreen(props) {
-  const [selected, select] = useState(0);
-  const [requireFulfilled] = useState(true);
+  const [selected, select] = useState(null);
+  const [requireFulfilled, setRequireFulfilled] = useState(false);
+
+  const [request, setRequest] = useRecoilState(studyRoomCreateRequest);
   const navigation = useNavigation();
 
-  const rules = useMemo(
-    () => [
-      {
-        rule_code: 'R1',
-        rule_description: '👑 1등 몰빵',
-        rule_attribute1: '1등한테 200% 몰빵! 기본 규칙 선택하기',
-        rule_attribute2: '👑 1등 200% 환급\n\n2등 ~ 5등 100% 환급\n\n😥 꼴등 0% 환급',
-      },
-      {
-        rule_code: 'R2',
-        rule_description: '👥 공평하게',
-      },
-      {
-        rule_code: 'R3',
-        rule_description: '규칙 만들기',
-      },
-    ],
-    [],
-  );
+  useEffect(() => {
+    setRequireFulfilled(request.rule_code !== '');
+  }, [request.rule_code]);
 
+  const { isLoading, isError, data } = useQuery('studyRoomRules', fetchStudyRoomRuleList, {
+    retry: 1,
+    staleTime: 500000,
+    select: (res) => res.data,
+  });
+
+  const selectRule = (index, rule_code) => {
+    select(index);
+    setRequest((prev) => ({ ...prev, rule_code }));
+  };
+
+  if (isLoading)
+    return (
+      <View>
+        <Text>로딩중</Text>
+      </View>
+    );
+
+  if (isError) {
+    return (
+      <View>
+        <Text>서버 에러 발생</Text>
+      </View>
+    );
+  }
   return (
     <RoomCreateForm>
       <Label>방 규칙</Label>
       <RuleList>
-        {rules.map((rule) => (
+        {data.map((rule, index) => (
           <Rule key={rule.rule_code}>
             <RuleLabel>{rule.rule_description}</RuleLabel>
             <RadioButton
-              value={rule.rule_code}
-              status={selected === rule.rule_code ? 'checked' : 'unchecked'}
-              onPress={() => select(rule.rule_code)}
+              value={index}
+              status={selected === index ? 'checked' : 'unchecked'}
+              onPress={() => selectRule(index, rule.rule_code)}
+              disabled={index !== 0}
             />
           </Rule>
         ))}
+        <Rule>
+          <RuleLabel> 규칙 만들기</RuleLabel>
+          <RadioButton disabled />
+        </Rule>
       </RuleList>
-      <MarginTop>
-        <Shadow style={{ borderRadius: 18 }} distance={1} offset={[0, 5]}>
-          <RuleDescriptionContainer>
-            <RuleTitle>{rules[0].rule_description}</RuleTitle>
-            <RuleDescription>{rules[0].rule_attribute1}</RuleDescription>
-            <RuleContents>{rules[0].rule_attribute2}</RuleContents>
-          </RuleDescriptionContainer>
-        </Shadow>
-      </MarginTop>
+      {selected != null ? (
+        <MarginTop>
+          <Shadow style={{ borderRadius: 18 }} distance={1} offset={[0, 5]}>
+            <RuleDescriptionContainer>
+              <RuleTitle>{data[selected].rule_description}</RuleTitle>
+              <RuleDescription>{data[selected].rule_attribute1}</RuleDescription>
+              <RuleContents>{data[selected].rule_attribute2}</RuleContents>
+            </RuleDescriptionContainer>
+          </Shadow>
+        </MarginTop>
+      ) : null}
       <ButtonContainer>
         <ActionButton
           onPress={() => navigation.navigate('account')}
@@ -65,6 +89,7 @@ function RuleScreen(props) {
           height={hp(8)}
           color={requireFulfilled ? '#3333FF' : '#E0E0E0'}
           round={true}
+          disabled={!requireFulfilled}
         />
       </ButtonContainer>
     </RoomCreateForm>

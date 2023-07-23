@@ -1,27 +1,37 @@
 import ActionButton from '@components/common/btn/ActionButton';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { useRecoilState } from 'recoil';
+import { studyRoomCreateRequest } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
 import RoomCreateForm from './RoomCreateForm';
 
 function DescriptionScreen(props) {
-  const [text, setText] = useState('');
-  const [requireFulfilled] = useState(true);
+  const [request, setRequest] = useRecoilState(studyRoomCreateRequest);
+  const [requireFulfilled, setRequireFulfilled] = useState(false);
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    setRequireFulfilled(request.description !== '');
+  }, [request.description]);
+
+  const onChange = (text) => {
+    setRequest((prev) => ({ ...prev, description: text }));
+  };
 
   return (
     <RoomCreateForm>
       <Label>방 소개를 작성해주세요</Label>
-      <TextLength>글자수 제한 {text.length}/60</TextLength>
+      <TextLength>글자수 제한 {request.description.length}/60</TextLength>
 
       <Input
-        value={text}
-        onChangeText={setText}
+        value={request.description}
         maxLength={60}
+        onChangeText={(text) => onChange(text)}
         multiline={true}
         placeholder="어떤 활동을 할지 간단하게 소개해주세요."
       />
@@ -33,6 +43,7 @@ function DescriptionScreen(props) {
           height={hp(8)}
           color={requireFulfilled ? '#3333FF' : '#E0E0E0'}
           round={true}
+          disabled={!requireFulfilled}
         />
       </ButtonContainer>
     </RoomCreateForm>
