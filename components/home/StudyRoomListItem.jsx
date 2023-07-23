@@ -8,7 +8,7 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-nat
 import { Shadow } from 'react-native-shadow-2';
 import styled from 'styled-components/native';
 
-StudyRoom.propTypes = {
+StudyRoomListItem.propTypes = {
   room: PropTypes.shape({
     title: PropTypes.string,
     description: PropTypes.string,
@@ -21,7 +21,7 @@ StudyRoom.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
-function StudyRoom({ room, children }) {
+function StudyRoomListItem({ room, children }) {
   const navigation = useNavigation();
   const { title, description, week, room_category, entry_fee, max_user_num, current_user_num } = room;
   return (
@@ -84,4 +84,4 @@ const SubInfoContainer = styled.View`
   margin-right: auto;
 `;
 
-export default StudyRoom;
+export default StudyRoomListItem;
