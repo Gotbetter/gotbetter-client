@@ -1,25 +1,29 @@
 import ModalButton from '@components/common/btn/ModalButton';
 import SmallInfoModal from '@components/common/modal/SmallInfoModal';
-import PropTypes from 'prop-types';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { joinRequestMessage, joinRequestModalState, joinRequestState } from 'recoil/join/atoms';
 import styled from 'styled-components/native';
 
-JoinRequestModal.propTypes = {
-  request: PropTypes.string,
-  visible: PropTypes.bool,
-  close: PropTypes.func,
-};
+function JoinRequestModal() {
+  const { navigate } = useNavigation();
+  const [visible, setVisible] = useRecoilState(joinRequestModalState);
+  const isError = useRecoilValue(joinRequestState);
+  const errorMessage = useRecoilValue(joinRequestMessage);
 
-function JoinRequestModal({ request, visible, close }) {
-  const [error] = [false];
+  const close = () => {
+    setVisible(false);
+    navigate('home');
+  };
 
-  if (error) {
+  if (isError) {
     return (
       <SmallInfoModal visible={visible} onRequestClose={close}>
         <Container>
           <Label>초대요청 실패</Label>
-          <Description>요청이 실패하였습니다.{'\n'}</Description>
+          <Description>{errorMessage}</Description>
           <ModalButton title={'닫기'} onPress={close} />
         </Container>
       </SmallInfoModal>
