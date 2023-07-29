@@ -8,7 +8,7 @@ import SignUpScreen from '@screens/auth/SignUpScreen';
 import PlanCertificationFormScreen from '@screens/plan/PlanCertificationFormScreen';
 import PlanDetailScreen from '@screens/plan/PlanDetailScreen';
 import PlanScreen from '@screens/plan/PlanScreen';
-import StudyRoomRank from '@screens/room/StudyRoomRank';
+import StudyRoomRankScreen from '@screens/room/StudyRoomRankScreen';
 import StudyRoomScreen from '@screens/room/StudyRoomScreen';
 import AccountScreen from '@screens/room/create/AccountScreen';
 import CategoryScreen from '@screens/room/create/CategoryScreen';
@@ -81,7 +81,7 @@ export default function App() {
               />
               <Stack.Screen
                 name="rank"
-                component={StudyRoomRank}
+                component={StudyRoomRankScreen}
                 options={{
                   headerTitleAlign: 'center',
                   headerBackVisible: false,
