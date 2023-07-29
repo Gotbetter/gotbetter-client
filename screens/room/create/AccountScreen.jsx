@@ -20,6 +20,7 @@ function AccountScreen(props) {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [requireFulfilled, setRequireFulfilled] = useState(false);
+  const [createdRoomId, setCreatedRoomId] = useState(-1);
 
   const [request, setRequest] = useRecoilState(studyRoomCreateRequest);
   const resetRequest = useResetRecoilState(studyRoomCreateRequest);
@@ -46,6 +47,7 @@ function AccountScreen(props) {
     onSuccess: (res) => {
       const { data } = res;
       queryClient.invalidateQueries(['studyRoomList']);
+      setCreatedRoomId(data.room_id);
       createLeaderPlan(data.participant_id);
     },
   });
@@ -76,7 +78,7 @@ function AccountScreen(props) {
         />
       </ButtonContainer>
 
-      <StudyRoomCreateInfoModal error={error} success={success} close={onClose} />
+      <StudyRoomCreateInfoModal error={error} success={success} close={onClose} roomId={createdRoomId} />
     </RoomCreateForm>
   );
 }
