@@ -1,6 +1,8 @@
 import { selector } from 'recoil';
+import { user } from 'recoil/auth/atoms';
+import { participantList } from 'recoil/participant/atoms';
 
-import { currentStudyRoomState, studyRoomListState, tabState } from './atoms';
+import { studyRoomListState, tabState } from './atoms';
 
 const filteredStudyRoomListState = selector({
   key: 'filteredStudyRoomList',
@@ -28,4 +30,17 @@ const filteredStudyRoomListState = selector({
   },
 });
 
-export { filteredStudyRoomListState };
+const getMyAuthority = selector({
+  key: 'myStudyRoomAuthority',
+  get: ({ get }) => {
+    const { user_id } = get(user);
+    const participants = get(participantList);
+    for (let index = 0; index < participants.length; index++) {
+      if (participants[index].user_id === user_id) {
+        return participants[index].authority;
+      }
+    }
+  },
+});
+
+export { filteredStudyRoomListState, getMyAuthority };
