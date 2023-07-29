@@ -9,9 +9,11 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Foundation from 'react-native-vector-icons/Foundation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import { useQueryClient } from 'react-query';
 import styled from 'styled-components/native';
 
-function HomeFooter(props) {
+function HomeFooter() {
+  const queryClient = useQueryClient();
   const navigation = useNavigation();
 
   const iconSize = useMemo(() => RFValue(24), []);
@@ -21,6 +23,7 @@ function HomeFooter(props) {
       await AsyncStorage.removeItem('access_token');
       await AsyncStorage.removeItem('refresh_token');
       navigation.reset({ routes: [{ name: 'login' }] });
+      queryClient.clear();
       Toast.show('로그아웃', { duration: Toast.durations.SHORT });
     } catch (e) {
       console.log(format(e));
