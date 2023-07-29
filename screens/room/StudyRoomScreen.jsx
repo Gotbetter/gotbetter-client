@@ -1,72 +1,69 @@
-import ActionButton from '@components/common/btn/ActionButton';
 import Description from '@components/room/Description';
+import InviteButton from '@components/room/InviteButton';
 import Participants from '@components/room/Participants';
 import Schedules from '@components/room/Schedules';
 import ThisWeekDetailPlans from '@components/room/ThisWeekDetailPlans';
 import StudyRoomCodeInfoModal from '@components/room/modal/StudyRoomCodeInfoModal';
 import StudyRoomInfoModal from '@components/room/modal/StudyRoomInfoModal';
-import React, { useMemo, useState } from 'react';
-import { ScrollView } from 'react-native';
+import React, { useCallback } from 'react';
+import { RefreshControl, ScrollView } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { useRecoilState } from 'recoil';
+import { studyRoomRefreshState } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
+import PlanFetcher from 'wrapper/plan/PlanFetcher';
+import StudyRoomDetailFetcher from 'wrapper/study-room/StudyRoomDetailFetcher';
+import StudyRoomParticipantsFetcher from 'wrapper/study-room/StudyRoomParticipantsFetcher';
 
-function StudyRoomScreen(props) {
-  const roomDetail = useMemo(
-    () => ({
-      room_id: 1,
-      title: '[홍익대학교 개발자 모임] 코딩 스터디',
-      max_user_num: 6,
-      current_user_num: 4,
-      start_date: '2023-06-29',
-      week: 10,
-      current_week: 1,
-      entry_fee: 15000,
-      room_code: '51ketfmo8iqpZpUpBLz',
-      account: 'seldom coast train careful ',
-      room_category: '공부',
-      description:
-        '홍익대학교 개발자 모임입니다.\n누구나 참여할 수 있습니다.\n참여비 15000원 입금 후 참여 가능합니다.\n 주 1회 비대면 스터디',
-      total_entry_fee: 60000,
-      rule: 'station yard peace ',
-    }),
-    [],
-  );
+function StudyRoomScreen() {
+  /** 새로고침 flag */
+  const [refreshing, setRefresh] = useRecoilState(studyRoomRefreshState);
 
-  const [roomCodeInfoModalVisible, setRoomCodeInfoModalVisible] = useState(false);
-  const [roomInfoModalVisible, setRoomInfoModalVisible] = useState(true);
+  /** 새로고침 */
+  const onRefresh = useCallback(() => {
+    setRefresh(true);
+    setTimeout(() => {
+      setRefresh(false);
+    }, 1000);
+  }, [setRefresh]);
+
   return (
-    <Container>
-      <ScrollView>
-        <Description />
-        <SpacingVertical>
-          <Schedules startDate={roomDetail.start_date} totalWeek={roomDetail.week} />
-        </SpacingVertical>
+    <StudyRoomParticipantsFetcher>
+      <StudyRoomDetailFetcher>
+        <Container>
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          >
+            {/* 스터디룸 정보와 관련된 컴포넌트 */}
+            <Description />
 
-        <SpacingBottom>
-          <Participants />
-        </SpacingBottom>
+            {/* 진행 일정 */}
+            <SpacingVertical>
+              <Schedules />
+            </SpacingVertical>
 
-        <SpacingBottom>
-          <ThisWeekDetailPlans />
-        </SpacingBottom>
-      </ScrollView>
-      <ButtonConatiner>
-        <ActionButton
-          title={'초대하기'}
-          width={wp(90)}
-          height={hp(8)}
-          color={'#3333FF'}
-          round={true}
-          onPress={() => setRoomCodeInfoModalVisible(true)}
-        />
-      </ButtonConatiner>
+            {/* 참가자 및 초대 요청 보낸 사람 */}
+            <SpacingBottom>
+              <Participants />
+            </SpacingBottom>
 
-      {/* 방 정보 모달 */}
-      <StudyRoomInfoModal visible={roomInfoModalVisible} close={() => setRoomInfoModalVisible(false)} />
-      {/* 초대코드 정보 모달 */}
-      <StudyRoomCodeInfoModal visible={roomCodeInfoModalVisible} close={() => setRoomCodeInfoModalVisible(false)} />
-    </Container>
+            {/* 세부계획 관련 */}
+            <PlanFetcher>
+              <ThisWeekDetailPlans />
+            </PlanFetcher>
+          </ScrollView>
+
+          {/* 초대하기 버튼 방장에게만 보임 */}
+          <InviteButton />
+        </Container>
+
+        {/* 방 정보 모달 */}
+        <StudyRoomInfoModal />
+        {/* 초대코드 정보 모달 */}
+        <StudyRoomCodeInfoModal />
+      </StudyRoomDetailFetcher>
+    </StudyRoomParticipantsFetcher>
   );
 }
 
@@ -81,15 +78,6 @@ const SpacingBottom = styled.View`
 
 const SpacingVertical = styled.View`
   margin-vertical: ${RFValue(2)}px;
-`;
-
-const ButtonConatiner = styled.View`
-  width: 100%;
-  height: ${hp(10)}px;
-  align-self: center;
-  background-color: #ffffff;
-  justify-content: center;
-  align-items: center;
 `;
 
 export default StudyRoomScreen;

@@ -10,6 +10,7 @@ import styled from 'styled-components/native';
 
 StudyRoomListItem.propTypes = {
   room: PropTypes.shape({
+    room_id: PropTypes.number,
     title: PropTypes.string,
     description: PropTypes.string,
     week: PropTypes.number,
@@ -23,10 +24,10 @@ StudyRoomListItem.propTypes = {
 
 function StudyRoomListItem({ room, children }) {
   const navigation = useNavigation();
-  const { title, description, week, room_category, entry_fee, max_user_num, current_user_num } = room;
+  const { room_id, title, description, week, room_category, entry_fee, max_user_num, current_user_num } = room;
   return (
     <Shadow style={{ borderRadius: 15 }} distance={1} offset={[0, 3]}>
-      <Container activeOpacity={0.8} onPress={() => navigation.navigate('study-room')}>
+      <Container activeOpacity={0.8} onPress={() => navigation.navigate('study-room', { roomId: room_id })}>
         <RoomTitle numberOfLines={1}>{title}</RoomTitle>
         {children}
         <Description numberOfLines={2}>{description}</Description>

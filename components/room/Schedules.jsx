@@ -1,32 +1,32 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useRecoilValue } from 'recoil';
+import { studyRoomDetail } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
-Schedules.propTypes = {
-  startDate: PropTypes.string,
-  totalWeek: PropTypes.number,
-};
+function Schedules() {
+  const studyRoom = useRecoilValue(studyRoomDetail);
 
-function Schedules({ startDate, totalWeek }) {
   return (
     <Container>
       <Label>진행 일정</Label>
       <Schedule>
         <ScheduleLabelView>
-          <ScheduleLabel>시작{'\n'}날짜</ScheduleLabel>
+          <ScheduleLabel>시작</ScheduleLabel>
+          <ScheduleLabel>날짜</ScheduleLabel>
         </ScheduleLabelView>
         <ScheduleDescriptionView>
-          <ScheduleDescription>{startDate}</ScheduleDescription>
+          <ScheduleDescription>{studyRoom.start_date}</ScheduleDescription>
         </ScheduleDescriptionView>
       </Schedule>
       <Schedule>
         <ScheduleLabelView>
-          <ScheduleLabel>전체{'\n'}주차</ScheduleLabel>
+          <ScheduleLabel>전체</ScheduleLabel>
+          <ScheduleLabel>주차</ScheduleLabel>
         </ScheduleLabelView>
         <ScheduleDescriptionView>
-          <ScheduleDescription>{totalWeek}주</ScheduleDescription>
+          <ScheduleDescription>{studyRoom.week}주</ScheduleDescription>
         </ScheduleDescriptionView>
       </Schedule>
     </Container>
@@ -63,6 +63,7 @@ const ScheduleLabel = styled.Text`
   color: #ffffff;
   font-size: ${RFValue(10)}px;
   font-weight: 600;
+  padding-vertical: ${RFValue(2)}px;
 `;
 
 const ScheduleDescriptionView = styled.View`
