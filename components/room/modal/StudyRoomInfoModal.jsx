@@ -1,16 +1,20 @@
 import ModalButton from '@components/common/btn/ModalButton';
 import ListModal from '@components/common/modal/ListModal';
-import PropTypes from 'prop-types';
 import React from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Shadow } from 'react-native-shadow-2';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { studyRoomDetail, studyRoomInfoModalState } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
-StudyRoomInfoModal.propTypes = {
-  visible: PropTypes.bool,
-  close: PropTypes.func,
-};
 
-function StudyRoomInfoModal({ visible, close }) {
+function StudyRoomInfoModal() {
+  const { title, room_code, account, start_date, max_user_num, current_user_num, entry_fee } =
+    useRecoilValue(studyRoomDetail);
+
+  const [visible, setVisible] = useRecoilState(studyRoomInfoModalState);
+
+  const close = () => setVisible(false);
+
   return (
     <ListModal visible={visible} onRequestClose={close}>
       <Container>
@@ -19,27 +23,31 @@ function StudyRoomInfoModal({ visible, close }) {
           <InfoContainer>
             <InfoGroup>
               <InfoLabel>방 이름</InfoLabel>
-              <Description>[홍익대학교 개발자 모임] 코딩 스터디</Description>
+              <Description>{title}</Description>
             </InfoGroup>
             <InfoGroup>
               <InfoLabel>방 코드</InfoLabel>
-              <Description>zy9xrx</Description>
-            </InfoGroup>
-            <InfoGroup>
-              <InfoLabel>계좌 번호</InfoLabel>
-              <Description>국민 000000-00-000000</Description>
-            </InfoGroup>
-            <InfoGroup>
-              <InfoLabel>시작 날짜</InfoLabel>
-              <Description>2023년 6월 29일</Description>
-            </InfoGroup>
-            <InfoGroup>
-              <InfoLabel>최대 인원</InfoLabel>
-              <Description>10명</Description>
+              <Description>{room_code}</Description>
             </InfoGroup>
             <InfoGroup>
               <InfoLabel>현재 인원</InfoLabel>
-              <Description>9명</Description>
+              <Description>{current_user_num}명</Description>
+            </InfoGroup>
+            <InfoGroup>
+              <InfoLabel>최대 인원</InfoLabel>
+              <Description>{max_user_num}명</Description>
+            </InfoGroup>
+            <InfoGroup>
+              <InfoLabel>입장료</InfoLabel>
+              <Description>{entry_fee.toLocaleString('ko-KR')}원</Description>
+            </InfoGroup>
+            <InfoGroup>
+              <InfoLabel>시작 날짜</InfoLabel>
+              <Description>{start_date}</Description>
+            </InfoGroup>
+            <InfoGroup>
+              <InfoLabel>계좌 번호</InfoLabel>
+              <Description>{account}</Description>
             </InfoGroup>
           </InfoContainer>
         </Shadow>

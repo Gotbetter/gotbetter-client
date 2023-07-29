@@ -19,7 +19,7 @@ const studyRoomListRefreshingState = atom({
   default: false,
 });
 
-/** 방 만들기 request */
+/** 스터디룸 만들기 request */
 const studyRoomCreateRequest = atom({
   key: 'studyRoomCreateRequest',
   default: {
@@ -36,4 +36,42 @@ const studyRoomCreateRequest = atom({
   },
 });
 
-export { tabState, studyRoomListState, studyRoomListRefreshingState, studyRoomCreateRequest };
+/** 스터디룸 정보 */
+const studyRoomDetail = atom({
+  key: 'studyRoomDetail',
+  default: null,
+});
+
+/** 스터디룸 정보 모달 */
+const studyRoomInfoModalState = atom({
+  key: 'studyRoomInfoModal',
+  default: false,
+});
+/** 스터디룸 정보 모달 */
+const studyRoomInviteCodeModalState = atom({
+  key: 'studyRoomInviteCodeModal',
+  default: false,
+});
+/** 스터디룸 초대 요청 모달 */
+const studyRoomInviteRequestModalState = atom({
+  key: 'studyRoomInviteRequestModal',
+  default: false,
+});
+
+/** 스터디룸 refresh */
+const studyRoomRefreshState = atom({
+  key: 'studyRoomRefreshState',
+  default: false,
+});
+
+export {
+  tabState,
+  studyRoomListState,
+  studyRoomListRefreshingState,
+  studyRoomCreateRequest,
+  studyRoomDetail,
+  studyRoomInfoModalState,
+  studyRoomInviteCodeModalState,
+  studyRoomInviteRequestModalState,
+  studyRoomRefreshState,
+};

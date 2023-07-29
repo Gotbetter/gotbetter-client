@@ -1,42 +1,92 @@
+import Profile from '@components/common/Profile';
 import ModalButton from '@components/common/btn/ModalButton';
 import ListModal from '@components/common/modal/ListModal';
-import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
-import { ScrollView, View } from 'react-native';
+import { useRoute } from '@react-navigation/native';
+import { acceptJoinRequest, rejectJoinRequest } from 'api/join';
+import { createPlan } from 'api/plan';
+import format from 'pretty-format';
+import React from 'react';
+import { ScrollView } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import Toast from 'react-native-root-toast';
 import { Shadow } from 'react-native-shadow-2';
+import { useMutation, useQueryClient } from 'react-query';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { joinRequestList } from 'recoil/participant/atoms';
+import { studyRoomInviteRequestModalState } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
-StudyRoomInviteModal.propTypes = {
-  visible: PropTypes.bool,
-  close: PropTypes.func,
-};
+function StudyRoomInviteModal() {
+  const { roomId } = useRoute().params;
+  const queryClient = useQueryClient();
+  const joinRequests = useRecoilValue(joinRequestList);
 
-function StudyRoomInviteModal({ visible, close }) {
-  const waitParticipants = useMemo(
-    () => [
-      {
-        participant_id: 1,
-        user_id: 1,
-        profile: '',
-        username: '갓배러1',
-      },
-      {
-        participant_id: 2,
-        user_id: 2,
-        profile: '',
-        username: '갓배러2',
-      },
-      {
-        participant_id: 3,
-        user_id: 3,
-        profile: '',
-        username: '갓배러3',
-      },
-    ],
-    [],
-  );
+  const [visible, setVisible] = useRecoilState(studyRoomInviteRequestModalState);
+  const close = () => setVisible(false);
+
+  const { mutate: accept } = useMutation((userId) => acceptJoinRequest(userId, roomId), {
+    onError: (err) => {
+      console.log(format(err.response));
+      const { status } = err.response;
+
+      if (status === 403) {
+        Toast.show('권한이 없습니다.', { duration: Toast.durations.SHORT });
+      }
+
+      if (status === 404) {
+        Toast.show('존재하지 않은 유저입니다.', { duration: Toast.durations.SHORT });
+      }
+      if (status === 409) {
+        Toast.show('스터디룸 정원이 가득 찼습니다.', { duration: Toast.durations.SHORT });
+      }
+    },
+    onSuccess: (res) => {
+      console.log('success accept join request');
+      queryClient.invalidateQueries({
+        queryKey: [`studyRoomParticipants`, roomId, true],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [`studyRoomJoinRequests`, roomId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [`studyRoomRank`, roomId],
+      });
+
+      console.log(`request plan create request ${res.data.participant_id}`);
+      createPlanRequest(res.data.participant_id);
+    },
+  });
+
+  const { mutate: createPlanRequest } = useMutation((participantId) => createPlan(participantId), {
+    onError: (err) => {
+      console.log(err.response.status);
+      console.log('failed request create plan');
+    },
+    onSuccess: (res) => {
+      console.log('success request create plan');
+    },
+  });
+
+  const { mutate: reject } = useMutation((userId) => rejectJoinRequest(userId, roomId), {
+    onError: (err) => {
+      console.log(format(err.response));
+      const { status } = err.response;
+
+      if (status === 403) {
+        Toast.show('권한이 없습니다.', { duration: Toast.durations.SHORT });
+      }
+
+      if (status === 404) {
+        Toast.show('존재하지 않은 유저입니다.', { duration: Toast.durations.SHORT });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [`studyRoomJoinRequests/${roomId}`],
+      });
+    },
+  });
 
   return (
     <ListModal visible={visible} onRequestClose={close}>
@@ -44,17 +94,26 @@ function StudyRoomInviteModal({ visible, close }) {
         <Label>초대하기</Label>
         <ContentContainer>
           <ScrollView>
-            {waitParticipants.map((participant) => (
-              <MarginBottom key={participant.participant_id}>
+            {joinRequests.map((participant) => (
+              <MarginBottom key={participant.user_id}>
                 <Shadow distance={1} offset={[0, 2]} style={{ borderRadius: 10 }}>
                   <WaitParticipant>
-                    <View style={{ width: 50, height: 50, backgroundColor: '#C4C4C4', borderRadius: 50 }}>
-                      {participant.profile}
-                    </View>
+                    <Profile style={{ width: 50, height: 50, borderRadius: 50 }} image={participant.profile} />
                     <Name>{participant.username}</Name>
                     <ButtonGroup>
-                      <ModalButton title={'수락'} width={wp(18)} height={RFValue(24)} highlight />
-                      <ModalButton title={'거절'} width={wp(18)} height={RFValue(24)} />
+                      <ModalButton
+                        title={'수락'}
+                        width={wp(18)}
+                        height={RFValue(24)}
+                        highlight={true}
+                        onPress={() => accept(participant.user_id)}
+                      />
+                      <ModalButton
+                        title={'거절'}
+                        width={wp(18)}
+                        height={RFValue(24)}
+                        onPress={() => reject(participant.user_id)}
+                      />
                     </ButtonGroup>
                   </WaitParticipant>
                 </Shadow>
@@ -71,7 +130,7 @@ function StudyRoomInviteModal({ visible, close }) {
 }
 
 const Container = styled.View`
-  width: 100%;
+  min-width: ${wp(76)}px;
   justify-content: space-between;
   align-items: center;
 `;

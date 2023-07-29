@@ -11,7 +11,6 @@ export const client = axios.create({
 });
 
 client.interceptors.request.use(async (config) => {
-  console.log('interceptor request');
   if (!config.headers) {
     return config;
   }
@@ -22,14 +21,11 @@ client.interceptors.request.use(async (config) => {
 
   let token = null;
   if (config.url === '/users/reissue') {
-    console.log('interceptor reissue');
     token = await AsyncStorage.getItem('refresh_token');
   } else {
-    console.log('interceptor access_token');
     token = await AsyncStorage.getItem('access_token');
   }
 
-  console.log(`interceptor: ${token}`);
   if (token !== null) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -68,7 +64,7 @@ client.interceptors.response.use(
   },
 );
 const refreshToken = async (refreshToken) => {
-  console.log('refresh' + refreshToken);
+  console.log('refresh access_token');
 
   const {
     data: { access_token, refresh_token },

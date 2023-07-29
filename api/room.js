@@ -1,7 +1,23 @@
 import { client } from './client';
 
-export const fetchStudyRoomList = () => client.get('/rooms');
+const fetchStudyRoomList = () => client.get('/rooms');
 
-export const fetchStudyRoomRuleList = () => client.get('/common/rules');
+const fetchStudyRoomRuleList = () => client.get('/common/rules');
 
-export const createStudyRoomRequest = (request) => client.post('/rooms', request);
+const fetchStudyRoomDetail = (roomId) => client.get(`/rooms/${roomId}`);
+
+const fetchStudyRoomParticipants = (roomId, accepted) =>
+  client.get(`/participants/${roomId}`, { params: { accepted } });
+
+const fetchStudyRoomRank = (room_id) => client.get(`/rooms/${room_id}/rank`);
+
+const createStudyRoomRequest = (request) => client.post('/rooms', request);
+
+export {
+  fetchStudyRoomList,
+  fetchStudyRoomRuleList,
+  fetchStudyRoomDetail,
+  fetchStudyRoomParticipants,
+  fetchStudyRoomRank,
+  createStudyRoomRequest,
+};

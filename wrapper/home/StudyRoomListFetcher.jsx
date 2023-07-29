@@ -22,7 +22,7 @@ function StudyRoomListFetcher({ children }) {
     retry: 1,
     staleTime: 300000,
     onSuccess: (data) => {
-      console.log('fetch study room list');
+      console.log('[StudyRoomListFetcher]: fetching study room list');
       setStudyRoomListState([...data]);
     },
     select: (res) => res.data,
