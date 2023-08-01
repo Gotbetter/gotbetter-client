@@ -1,15 +1,28 @@
 import React, { useState } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Feather from 'react-native-vector-icons/Feather';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { planFetchParamsState } from 'recoil/plan/atoms';
+import { studyRoomDetail } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
-function WeekList(props) {
+function WeekList() {
+  /**
+   * @var current_week: 현재 스터디룸의 주차
+   * @var week: 스터디룸의 전체 주차
+   */
+  const { current_week: currentWeek, week: totalWeek } = useRecoilValue(studyRoomDetail);
+
+  /** 현재 선택한 주차 정보 */
+  const [{ week: selectedWeek }, setSelectedWeek] = useRecoilState(planFetchParamsState);
+  const [offset, setOffset] = useState(Math.ceil(selectedWeek / 5) - 1);
+
   const [weekList] = useState(() => {
     const week = [];
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= totalWeek; i++) {
       week.push(i);
     }
-
     function splitIntoChunk(arr, chunk) {
       // 빈 배열 생성
       const result = [];
@@ -23,24 +36,42 @@ function WeekList(props) {
       return result;
     }
 
-    return splitIntoChunk(week, 4);
+    return splitIntoChunk(week, 5);
   });
 
   return (
     <Container>
-      <Feather name="chevron-left" color={'#D9D9D9'} size={30} />
-      {weekList[0].map((week) => (
-        <Week key={week}>
-          <WeekLabel>{week}주차</WeekLabel>
-        </Week>
-      ))}
-      <Feather name="chevron-right" color={'#D9D9D9'} size={30} />
+      <Feather
+        name="chevron-left"
+        color={'#D9D9D9'}
+        size={30}
+        onPress={() => setOffset((prev) => (prev - 1 >= 0 ? prev - 1 : prev))}
+      />
+      <WeekListContainer>
+        {weekList[offset].map((week) => (
+          <Week
+            key={week}
+            onPress={() => setSelectedWeek((prev) => ({ ...prev, week }))}
+            border={week === selectedWeek ? 0 : '1px solid #C4C4C4'}
+            backgroundColor={selectedWeek === week ? '#3333FF' : week < currentWeek ? '#D9D9D9' : '#ffffff'}
+            disabled={week > currentWeek}
+          >
+            <WeekLabel color={selectedWeek === week ? '#ffffff' : '#C4C4C4'}>{week}주차</WeekLabel>
+          </Week>
+        ))}
+      </WeekListContainer>
+      <Feather
+        name="chevron-right"
+        color={'#D9D9D9'}
+        size={30}
+        onPress={() => setOffset((prev) => (prev + 1 <= weekList.length - 1 ? prev + 1 : prev))}
+      />
     </Container>
   );
 }
 
 const Container = styled.View`
-  height: 12%;
+  height: ${hp(10)}px;
 
   flex-direction: row;
   justify-content: space-around;
@@ -51,17 +82,28 @@ const Container = styled.View`
   border-bottom-right-radius: 30px;
 `;
 
+const WeekListContainer = styled.View`
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 80%;
+`;
+
 const Week = styled.TouchableOpacity`
-  width: ${RFValue(42)}px;
-  height: ${RFValue(32)}px;
+  width: ${RFValue(36)}px;
+  height: ${RFValue(28)}px;
 
   border-radius: 10px;
-  background-color: #d9d9d9;
+  border: ${({ border }) => border};
+  background-color: ${({ backgroundColor }) => backgroundColor};
 
   justify-content: center;
+  margin-right: 9%;
   align-items: center;
 `;
 
-const WeekLabel = styled.Text``;
+const WeekLabel = styled.Text`
+  font-size: ${RFValue(8)}px;
+  color: ${({ color }) => color};
+`;
 
 export default WeekList;
