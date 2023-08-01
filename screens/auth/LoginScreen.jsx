@@ -2,7 +2,6 @@ import LoginForm from '@components/auth/LoginForm';
 import SubMenu from '@components/auth/SubMenu';
 import AndroidSafeAreaView from '@components/common/AndroidSafeAreaView';
 import ActionButton from '@components/common/btn/ActionButton';
-import GoogleLoginButton from '@components/common/btn/GoogleLoginButton';
 import { ErrorMessage } from '@components/common/message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -83,9 +82,9 @@ function LoginScreen() {
           <MarginTopMiddle>
             <SubMenu />
           </MarginTopMiddle>
-          <MarginTopHigh>
+          {/* <MarginTopHigh>
             <GoogleLoginButton />
-          </MarginTopHigh>
+          </MarginTopHigh> */}
         </Container>
       </AndroidSafeAreaView>
     </KeyboardAwareScrollView>
