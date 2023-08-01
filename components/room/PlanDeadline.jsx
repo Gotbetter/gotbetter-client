@@ -1,4 +1,3 @@
-import format from 'pretty-format';
 import React, { useMemo } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useRecoilValue } from 'recoil';
@@ -7,7 +6,7 @@ import styled from 'styled-components/native';
 
 function PlanDeadline() {
   const studyRoom = useRecoilValue(studyRoomDetail);
-  console.log(format(studyRoom));
+
   /** 스터디룸 시작 판단 */
   const isStudyRoomStarted = useMemo(() => {
     const today = new Date();
@@ -20,7 +19,6 @@ function PlanDeadline() {
     const today = new Date();
     const studyRoomEndDate = new Date(studyRoom.start_date);
     studyRoomEndDate.setDate(studyRoomEndDate.getDate() + 7 * studyRoom.week);
-    console.log(`오늘 : ${today} 마감: ${studyRoomEndDate}`);
     return today.getTime() - today.getTimezoneOffset() * 60000 >= studyRoomEndDate.getTime();
   }, [studyRoom]);
 
@@ -30,13 +28,13 @@ function PlanDeadline() {
    * weekLeftDay: 이번 주 계획까지 남은 기간
    */
   const [isClosedPlanning, planningLeftDay, weekLeftDay] = useMemo(() => {
-    const today = new Date('2023-08-08');
+    const today = new Date();
     const studyRoomStartDate = new Date(studyRoom.start_date);
 
     // 이번 계획 시작일
     const thisWeekPlanStartDate = new Date(studyRoomStartDate);
-    thisWeekPlanStartDate.setDate(studyRoomStartDate.getDate() + (2 - 1) * 7);
-    console.log(thisWeekPlanStartDate);
+    thisWeekPlanStartDate.setDate(studyRoomStartDate.getDate() + (studyRoom.current_week - 1) * 7);
+
     // 이번 계획 수정 마감일
     const thisWeekPlanCloseDate = new Date(thisWeekPlanStartDate);
     thisWeekPlanCloseDate.setDate(thisWeekPlanCloseDate.getDate() + 3);
@@ -45,7 +43,7 @@ function PlanDeadline() {
       // 이번 계획 시작일 + 7
       const endDate = new Date(thisWeekPlanStartDate);
       endDate.setDate(thisWeekPlanStartDate.getDate() + 7);
-      console.log(endDate);
+
       const leftWeekDate = endDate.getTime() - (today.getTime() - today.getTimezoneOffset() * 60000);
 
       return [true, null, Math.ceil(leftWeekDate / 86400000) - 1];
