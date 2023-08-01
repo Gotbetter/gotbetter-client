@@ -30,32 +30,32 @@ function PlanDeadline() {
    * weekLeftDay: 이번 주 계획까지 남은 기간
    */
   const [isClosedPlanning, planningLeftDay, weekLeftDay] = useMemo(() => {
-    const today = new Date();
+    const today = new Date('2023-08-08');
     const studyRoomStartDate = new Date(studyRoom.start_date);
 
     // 이번 계획 시작일
     const thisWeekPlanStartDate = new Date(studyRoomStartDate);
-    thisWeekPlanStartDate.setDate(studyRoomStartDate.getDate() + (studyRoom.current_week - 1) * 7);
-
+    thisWeekPlanStartDate.setDate(studyRoomStartDate.getDate() + (2 - 1) * 7);
+    console.log(thisWeekPlanStartDate);
     // 이번 계획 수정 마감일
     const thisWeekPlanCloseDate = new Date(thisWeekPlanStartDate);
     thisWeekPlanCloseDate.setDate(thisWeekPlanCloseDate.getDate() + 3);
-    console.log(today.getTime() - today.getTimezoneOffset() * 60000 >= thisWeekPlanCloseDate.getTime());
 
     if (today.getTime() - today.getTimezoneOffset() * 60000 >= thisWeekPlanCloseDate.getTime()) {
       // 이번 계획 시작일 + 7
       const endDate = new Date(thisWeekPlanStartDate);
       endDate.setDate(thisWeekPlanStartDate.getDate() + 7);
       console.log(endDate);
-      const leftWeekDate = endDate.getTime() - today.getTime() - today.getTimezoneOffset() * 60000;
+      const leftWeekDate = endDate.getTime() - (today.getTime() - today.getTimezoneOffset() * 60000);
 
-      return [true, null, Math.floor(leftWeekDate / 86400000) - 1];
+      return [true, null, Math.ceil(leftWeekDate / 86400000) - 1];
     } else {
       // const leftPlanningDate
       return [
         false,
-        Math.floor((thisWeekPlanCloseDate.getTime() - today.getTime() - today.getTimezoneOffset() * 60000) / 86400000) -
-          1,
+        Math.ceil(
+          (thisWeekPlanCloseDate.getTime() - (today.getTime() - today.getTimezoneOffset() * 60000)) / 86400000,
+        ) - 1,
         null,
       ];
     }
