@@ -1,59 +1,141 @@
+import InfoView from '@components/common/InfoView';
 import { useNavigation } from '@react-navigation/native';
-import React, { useMemo } from 'react';
+import { completeDetailPlanRequest, completeUndoDetailPlanRequest, updateDetailPlan } from 'api/plan';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import Toast from 'react-native-root-toast';
 import { Shadow } from 'react-native-shadow-2';
 import Feather from 'react-native-vector-icons/Feather';
+import { useMutation, useQueryClient } from 'react-query';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { planFetchParamsState, planModifyModeState } from 'recoil/plan/atoms';
+import { studyRoomDetail } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
-function PlanList(props) {
+import DropDown from './DropDown';
+
+PlanList.propTypes = {
+  plan: PropTypes.shape({ plan_id: PropTypes.number, three_days_passed: PropTypes.bool }),
+  detailPlans: PropTypes.arrayOf(PropTypes.object),
+  isMyPlan: PropTypes.bool,
+};
+
+function PlanList({ plan, detailPlans, isMyPlan }) {
+  const studyRoom = useRecoilValue(studyRoomDetail);
+  const { week } = useRecoilValue(planFetchParamsState);
+
+  const queryClient = useQueryClient();
   const navigation = useNavigation();
-  const detailPlans = useMemo(
-    () => [
-      {
-        detail_plan_id: 1,
-        content: '[매일 인증] 토익 스터디',
-        complete: true,
-        approve_comment: '',
-        rejected: false,
-        plan_id: 1,
-        detail_plan_dislike_count: 1,
-        detail_plan_dislike_checked: false,
+
+  const [isModify, setIsModify] = useRecoilState(planModifyModeState);
+
+  const [modifyRequest, setModifyRequest] = useState('');
+  const [modifyPlanId, setModifyPlanId] = useState();
+
+  const onPressModify = (detailPlanId) => {
+    setIsModify(true);
+    setModifyPlanId(detailPlanId);
+  };
+
+  const { mutate: update } = useMutation(() => updateDetailPlan(plan.plan_id, modifyPlanId, modifyRequest), {
+    onSuccess: (res) => {
+      console.log(`success update detailPlan complete detailPlanId=${modifyPlanId}`);
+      queryClient.invalidateQueries(['detailPlan', plan.plan_id]);
+      queryClient.invalidateQueries(['myDetailPlan', plan.plan_id]);
+    },
+  });
+
+  const { mutate: completeDetailPlan } = useMutation(
+    (detailPlanId) => completeDetailPlanRequest(plan.plan_id, detailPlanId),
+    {
+      onError: (err, variables) => {
+        console.log(err.response.status);
+        console.log(`err request detailPlan complete detailPlanId=${variables}`);
       },
-      {
-        detail_plan_id: 2,
-        content: '[매일 인증] 코딩 스터디',
-        complete: true,
-        approve_comment: '',
-        rejected: false,
-        plan_id: 2,
-        detail_plan_dislike_count: 1,
-        detail_plan_dislike_checked: false,
+      onSuccess: (res, variables) => {
+        console.log(`success request detailPlan complete detailPlanId=${variables}`);
+        queryClient.invalidateQueries(['detailPlan', plan.plan_id]);
+        queryClient.invalidateQueries(['myDetailPlan', plan.plan_id]);
       },
-      {
-        detail_plan_id: 3,
-        content: '러닝하기',
-        complete: true,
-        approve_comment: '',
-        rejected: false,
-        plan_id: 3,
-        detail_plan_dislike_count: 1,
-        detail_plan_dislike_checked: false,
-      },
-    ],
-    [],
+    },
   );
+
+  const { mutate: completeUndoDetailPlan } = useMutation(
+    (detailPlanId) => completeUndoDetailPlanRequest(plan.plan_id, detailPlanId),
+    {
+      onError: (err, variables) => {
+        console.log(err.response.status);
+        console.log(`err request detailPlan complete detailPlanId=${variables}`);
+      },
+      onSuccess: (res, variables) => {
+        console.log(`success request detailPlan complete undo detailPlanId=${variables}`);
+        queryClient.invalidateQueries(['detailPlan', plan.plan_id]);
+        queryClient.invalidateQueries(['myDetailPlan', plan.plan_id]);
+      },
+    },
+  );
+
+  const onPressSubmit = () => {
+    if (modifyRequest === '') {
+      Toast.show('계획을 입력해주세요.', { duration: Toast.durations.SHORT });
+      return;
+    }
+    update();
+    setModifyRequest('');
+    setModifyPlanId(null);
+  };
+
+  if (detailPlans.length === 0) {
+    if (plan.three_days_passed) return <InfoView message={'계획 세우기가 마감되었습니다...'} />;
+    if (!isMyPlan) return <InfoView message={'아직 계획을 세우지 않았습니다...'} />;
+  }
 
   return (
     <>
-      {detailPlans.map((detailPlan) => (
+      {detailPlans.map((detailPlan, index) => (
         <MarginBottom key={detailPlan.detail_plan_id}>
           <Shadow distance={2} offset={[0, 2]} style={{ borderRadius: 10 }}>
-            <DetailPlan onPress={() => navigation.navigate('detail')}>
-              <CheckBox>
-                <Feather name={'check'} color={'#000000'} size={RFValue(20)} />
+            <DetailPlan
+              onPress={() =>
+                navigation.navigate('detail', {
+                  detailPlan,
+                  planId: plan.plan_id,
+                  isMyPlan,
+                  isEnd: week < studyRoom.current_week,
+                })
+              }
+            >
+              <CheckBox
+                disabled={!isMyPlan || week < studyRoom.current_week}
+                onPress={() =>
+                  detailPlan.complete
+                    ? completeUndoDetailPlan(detailPlan.detail_plan_id)
+                    : completeDetailPlan(detailPlan.detail_plan_id)
+                }
+              >
+                {detailPlan.complete && <Feather name={'check'} color={'#000000'} size={RFValue(20)} />}
               </CheckBox>
-              <Description numberOfLines={1}>{detailPlan.content}</Description>
+              {isModify && modifyPlanId === detailPlan.detail_plan_id ? (
+                <ModifyInput
+                  value={modifyRequest}
+                  numberOfLines={1}
+                  onSubmitEditing={onPressSubmit}
+                  onChangeText={setModifyRequest}
+                  placeholder="수정하기"
+                />
+              ) : (
+                <Description numberOfLines={1}>{detailPlan.content}</Description>
+              )}
+              {week >= studyRoom.current_week && !plan.three_days_passed ? (
+                <DropDown
+                  plan={plan}
+                  detailPlanId={detailPlan.detail_plan_id}
+                  onPressModify={onPressModify}
+                  isMyPlan={isMyPlan}
+                />
+              ) : null}
             </DetailPlan>
           </Shadow>
         </MarginBottom>
@@ -78,12 +160,22 @@ const DetailPlan = styled.TouchableOpacity`
 const Description = styled.Text`
   font-size: ${RFValue(14)}px;
   margin-left: ${RFValue(12)}px;
+  width: ${wp(30)}px;
   flex-grow: 1;
 `;
 
-const CheckBox = styled.View`
+const CheckBox = styled.TouchableOpacity`
   border-radius: 5px;
+  width: ${RFValue(20)}px;
+  height: ${RFValue(20)}px;
   background-color: #e7e7e7;
+`;
+
+const ModifyInput = styled.TextInput`
+  font-size: ${RFValue(14)}px;
+  margin-left: ${RFValue(12)}px;
+  width: ${wp(30)}px;
+  flex-grow: 1;
 `;
 
 const MarginBottom = styled.View`

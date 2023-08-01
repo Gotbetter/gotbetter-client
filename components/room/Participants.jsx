@@ -6,7 +6,8 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { participantList } from 'recoil/participant/atoms';
-import { studyRoomInviteRequestModalState } from 'recoil/room/atoms';
+import { planFetchParamsState } from 'recoil/plan/atoms';
+import { studyRoomDetail, studyRoomInviteRequestModalState } from 'recoil/room/atoms';
 import { getMyAuthority } from 'recoil/room/selectors';
 import styled from 'styled-components/native';
 
@@ -16,9 +17,16 @@ function Participants() {
   const { roomId } = useRoute().params;
   const navigation = useNavigation();
 
+  const studyRoom = useRecoilValue(studyRoomDetail);
   const participants = useRecoilValue(participantList);
   const isLeader = useRecoilValue(getMyAuthority);
   const setVisible = useSetRecoilState(studyRoomInviteRequestModalState);
+  const setPlanFetchParams = useSetRecoilState(planFetchParamsState);
+
+  const onPressProfile = (participantId, username) => {
+    navigation.navigate('plan', { username });
+    setPlanFetchParams((prev) => ({ ...prev, participantId, week: studyRoom.current_week }));
+  };
 
   return (
     <Container>
@@ -32,7 +40,10 @@ function Participants() {
       {/* 참가자 프로필 및 이름 출력 */}
       <ParticipantsListContainer>
         {participants.slice(0, 6).map((participant) => (
-          <Participant key={participant.participant_id} onPress={() => navigation.navigate('plan')}>
+          <Participant
+            key={participant.participant_id}
+            onPress={() => onPressProfile(participant.participant_id, participant.username)}
+          >
             <Profile
               style={{ width: 50, height: 50, borderRadius: 50 }}
               image={participant.profile}

@@ -1,15 +1,100 @@
+import { fetchDetailPlan, fetchPlan } from 'api/plan';
+import format from 'pretty-format';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Text, View } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Feather from 'react-native-vector-icons/Feather';
+import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
-import { detailPlanState } from 'recoil/plan/atoms';
+import { myParticipantIdSelector } from 'recoil/plan/selector';
+import { studyRoomDetail, studyRoomRefreshState } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
 import PlanDeadline from './PlanDeadline';
 
 function ThisWeekDetailPlans() {
-  const detailPlans = useRecoilValue(detailPlanState);
+  const { current_week: week } = useRecoilValue(studyRoomDetail);
+  const participantId = useRecoilValue(myParticipantIdSelector);
+  const refresh = useRecoilValue(studyRoomRefreshState);
+
+  /** 새로고침한 경우 plan, detailPlan refetch */
+  useEffect(() => {
+    if (refresh) {
+      refetchPlan();
+      refetchDetailPlan();
+    }
+  }, [refresh, refetchPlan, refetchDetailPlan]);
+
+  /**
+   * plan을 fetch 하는 query
+   * @param participantId: 계획을 세운 참가자의 참여 아이디
+   * @param week: 불러오는 계획의 주차
+   */
+  const {
+    isLoading: planLoading,
+    isError: planError,
+    data: plan,
+    refetch: refetchPlan,
+  } = useQuery(['myPlan', participantId, week], () => fetchPlan(participantId, week), {
+    staleTime: 500000,
+    onError: (err) => {
+      console.log(format(err.response.status));
+      console.log(format(`[ThisWeekDetailPlans] error fetching plan participant_id=${participantId} week=${week}`));
+    },
+    onSuccess: (data) => {
+      console.log(format(`[ThisWeekDetailPlans] fetching plan participant_id=${participantId} week=${week}`));
+    },
+    select: (res) => res.data,
+  });
+
+  const planId = plan?.plan_id;
+
+  /**
+   * detailPlan fetch query는 path variable로 planId를 포함해야 하므로 plan fetch query에 의존적이다.
+   * 따라서 plan이 fetch된 이후에 호출 되어야함
+   */
+  const {
+    isError: detailPlanError,
+    isLoading: detailPlanLoading,
+    data: detailPlans,
+    refetch: refetchDetailPlan,
+  } = useQuery(['myDetailPlan', planId], () => fetchDetailPlan(planId), {
+    staleTime: 500000,
+    onError: (err) => {
+      console.log(format(err.response.status));
+      console.log(format('[ThisWeekDetailPlans] error fetching detailPlan'));
+    },
+    onSuccess: (data) => {
+      console.log(format(`[ThisWeekDetailPlans] fetching detailPlan planId=${planId}`));
+    },
+    select: (res) => res.data,
+    enabled: !!planId,
+  });
+
+  if (planError) {
+    return (
+      <View>
+        <Text>계획 fetch 에러</Text>
+      </View>
+    );
+  }
+
+  if (detailPlanError) {
+    return (
+      <View>
+        <Text>세부 계획 fetch 에러</Text>
+      </View>
+    );
+  }
+
+  if (planLoading || detailPlanLoading) {
+    return (
+      <View>
+        <Text>로딩중</Text>
+      </View>
+    );
+  }
 
   return (
     <Container>

@@ -9,22 +9,20 @@ import styled from 'styled-components/native';
 OppositeModal.propTypes = {
   visible: PropTypes.bool,
   close: PropTypes.func,
+  onPress: PropTypes.func,
 };
 
-function OppositeModal({ visible, close }) {
-  visible = false;
-
+function OppositeModal({ visible, close, onPress }) {
   return (
     <SmallInfoModal visible={visible} onRequestClose={close}>
       <Container>
         <OppositeIcon width={RFValue(50)} height={RFValue(50)} color={'#3333FF'} />
         <Label>반대를 누르시겠습니까?</Label>
         <DescriptionContainer>
-          <Description>반대를 누른 뒤에 취소할 수 없습니다.</Description>
           <Description>신중하게 선택해주세요!</Description>
         </DescriptionContainer>
         <ButtonContainer>
-          <ModalButton title={'반대'} highlight />
+          <ModalButton title={'반대'} onPress={onPress} highlight />
           <ModalButton title={'닫기'} onPress={close} />
         </ButtonContainer>
       </Container>
