@@ -11,7 +11,6 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { useRecoilState } from 'recoil';
 import { studyRoomRefreshState } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
-import PlanFetcher from 'wrapper/plan/PlanFetcher';
 import StudyRoomDetailFetcher from 'wrapper/study-room/StudyRoomDetailFetcher';
 import StudyRoomParticipantsFetcher from 'wrapper/study-room/StudyRoomParticipantsFetcher';
 
@@ -49,9 +48,8 @@ function StudyRoomScreen() {
             </SpacingBottom>
 
             {/* 세부계획 관련 */}
-            <PlanFetcher>
-              <ThisWeekDetailPlans />
-            </PlanFetcher>
+
+            <ThisWeekDetailPlans />
           </ScrollView>
 
           {/* 초대하기 버튼 방장에게만 보임 */}
