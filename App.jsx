@@ -5,8 +5,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '@screens/HomeScreen';
 import JoinScreen from '@screens/JoinScreen';
 import SignUpScreen from '@screens/auth/SignUpScreen';
-import PlanCertificationFormScreen from '@screens/plan/PlanCertificationFormScreen';
-import PlanDetailScreen from '@screens/plan/PlanDetailScreen';
+import PlanRecordFormScreen from '@screens/plan/PlanRecordFormScreen';
+import PlanRecordScreen from '@screens/plan/PlanRecordScreen';
 import PlanScreen from '@screens/plan/PlanScreen';
 import StudyRoomRankScreen from '@screens/room/StudyRoomRankScreen';
 import StudyRoomScreen from '@screens/room/StudyRoomScreen';
@@ -121,7 +121,7 @@ export default function App() {
                 />
                 <Stack.Screen
                   name="confirm"
-                  component={PlanCertificationFormScreen}
+                  component={PlanRecordFormScreen}
                   options={{
                     title: '계획 인증하기',
                     headerLeft: () => <BackButton />,
@@ -132,7 +132,7 @@ export default function App() {
                 />
                 <Stack.Screen
                   name="detail"
-                  component={PlanDetailScreen}
+                  component={PlanRecordScreen}
                   options={{
                     title: '[매일 인증] 토익 스터디',
                     headerLeft: () => <BackButton />,
