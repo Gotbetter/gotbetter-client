@@ -1,14 +1,19 @@
 import OppositeIcon from '@components/common/icon/OppositeIcon';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import styled from 'styled-components/native';
 
-function OppositeButton() {
-  const opposite = false;
+OppositeButton.propTypes = {
+  opposite: PropTypes.bool,
+  onPress: PropTypes.func,
+};
+
+function OppositeButton({ opposite, onPress }) {
   const title = opposite ? '반대 누르기 완료' : '반대 누르기';
   return (
-    <Container opposite={opposite}>
+    <Container opposite={opposite} onPress={onPress}>
       <OppositeIcon color={'#ffffff'} />
       <Label>{title}</Label>
     </Container>
