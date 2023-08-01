@@ -1,6 +1,7 @@
 import { selector } from 'recoil';
 import { user } from 'recoil/auth/atoms';
 import { participantList } from 'recoil/participant/atoms';
+import { planState } from './atoms';
 
 const myParticipantIdSelector = selector({
   key: 'myParticipantIdSelector',
@@ -18,4 +19,14 @@ const myParticipantIdSelector = selector({
   },
 });
 
-export { myParticipantIdSelector };
+const checkMyPlanSelector = selector({
+  key: 'checkMyPlanSelector',
+  get: ({ get }) => {
+    const plan = get(planState);
+    const myUserInfo = get(user);
+
+    if (plan && myUserInfo) return plan.user_id === myUserInfo.user_id;
+  },
+});
+
+export { myParticipantIdSelector, checkMyPlanSelector };

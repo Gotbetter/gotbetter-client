@@ -13,9 +13,41 @@ const planState = atom({
   default: null,
 });
 
+const planAddModeState = atom({
+  key: 'PlanAddModeState',
+  default: false,
+});
+
+const planModifyModeState = atom({
+  key: 'planModifyModeState',
+  default: false,
+});
+
+const planOppositeModalState = atom({
+  key: 'planOppositeModalState',
+  default: false,
+});
+
 const detailPlanState = atom({
   key: 'detailPlanState',
   default: [],
 });
 
-export { detailPlanState, planFetchParamsState, planState };
+const detailPlanRecordRequest = atom({
+  key: 'detailPlanRecordRequest',
+  default: {
+    recordTitle: '',
+    recordBody: '',
+    recordPhoto: null,
+  },
+});
+
+export {
+  detailPlanState,
+  planFetchParamsState,
+  planState,
+  detailPlanRecordRequest,
+  planOppositeModalState,
+  planAddModeState,
+  planModifyModeState,
+};
