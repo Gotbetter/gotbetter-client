@@ -2,7 +2,7 @@
   "expo": {
     "name": "gotbetter-client",
     "slug": "gotbetter-client",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
@@ -13,16 +13,24 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.rpdyddns.gotbetter-client"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "versionCode": 3,
+      "package": "com.jjinyeok.gotbetterclient"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "769b0c09-83fb-43c6-a514-fe7fc34e10bc"
+      }
     }
   }
 }
