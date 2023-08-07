@@ -21,6 +21,7 @@
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
       },
+
       "versionCode": 3,
       "package": "com.jjinyeok.gotbetterclient"
     },
