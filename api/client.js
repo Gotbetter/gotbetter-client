@@ -2,11 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import format from 'pretty-format';
 
-import getEnvVars from '../environment';
-const { apiUrl } = getEnvVars();
-
 export const client = axios.create({
-  baseURL: apiUrl,
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
   timeout: 2000,
 });
 
