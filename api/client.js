@@ -1,9 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import getEnvVars from 'environment';
 import format from 'pretty-format';
 
+const { apiUrl } = getEnvVars();
+
 export const client = axios.create({
-  baseURL: '',
+  baseURL: apiUrl,
   timeout: 2000,
 });
 
