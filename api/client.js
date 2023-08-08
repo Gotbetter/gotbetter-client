@@ -3,7 +3,7 @@ import axios from 'axios';
 import format from 'pretty-format';
 
 export const client = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_API_URL,
+  baseURL: '',
   timeout: 2000,
 });
 
