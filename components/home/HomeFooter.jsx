@@ -45,7 +45,7 @@ function HomeFooter() {
       </IconGroup>
       <IconGroup onPress={() => logout()}>
         <FontAwesome5 name="user" size={iconSize} color={'#3333FF'} />
-        <Label style={{ color: '#3333FF' }}>마이 페이지</Label>
+        <Label style={{ color: '#3333FF' }}>로그아웃</Label>
       </IconGroup>
     </Container>
   );
