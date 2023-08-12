@@ -57,7 +57,7 @@ function Participants() {
 
       {/* 랭킹 보기 */}
       <ParticipantRankButton onPress={() => navigation.navigate('rank', { roomId })}>
-        <Text style={{ fontWeight: 700, color: '#979797' }}>랭킹 보기</Text>
+        <Text style={{ fontWeight: '700', color: '#979797' }}>랭킹 보기</Text>
       </ParticipantRankButton>
     </Container>
   );
