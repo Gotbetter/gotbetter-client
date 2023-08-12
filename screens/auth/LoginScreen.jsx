@@ -17,7 +17,7 @@ import { useMutation } from 'react-query';
 import styled from 'styled-components/native';
 
 function LoginScreen() {
-  const { navigate } = useNavigation();
+  const navigation = useNavigation();
 
   const authId = useRef('');
   const password = useRef('');
@@ -57,7 +57,7 @@ function LoginScreen() {
       await AsyncStorage.setItem('refresh_token', refresh_token);
 
       Toast.show('로그인 성공', { duration: Toast.durations.SHORT });
-      navigate('home');
+      navigation.reset({ routes: [{ name: 'home' }] });
     },
   });
 
