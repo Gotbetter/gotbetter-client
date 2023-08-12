@@ -7,7 +7,7 @@ AutoLoginManager.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 function AutoLoginManager({ children }) {
-  const { navigate } = useNavigation();
+  const navigation = useNavigation();
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -15,13 +15,13 @@ function AutoLoginManager({ children }) {
       console.log('check has already logined');
       console.log(`token: ${token}`);
       if (token === null) {
-        navigate('login');
+        navigation.reset({ routes: [{ name: 'login' }] });
       } else {
-        navigate('home');
+        navigation.reset({ routes: [{ name: 'home' }] });
       }
     };
     checkLogin();
-  }, [navigate]);
+  }, [navigation]);
   return <>{children}</>;
 }
 
