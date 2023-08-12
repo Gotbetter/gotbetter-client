@@ -25,7 +25,15 @@ function StudyRoomCreateInfoModal({ success, error, close, roomId }) {
           <Title>방 만들기 완료</Title>
           <Description>방 만들기가 완료되었습니다.</Description>
           <ModalButton title={'닫기'} onPress={close} />
-          <ModalButton title={'바로가기'} onPress={() => navigation.navigate('study-room', { roomId })} highlight />
+          <ModalButton
+            title={'바로가기'}
+            onPress={() => {
+              close();
+              navigation.popToTop();
+              navigation.navigate('study-room', { roomId });
+            }}
+            highlight
+          />
         </Container>
       </SmallInfoModal>
     );
