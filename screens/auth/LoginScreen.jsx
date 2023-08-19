@@ -57,7 +57,7 @@ function LoginScreen() {
       await AsyncStorage.setItem('refresh_token', refresh_token);
 
       Toast.show('로그인 성공', { duration: Toast.durations.SHORT });
-      navigation.reset({ routes: [{ name: 'home' }] });
+      navigation.reset({ routes: [{ name: 'home-routes' }] });
     },
   });
 
