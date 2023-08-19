@@ -30,7 +30,7 @@ function StudyRoomCreateInfoModal({ success, error, close, roomId }) {
             onPress={() => {
               close();
               navigation.popToTop();
-              navigation.navigate('study-room', { roomId });
+              navigation.navigate('study-room-routes', { roomId });
             }}
             highlight
           />
