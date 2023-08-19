@@ -24,7 +24,7 @@ function Participants() {
   const setPlanFetchParams = useSetRecoilState(planFetchParamsState);
 
   const onPressProfile = (participantId, username) => {
-    navigation.navigate('plan', { username });
+    navigation.navigate('plan-routes', { username });
     setPlanFetchParams((prev) => ({ ...prev, participantId, week: studyRoom.current_week }));
   };
 

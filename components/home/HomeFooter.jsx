@@ -22,7 +22,7 @@ function HomeFooter() {
     try {
       await AsyncStorage.removeItem('access_token');
       await AsyncStorage.removeItem('refresh_token');
-      navigation.reset({ routes: [{ name: 'login' }] });
+      navigation.reset({ routes: [{ name: 'auth-routes' }] });
       queryClient.clear();
       Toast.show('로그아웃', { duration: Toast.durations.SHORT });
     } catch (e) {
@@ -39,7 +39,7 @@ function HomeFooter() {
         <Ionicons name="md-search-sharp" size={iconSize} color={'#979797'} />
         <Label>방코드 검색</Label>
       </IconGroup>
-      <IconGroup onPress={() => navigation.navigate('category')}>
+      <IconGroup onPress={() => navigation.navigate('room-create')}>
         <SimpleLineIcons name="plus" size={iconSize} color={'#979797'} />
         <Label>방 만들기</Label>
       </IconGroup>

@@ -15,9 +15,9 @@ function AutoLoginManager({ children }) {
       console.log('check has already logined');
       console.log(`token: ${token}`);
       if (token === null) {
-        navigation.reset({ routes: [{ name: 'login' }] });
+        navigation.reset({ routes: [{ name: 'auth-routes' }] });
       } else {
-        navigation.reset({ routes: [{ name: 'home' }] });
+        navigation.reset({ routes: [{ name: 'home-routes' }] });
       }
     };
     checkLogin();
