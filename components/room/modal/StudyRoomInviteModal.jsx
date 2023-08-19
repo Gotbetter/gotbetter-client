@@ -83,7 +83,7 @@ function StudyRoomInviteModal() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [`studyRoomJoinRequests/${roomId}`],
+        queryKey: [`studyRoomJoinRequests`, roomId],
       });
     },
   });
