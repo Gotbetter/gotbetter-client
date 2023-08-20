@@ -5,6 +5,7 @@ import StudyRoomList from '@components/home/StudyRoomList';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { fetchUser } from 'api/auth';
+import format from 'pretty-format';
 import React from 'react';
 import Toast from 'react-native-root-toast';
 import { useQuery } from 'react-query';
@@ -34,12 +35,13 @@ function HomeScreen() {
       console.log('[HomeScreen]: fetching user info');
       setUser({ ...data });
     },
-    onError: async () => {
+    onError: async (err) => {
+      console.log(format(err));
       Toast.show('사용자 정보 조회 실패', { duration: Toast.durations.SHORT });
       await AsyncStorage.removeItem('access_token');
       await AsyncStorage.removeItem('refresh_token');
 
-      navigation.reset({ routes: [{ name: 'login' }] });
+      navigation.reset({ routes: [{ name: 'auth-routes' }] });
     },
     select: (res) => res.data,
   });

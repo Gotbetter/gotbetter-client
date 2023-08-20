@@ -1,11 +1,16 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import styled from 'styled-components/native';
 
-function GoogleLoginButton() {
+GoogleLoginButton.propTypes = {
+  onPress: PropTypes.func,
+};
+
+function GoogleLoginButton({ onPress }) {
   return (
-    <GoogleButton>
+    <GoogleButton onPress={onPress}>
       <GoogleLogo source={require('@assets/google-icon.png')} resizeMode="contain" />
       <Label>Google 로그인</Label>
     </GoogleButton>
