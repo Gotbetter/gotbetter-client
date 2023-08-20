@@ -1,18 +1,60 @@
-import React, { useCallback, useMemo } from 'react';
-import { RefreshControl } from 'react-native';
+import { fetchStudyRoomList } from 'api/room';
+import React, { useCallback, useEffect } from 'react';
+import { ActivityIndicator, RefreshControl } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { useQuery } from 'react-query';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { studyRoomListRefreshingState } from 'recoil/room/atoms';
-import { filteredStudyRoomListState } from 'recoil/room/selectors';
+import { studyRoomListRefreshingState, tabState } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
 import StudyRoomListItem from './StudyRoomListItem';
 import StudyRoomStatus from './StudyRoomStatus';
 
 function StudyRoomList() {
-  const studyRoomList = useRecoilValue(filteredStudyRoomListState);
+  /** 스터디룸 리스트 출력 필터 */
+  const tab = useRecoilValue(tabState);
+
+  /** 리프레시 상태일 경우 스터디룸 리스트 refetch */
+  useEffect(() => {
+    if (refreshing) refetch();
+  }, [refetch, refreshing]);
+
+  const {
+    isLoading,
+    isError,
+    refetch,
+    data: studyRoomList,
+  } = useQuery('studyRoomList', fetchStudyRoomList, {
+    retry: 1,
+    staleTime: 300000,
+    onSuccess: (data) => {
+      console.log('[StudyRoomListFetcher]: fetching study room list');
+    },
+    select: (res) => {
+      switch (tab) {
+        case '전체':
+          return res.data;
+        case '진행중': {
+          return res.data.filter((studyRoom) => {
+            // 현재 시각
+            const today = new Date();
+            const currentTime = today.getTime() - today.getTimezoneOffset() * 60000;
+            // 스터디룸 시작일
+            const startDate = new Date(studyRoom.start_date);
+            // 방 끝나는 요일
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + 7 * studyRoom.week);
+
+            return currentTime >= startDate.getTime() && currentTime <= endDate.getTime();
+          });
+        }
+        default:
+          return res.data;
+      }
+    },
+  });
+
   const [refreshing, setRefresh] = useRecoilState(studyRoomListRefreshingState);
-  const today = useMemo(() => new Date(), []);
 
   const onRefresh = useCallback(() => {
     setRefresh(true);
@@ -22,16 +64,25 @@ function StudyRoomList() {
   }, []);
 
   function getStudyRoomStatus(studyRoom) {
+    // 현재 시각
+    const today = new Date();
+    const currentTime = today.getTime() - today.getTimezoneOffset() * 60000;
+
+    // 시작일
     const startDate = new Date(studyRoom.start_date);
 
-    if (today < startDate) return 'WAIT';
+    if (currentTime < startDate.getTime()) return 'WAIT';
 
     const endDate = new Date(startDate);
     endDate.setDate(startDate.getDate() + 7 * studyRoom.week);
 
-    if (today <= endDate) return 'PROGRESS';
+    if (currentTime <= endDate.getTime()) return 'PROGRESS';
     else return 'END';
   }
+
+  if (isLoading) return <ActivityIndicator size="large" color={'#3333FF'} />;
+
+  if (isError) return null;
 
   return (
     <Container>
