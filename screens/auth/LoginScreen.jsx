@@ -2,12 +2,14 @@ import LoginForm from '@components/auth/LoginForm';
 import SubMenu from '@components/auth/SubMenu';
 import AndroidSafeAreaView from '@components/common/AndroidSafeAreaView';
 import ActionButton from '@components/common/btn/ActionButton';
+import GoogleLoginButton from '@components/common/btn/GoogleLoginButton';
 import { ErrorMessage } from '@components/common/message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import { loginRequest } from 'api/auth';
+import { loginRequest, oauthLoginRequest } from 'api/auth';
+import * as Google from 'expo-auth-session/providers/google';
 import format from 'pretty-format';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -24,6 +26,48 @@ function LoginScreen() {
 
   const [error, setError] = useState(false);
   const [message, setMessage] = useState('');
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId: '771187190490-4d9d8ivudtv4lv3njdb8hhu08uuh1heu.apps.googleusercontent.com',
+  });
+
+  useEffect(() => {
+    loginGoogle();
+  }, [response]);
+
+  async function loginGoogle() {
+    if (response?.type !== 'success') return;
+
+    const token = response.authentication.accessToken;
+
+    if (!token) return;
+
+    try {
+      const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const user = await response.json();
+
+      const { id, email, name, picture } = user;
+      try {
+        const request = { id, email, name, picture };
+
+        const response = await oauthLoginRequest(request);
+        console.log(format(response.data));
+        const { access_token, refresh_token } = response.data;
+        await AsyncStorage.setItem('access_token', access_token);
+        await AsyncStorage.setItem('refresh_token', refresh_token);
+
+        Toast.show('로그인 성공', { duration: Toast.durations.SHORT });
+        navigation.reset({ routes: [{ name: 'home-routes' }] });
+      } catch {
+        Toast.show('로그인 실패', { duration: Toast.durations.SHORT });
+      }
+    } catch {
+      Toast.show('로그인 실패', { duration: Toast.durations.SHORT });
+    }
+  }
 
   const onChange = (name, value) => {
     switch (name) {
@@ -82,9 +126,9 @@ function LoginScreen() {
           <MarginTopMiddle>
             <SubMenu />
           </MarginTopMiddle>
-          {/* <MarginTopHigh>
-            <GoogleLoginButton />
-          </MarginTopHigh> */}
+          <MarginTopHigh>
+            <GoogleLoginButton onPress={() => promptAsync()} />
+          </MarginTopHigh>
         </Container>
       </AndroidSafeAreaView>
     </KeyboardAwareScrollView>
