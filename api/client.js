@@ -14,8 +14,11 @@ client.interceptors.request.use(async (config) => {
   if (!config.headers) {
     return config;
   }
-
-  if (config.url === '/users/login' || (config.url === '/users' && config.method === 'POST')) {
+  if (
+    config.url === '/users/login' ||
+    config.url === '/oauth?provider=google' ||
+    (config.url === '/users' && config.method === 'POST')
+  ) {
     return config;
   }
 
@@ -24,9 +27,11 @@ client.interceptors.request.use(async (config) => {
     token = await AsyncStorage.getItem('refresh_token');
   } else {
     token = await AsyncStorage.getItem('access_token');
+    console.log(`access_token=${token}`);
   }
 
   if (token !== null) {
+    console.log(format(config.url));
     config.headers.Authorization = `Bearer ${token}`;
   }
 
