@@ -3,15 +3,14 @@ import HomeFooter from '@components/home/HomeFooter';
 import HomeHeader from '@components/home/HomeHeader';
 import StudyRoomList from '@components/home/StudyRoomList';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { fetchUser } from 'api/auth';
-import React, { useEffect } from 'react';
+import React from 'react';
 import Toast from 'react-native-root-toast';
 import { useQuery } from 'react-query';
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
 import { user } from 'recoil/auth/atoms';
 import { studyRoomCreateRequest } from 'recoil/room/atoms';
-import StudyRoomListFetcher from 'wrapper/home/StudyRoomListFetcher';
 
 function HomeScreen() {
   const navigation = useNavigation();
@@ -19,15 +18,14 @@ function HomeScreen() {
   const setUser = useSetRecoilState(user);
 
   const resetCreateStudyRoomRequest = useResetRecoilState(studyRoomCreateRequest);
-  const isFocused = useIsFocused();
-  useEffect(() => {
+  useFocusEffect(() => {
     resetCreateStudyRoomRequest();
 
     if (data !== undefined) {
       console.log('caching user info');
       setUser({ ...data });
     }
-  }, [isFocused]);
+  });
 
   const { data } = useQuery(['user'], fetchUser, {
     retry: 1,
@@ -49,9 +47,7 @@ function HomeScreen() {
   return (
     <AndroidSafeAreaView>
       <HomeHeader />
-      <StudyRoomListFetcher>
-        <StudyRoomList />
-      </StudyRoomListFetcher>
+      <StudyRoomList />
       <HomeFooter />
     </AndroidSafeAreaView>
   );
