@@ -1,31 +1,45 @@
 import Profile from '@components/common/Profile';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Text } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { participantList } from 'recoil/participant/atoms';
 import { planFetchParamsState } from 'recoil/plan/atoms';
-import { studyRoomDetail, studyRoomInviteRequestModalState } from 'recoil/room/atoms';
-import { getMyAuthority } from 'recoil/room/selectors';
+import { myStudyRoomAuthority } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
 import InviteRequests from './InviteRequests';
 
-function Participants() {
+Participants.propTypes = {
+  details: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    current_week: PropTypes.number.isRequired,
+  }).isRequired,
+
+  participants: PropTypes.arrayOf(
+    PropTypes.shape({
+      user_id: PropTypes.number.isRequired,
+      participant_id: PropTypes.number.isRequired,
+      username: PropTypes.string.isRequired,
+      profile: PropTypes.string.isRequired,
+      authority: PropTypes.bool.isRequired,
+    }),
+  ).isRequired,
+};
+
+function Participants({ details, participants }) {
   const { roomId } = useRoute().params;
   const navigation = useNavigation();
 
-  const studyRoom = useRecoilValue(studyRoomDetail);
-  const participants = useRecoilValue(participantList);
-  const isLeader = useRecoilValue(getMyAuthority);
-  const setVisible = useSetRecoilState(studyRoomInviteRequestModalState);
+  const isLeader = useRecoilValue(myStudyRoomAuthority);
   const setPlanFetchParams = useSetRecoilState(planFetchParamsState);
 
+  /** 프로필 누르면 해당 참여자의 계획 화면으로 이동 */
   const onPressProfile = (participantId, username) => {
     navigation.navigate('plan-routes', { username });
-    setPlanFetchParams((prev) => ({ ...prev, participantId, week: studyRoom.current_week }));
+    setPlanFetchParams((prev) => ({ ...prev, participantId, week: details.current_week }));
   };
 
   return (
@@ -33,9 +47,7 @@ function Participants() {
       <Label>참가자</Label>
       {isLeader && (
         // 초대 요청
-        <InviteRequestLabel onPress={() => setVisible(true)}>
-          <InviteRequests />
-        </InviteRequestLabel>
+        <InviteRequests />
       )}
       {/* 참가자 프로필 및 이름 출력 */}
       <ParticipantsListContainer>
@@ -56,7 +68,7 @@ function Participants() {
       </ParticipantsListContainer>
 
       {/* 랭킹 보기 */}
-      <ParticipantRankButton onPress={() => navigation.navigate('rank', { roomId })}>
+      <ParticipantRankButton onPress={() => navigation.navigate('rank', { roomId, details })}>
         <Text style={{ fontWeight: '700', color: '#979797' }}>랭킹 보기</Text>
       </ParticipantRankButton>
     </Container>
@@ -80,10 +92,6 @@ const Label = styled.Text`
   margin-right: auto;
   font-size: ${RFValue(16)}px;
   font-weight: 700;
-`;
-
-const InviteRequestLabel = styled.TouchableOpacity`
-  margin-left: auto;
 `;
 
 const ParticipantsListContainer = styled.View`

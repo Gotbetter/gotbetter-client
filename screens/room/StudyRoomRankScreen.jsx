@@ -1,50 +1,43 @@
 import Profile from '@components/common/Profile';
 import StudyRoomInfoModal from '@components/room/modal/StudyRoomInfoModal';
+import { useModal, useRefresh } from '@hooks/common';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { fetchStudyRoomRank } from 'api/room';
 import format from 'pretty-format';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { RefreshControl, ScrollView, Text, View } from 'react-native';
+import React, { useEffect, useMemo } from 'react';
+import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Feather from 'react-native-vector-icons/Feather';
 import { useQuery } from 'react-query';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { studyRoomDetail, studyRoomInfoModalState } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
-function StudyRoomRankScreen(props) {
-  const { roomId } = useRoute().params;
+function StudyRoomRankScreen() {
+  const { roomId, details } = useRoute().params;
   const navigation = useNavigation();
   const today = useMemo(() => new Date(), []);
 
-  const studyRoom = useRecoilValue(studyRoomDetail);
-  const openModal = useSetRecoilState(studyRoomInfoModalState);
+  const { openModal } = useModal('studyRoomInfo');
 
   /** 새로고침 flag */
-  const [refresh, setRefresh] = useState(false);
+  const {
+    refresh: { refreshing },
+    onRefresh,
+  } = useRefresh('studyRoomRankScreen');
 
   /** 랭킹 헤더 초기화 */
   useEffect(() => {
     navigation.setOptions({
-      title: studyRoom.title,
+      title: details.title,
       headerRight: () => <Feather name={'info'} size={30} onPress={() => openModal(true)} />,
     });
-  }, [roomId, studyRoom.title, navigation, openModal]);
+  }, [roomId, details, navigation, openModal]);
 
   /** 새로고칭할 경우 랭킹 정보 다시 불러오기 */
   useEffect(() => {
-    if (refresh) {
+    if (refreshing) {
       refetch();
     }
-  }, [refetch, refresh, setRefresh]);
-
-  /** 새로고칭 */
-  const onRefresh = useCallback(() => {
-    setRefresh(true);
-    setTimeout(() => {
-      setRefresh(false);
-    }, 1000);
-  }, [setRefresh]);
+  }, [refetch, refreshing]);
 
   /**
    * 현재 스터디룸에 소속된 참가자들의 랭킹 조회
@@ -62,21 +55,9 @@ function StudyRoomRankScreen(props) {
     select: (res) => res.data,
   });
 
-  if (isLoading) {
-    return (
-      <View>
-        <Text>로딩중</Text>
-      </View>
-    );
-  }
+  if (isLoading) return <ActivityIndicator size="large" color={'#3333FF'} />;
 
-  if (isError) {
-    return (
-      <View>
-        <Text>에러발생</Text>
-      </View>
-    );
-  }
+  if (isError) return null;
 
   return (
     <Container>
@@ -88,7 +69,7 @@ function StudyRoomRankScreen(props) {
       </DateContainer>
 
       <ContentContainer>
-        <ScrollView refreshControl={<RefreshControl refreshing={refresh} onRefresh={onRefresh} />}>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           {data.map((item, index) => (
             <Item key={item.rank_id}>
               <Rank>{item.rank}</Rank>
@@ -100,7 +81,7 @@ function StudyRoomRankScreen(props) {
           ))}
         </ScrollView>
       </ContentContainer>
-      <StudyRoomInfoModal />
+      <StudyRoomInfoModal details={details} />
     </Container>
   );
 }

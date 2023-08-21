@@ -1,26 +1,35 @@
+import { useRefresh } from '@hooks/common';
 import { fetchDetailPlan, fetchPlan } from 'api/plan';
 import format from 'pretty-format';
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Feather from 'react-native-vector-icons/Feather';
 import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
-import { myParticipantIdSelector } from 'recoil/plan/selector';
-import { studyRoomDetail, studyRoomRefreshState } from 'recoil/room/atoms';
+import { myStudyRoomParticipantIdSelector } from 'recoil/room/selectors';
 import styled from 'styled-components/native';
 
 import PlanDeadline from './PlanDeadline';
 
-function ThisWeekDetailPlans() {
-  const { current_week: week } = useRecoilValue(studyRoomDetail);
-  const participantId = useRecoilValue(myParticipantIdSelector);
-  const refresh = useRecoilValue(studyRoomRefreshState);
+ThisWeekDetailPlans.propTypes = {
+  details: PropTypes.shape({
+    week: PropTypes.number.isRequired,
+    start_date: PropTypes.string.isRequired,
+    current_week: PropTypes.number.isRequired,
+  }).isRequired,
+};
+
+function ThisWeekDetailPlans({ details }) {
+  const { current_week: week } = details;
+  const { refresh } = useRefresh('studyRoomScreen');
+
+  const participantId = useRecoilValue(myStudyRoomParticipantIdSelector);
 
   /** 새로고침한 경우 plan, detailPlan refetch */
   useEffect(() => {
-    if (refresh) {
+    if (refresh.refreshing) {
       refetchPlan();
       refetchDetailPlan();
     }
@@ -72,34 +81,14 @@ function ThisWeekDetailPlans() {
     enabled: !!planId,
   });
 
-  if (planError) {
-    return (
-      <View>
-        <Text>계획 fetch 에러</Text>
-      </View>
-    );
-  }
+  if (planError || detailPlanError) return null;
 
-  if (detailPlanError) {
-    return (
-      <View>
-        <Text>세부 계획 fetch 에러</Text>
-      </View>
-    );
-  }
-
-  if (planLoading || detailPlanLoading) {
-    return (
-      <View>
-        <Text>로딩중</Text>
-      </View>
-    );
-  }
+  if (planLoading || detailPlanLoading) return <ActivityIndicator size="large" color={'#3333FF'} />;
 
   return (
     <Container>
       <Label>이번주 나의 계획</Label>
-      <PlanDeadline />
+      <PlanDeadline details={details} />
 
       <DetailPlanContainer>
         {detailPlans.map((detailPlan) => (
