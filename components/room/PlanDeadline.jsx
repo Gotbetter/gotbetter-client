@@ -1,26 +1,22 @@
 import React, { useMemo } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { useRecoilValue } from 'recoil';
-import { studyRoomDetail } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
-function PlanDeadline() {
-  const studyRoom = useRecoilValue(studyRoomDetail);
-
+function PlanDeadline({ details }) {
   /** 스터디룸 시작 판단 */
   const isStudyRoomStarted = useMemo(() => {
     const today = new Date();
-    const studyRoomStartDate = new Date(studyRoom.start_date);
+    const studyRoomStartDate = new Date(details.start_date);
 
     return today.getTime() - today.getTimezoneOffset() * 60000 >= studyRoomStartDate.getTime();
-  }, [studyRoom]);
+  }, [details]);
 
   const isStudyRoomEnd = useMemo(() => {
     const today = new Date();
-    const studyRoomEndDate = new Date(studyRoom.start_date);
-    studyRoomEndDate.setDate(studyRoomEndDate.getDate() + 7 * studyRoom.week);
+    const studyRoomEndDate = new Date(details.start_date);
+    studyRoomEndDate.setDate(studyRoomEndDate.getDate() + 7 * details.week);
     return today.getTime() - today.getTimezoneOffset() * 60000 >= studyRoomEndDate.getTime();
-  }, [studyRoom]);
+  }, [details]);
 
   /**
    * isClosedPlanning : 계획 마감했는지
@@ -29,11 +25,11 @@ function PlanDeadline() {
    */
   const [isClosedPlanning, planningLeftDay, weekLeftDay] = useMemo(() => {
     const today = new Date();
-    const studyRoomStartDate = new Date(studyRoom.start_date);
+    const studyRoomStartDate = new Date(details.start_date);
 
     // 이번 계획 시작일
     const thisWeekPlanStartDate = new Date(studyRoomStartDate);
-    thisWeekPlanStartDate.setDate(studyRoomStartDate.getDate() + (studyRoom.current_week - 1) * 7);
+    thisWeekPlanStartDate.setDate(studyRoomStartDate.getDate() + (details.current_week - 1) * 7);
 
     // 이번 계획 수정 마감일
     const thisWeekPlanCloseDate = new Date(thisWeekPlanStartDate);
@@ -57,7 +53,7 @@ function PlanDeadline() {
         null,
       ];
     }
-  }, [studyRoom]);
+  }, [details]);
 
   /** 스터디룸 시작 안했으면 정보 출력 x */
   if (!isStudyRoomStarted) {

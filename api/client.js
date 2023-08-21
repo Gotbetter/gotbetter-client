@@ -27,11 +27,9 @@ client.interceptors.request.use(async (config) => {
     token = await AsyncStorage.getItem('refresh_token');
   } else {
     token = await AsyncStorage.getItem('access_token');
-    console.log(`access_token=${token}`);
   }
 
   if (token !== null) {
-    console.log(format(config.url));
     config.headers.Authorization = `Bearer ${token}`;
   }
 

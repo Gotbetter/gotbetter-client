@@ -1,10 +1,12 @@
 import Profile from '@components/common/Profile';
 import ModalButton from '@components/common/btn/ModalButton';
 import ListModal from '@components/common/modal/ListModal';
+import { useModal } from '@hooks/common';
 import { useRoute } from '@react-navigation/native';
 import { acceptJoinRequest, rejectJoinRequest } from 'api/join';
 import { createPlan } from 'api/plan';
 import format from 'pretty-format';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { ScrollView } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -12,18 +14,26 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-nat
 import Toast from 'react-native-root-toast';
 import { Shadow } from 'react-native-shadow-2';
 import { useMutation, useQueryClient } from 'react-query';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { joinRequestList } from 'recoil/participant/atoms';
-import { studyRoomInviteRequestModalState } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
-function StudyRoomInviteModal() {
+StudyRoomInviteModal.propTypes = {
+  requests: PropTypes.arrayOf(
+    PropTypes.shape({
+      user_id: PropTypes.number.isRequired,
+      username: PropTypes.string.isRequired,
+      profile: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
+};
+
+function StudyRoomInviteModal({ requests }) {
   const { roomId } = useRoute().params;
   const queryClient = useQueryClient();
-  const joinRequests = useRecoilValue(joinRequestList);
 
-  const [visible, setVisible] = useRecoilState(studyRoomInviteRequestModalState);
-  const close = () => setVisible(false);
+  const {
+    modal: { visible },
+    hideModal,
+  } = useModal('joinRequests');
 
   const { mutate: accept } = useMutation((userId) => acceptJoinRequest(userId, roomId), {
     onError: (err) => {
@@ -89,12 +99,12 @@ function StudyRoomInviteModal() {
   });
 
   return (
-    <ListModal visible={visible} onRequestClose={close}>
+    <ListModal visible={visible} onRequestClose={hideModal}>
       <Container>
         <Label>초대하기</Label>
         <ContentContainer>
           <ScrollView>
-            {joinRequests.map((participant) => (
+            {requests.map((participant) => (
               <MarginBottom key={participant.user_id}>
                 <Shadow distance={1} offset={[0, 2]} style={{ borderRadius: 10 }}>
                   <WaitParticipant>
@@ -122,7 +132,7 @@ function StudyRoomInviteModal() {
           </ScrollView>
         </ContentContainer>
         <ButtonContainer>
-          <ModalButton title={'닫기'} onPress={close} />
+          <ModalButton title={'닫기'} onPress={hideModal} />
         </ButtonContainer>
       </Container>
     </ListModal>

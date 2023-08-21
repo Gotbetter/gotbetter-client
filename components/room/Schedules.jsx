@@ -1,12 +1,18 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { useRecoilValue } from 'recoil';
-import { studyRoomDetail } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
-function Schedules() {
-  const studyRoom = useRecoilValue(studyRoomDetail);
+Schedules.propTypes = {
+  details: PropTypes.shape({
+    start_date: PropTypes.string.isRequired,
+    week: PropTypes.number.isRequired,
+  }).isRequired,
+};
+
+function Schedules({ details }) {
+  const { start_date, week } = details;
 
   return (
     <Container>
@@ -17,7 +23,7 @@ function Schedules() {
           <ScheduleLabel>날짜</ScheduleLabel>
         </ScheduleLabelView>
         <ScheduleDescriptionView>
-          <ScheduleDescription>{studyRoom.start_date}</ScheduleDescription>
+          <ScheduleDescription>{start_date}</ScheduleDescription>
         </ScheduleDescriptionView>
       </Schedule>
       <Schedule>
@@ -26,7 +32,7 @@ function Schedules() {
           <ScheduleLabel>주차</ScheduleLabel>
         </ScheduleLabelView>
         <ScheduleDescriptionView>
-          <ScheduleDescription>{studyRoom.week}주</ScheduleDescription>
+          <ScheduleDescription>{week}주</ScheduleDescription>
         </ScheduleDescriptionView>
       </Schedule>
     </Container>

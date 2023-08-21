@@ -30,41 +30,22 @@ const studyRoomCreateRequest = atom({
   },
 });
 
-/** 스터디룸 정보 */
-const studyRoomDetail = atom({
-  key: 'studyRoomDetail',
-  default: null,
-});
-
-/** 스터디룸 정보 모달 */
-const studyRoomInfoModalState = atom({
-  key: 'studyRoomInfoModal',
-  default: false,
-});
-/** 스터디룸 정보 모달 */
-const studyRoomInviteCodeModalState = atom({
-  key: 'studyRoomInviteCodeModal',
-  default: false,
-});
-/** 스터디룸 초대 요청 모달 */
-const studyRoomInviteRequestModalState = atom({
-  key: 'studyRoomInviteRequestModal',
+/** 현재 스터디룸에서 방장인지 */
+const myStudyRoomAuthority = atom({
+  key: 'myStudyRoomAuthority',
   default: false,
 });
 
-/** 스터디룸 refresh */
-const studyRoomRefreshState = atom({
-  key: 'studyRoomRefreshState',
-  default: false,
+/** 현재 스터디룸에서 나의 참가 아이디 */
+const myStudyRoomParticipantId = atom({
+  key: 'mySudyRoomParticipantId',
+  default: -1,
 });
 
 export {
   tabState,
   studyRoomListRefreshingState,
   studyRoomCreateRequest,
-  studyRoomDetail,
-  studyRoomInfoModalState,
-  studyRoomInviteCodeModalState,
-  studyRoomInviteRequestModalState,
-  studyRoomRefreshState,
+  myStudyRoomAuthority,
+  myStudyRoomParticipantId,
 };

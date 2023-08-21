@@ -1,13 +1,21 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { useRecoilValue } from 'recoil';
-import { studyRoomDetail } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
 import RoomInfo from './RoomInfo';
 
-function Description() {
-  const { description, week, room_category, entry_fee } = useRecoilValue(studyRoomDetail);
+Description.propTypes = {
+  details: PropTypes.shape({
+    description: PropTypes.string.isRequired,
+    week: PropTypes.number.isRequired,
+    room_category: PropTypes.string.isRequired,
+    entry_fee: PropTypes.number.isRequired,
+  }).isRequired,
+};
+
+function Description({ details }) {
+  const { description, week, room_category, entry_fee } = details;
   return (
     <Container>
       <Label>소개</Label>

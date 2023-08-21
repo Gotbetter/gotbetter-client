@@ -1,22 +1,21 @@
 import ModalButton from '@components/common/btn/ModalButton';
 import ListModal from '@components/common/modal/ListModal';
+import { useModal } from '@hooks/common';
 import React from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Shadow } from 'react-native-shadow-2';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { studyRoomDetail, studyRoomInfoModalState } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
-function StudyRoomInfoModal() {
-  const { title, room_code, account, start_date, max_user_num, current_user_num, entry_fee } =
-    useRecoilValue(studyRoomDetail);
+function StudyRoomInfoModal({ details }) {
+  const { title, room_code, account, start_date, max_user_num, current_user_num, entry_fee } = details;
 
-  const [visible, setVisible] = useRecoilState(studyRoomInfoModalState);
-
-  const close = () => setVisible(false);
+  const {
+    modal: { visible },
+    hideModal,
+  } = useModal('studyRoomInfo');
 
   return (
-    <ListModal visible={visible} onRequestClose={close}>
+    <ListModal visible={visible} onRequestClose={hideModal}>
       <Container>
         <Label>방 정보</Label>
         <Shadow style={{ borderRadius: 10 }} distance={1} offset={[0, 2]}>
@@ -52,7 +51,7 @@ function StudyRoomInfoModal() {
           </InfoContainer>
         </Shadow>
         <ButtonContainer>
-          <ModalButton title={'닫기'} onPress={close} />
+          <ModalButton title={'닫기'} onPress={hideModal} />
         </ButtonContainer>
       </Container>
     </ListModal>
