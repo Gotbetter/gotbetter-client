@@ -13,10 +13,14 @@ import StudyRoomStatus from './StudyRoomStatus';
 function StudyRoomList() {
   /** 스터디룸 리스트 출력 필터 */
   const tab = useRecoilValue(tabState);
+  const [refreshing, setRefresh] = useRecoilState(studyRoomListRefreshingState);
 
   /** 리프레시 상태일 경우 스터디룸 리스트 refetch */
   useEffect(() => {
-    if (refreshing) refetch();
+    if (refreshing) {
+      console.log('home refetch');
+      refetch();
+    }
   }, [refetch, refreshing]);
 
   const {
@@ -54,14 +58,13 @@ function StudyRoomList() {
     },
   });
 
-  const [refreshing, setRefresh] = useRecoilState(studyRoomListRefreshingState);
-
   const onRefresh = useCallback(() => {
+    console.log('home refresh');
     setRefresh(true);
     setTimeout(() => {
       setRefresh(false);
     }, 1000);
-  }, []);
+  }, [setRefresh]);
 
   function getStudyRoomStatus(studyRoom) {
     // 현재 시각
