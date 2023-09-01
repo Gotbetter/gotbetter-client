@@ -1,46 +1,35 @@
 import { selector } from 'recoil';
 import { user } from 'recoil/auth/atoms';
-import { participantList } from 'recoil/participant/atoms';
 
-import { studyRoomListState, tabState } from './atoms';
+import { myStudyRoomAuthority, myStudyRoomParticipantId } from './atoms';
 
-const filteredStudyRoomListState = selector({
-  key: 'filteredStudyRoomList',
-  get: ({ get }) => {
-    const filter = get(tabState);
-    const studyRoomList = get(studyRoomListState);
-
-    switch (filter) {
-      case '전체':
-        return studyRoomList;
-
-      case '진행중': {
-        const today = new Date();
-        const filteredStudyRoomList = studyRoomList.filter((studyRoom) => {
-          const startDate = new Date(studyRoom.start_date);
-          const endDate = new Date(startDate);
-          endDate.setDate(startDate.getDate() + 7 * studyRoom.week);
-          return today >= startDate && today <= endDate;
-        });
-        return filteredStudyRoomList;
-      }
-      default:
-        return studyRoomList;
-    }
-  },
-});
-
-const getMyAuthority = selector({
-  key: 'myStudyRoomAuthority',
-  get: ({ get }) => {
+/** 현재 스터디룸에서 방장인지 아닌지 확인 */
+const myStudyRoomAuthoritySelector = selector({
+  key: 'myStudyRoomAuthoritySelector',
+  get: ({ get }) => get(myStudyRoomAuthority),
+  set: ({ get, set }, participants) => {
     const { user_id } = get(user);
-    const participants = get(participantList);
-    for (let index = 0; index < participants.length; index++) {
-      if (participants[index].user_id === user_id) {
-        return participants[index].authority;
-      }
-    }
+
+    participants.forEach((participant) => {
+      if (participant.user_id === user_id) set(myStudyRoomAuthority, participant.authority);
+    });
   },
 });
 
-export { filteredStudyRoomListState, getMyAuthority };
+/**  */
+const myStudyRoomParticipantIdSelector = selector({
+  key: 'myStudyRoomParticipantIdSelector',
+  get: ({ get }) => get(myStudyRoomParticipantId),
+  set: ({ get, set }, participants) => {
+    const myUserInfo = get(user);
+    const curRoomParticipants = participants;
+
+    curRoomParticipants.forEach((participant) => {
+      if (participant.user_id === myUserInfo.user_id) {
+        set(myStudyRoomParticipantId, participant.participant_id);
+      }
+    });
+  },
+});
+
+export { myStudyRoomAuthoritySelector, myStudyRoomParticipantIdSelector };

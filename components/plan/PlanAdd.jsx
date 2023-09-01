@@ -1,4 +1,5 @@
 import AddButtonIcon from '@components/common/icon/AddButtonIcon';
+import { useRoute } from '@react-navigation/core';
 import { createDetailPlan } from 'api/plan';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
@@ -9,20 +10,21 @@ import Toast from 'react-native-root-toast';
 import { Shadow } from 'react-native-shadow-2';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useMutation, useQueryClient } from 'react-query';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { planAddModeState, planFetchParamsState } from 'recoil/plan/atoms';
-import { studyRoomDetail } from 'recoil/room/atoms';
+import { useRecoilState } from 'recoil';
+import { planAddModeState } from 'recoil/plan/atoms';
 import styled from 'styled-components/native';
 
 PlanAdd.propTypes = {
+  fetchWeek: PropTypes.number.isRequired,
   plan: PropTypes.shape({ plan_id: PropTypes.number, three_days_passed: PropTypes.bool }),
   detailPlans: PropTypes.arrayOf(PropTypes.object),
   isMyPlan: PropTypes.bool,
 };
 
-function PlanAdd({ plan, isMyPlan }) {
-  const { week } = useRecoilValue(planFetchParamsState);
-  const studyRoom = useRecoilValue(studyRoomDetail);
+function PlanAdd({ fetchWeek, plan, isMyPlan }) {
+  const {
+    studyRoomDetails: { current_week },
+  } = useRoute().params;
 
   const [addFormMode, setAddFormMode] = useRecoilState(planAddModeState);
   const queryClient = useQueryClient();
@@ -58,7 +60,7 @@ function PlanAdd({ plan, isMyPlan }) {
     setAddFormMode(false);
   };
 
-  if (week < studyRoom.current_week || !isMyPlan || plan.three_days_passed) {
+  if (fetchWeek < current_week || !isMyPlan || plan.three_days_passed) {
     return null;
   }
 

@@ -1,10 +1,11 @@
+import { useRefresh } from '@hooks/common';
 import { fetchStudyRoomList } from 'api/room';
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useQuery } from 'react-query';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { studyRoomListRefreshingState, tabState } from 'recoil/room/atoms';
+import { useRecoilValue } from 'recoil';
+import { tabState } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
 import StudyRoomListItem from './StudyRoomListItem';
@@ -13,11 +14,15 @@ import StudyRoomStatus from './StudyRoomStatus';
 function StudyRoomList() {
   /** 스터디룸 리스트 출력 필터 */
   const tab = useRecoilValue(tabState);
+  const { refresh, onRefresh } = useRefresh('home/studyroomlist');
 
   /** 리프레시 상태일 경우 스터디룸 리스트 refetch */
   useEffect(() => {
-    if (refreshing) refetch();
-  }, [refetch, refreshing]);
+    if (refresh.refreshing) {
+      console.log('home refetch');
+      refetch();
+    }
+  }, [refetch, refresh]);
 
   const {
     isLoading,
@@ -54,15 +59,6 @@ function StudyRoomList() {
     },
   });
 
-  const [refreshing, setRefresh] = useRecoilState(studyRoomListRefreshingState);
-
-  const onRefresh = useCallback(() => {
-    setRefresh(true);
-    setTimeout(() => {
-      setRefresh(false);
-    }, 1000);
-  }, []);
-
   function getStudyRoomStatus(studyRoom) {
     // 현재 시각
     const today = new Date();
@@ -88,7 +84,7 @@ function StudyRoomList() {
     <Container>
       <StudyRoomScrollView
         contentContainerStyle={{ alignItems: 'center' }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={refresh.refreshing} onRefresh={onRefresh} />}
       >
         {studyRoomList.map((studyRoom) => (
           <MarginBottom key={studyRoom.room_id}>

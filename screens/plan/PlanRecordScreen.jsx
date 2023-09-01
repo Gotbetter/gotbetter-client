@@ -82,8 +82,8 @@ function PlanRecordScreen() {
             </Shadow>
           </View>
         ))}
+        <PlanRecordActionButtonSelector />
       </ScrollView>
-      <PlanRecordActionButtonSelector />
 
       <ImageView
         images={[{ uri: `data:image/png;base64,${selectedImage}` }]}
