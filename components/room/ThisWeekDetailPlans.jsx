@@ -12,6 +12,7 @@ import { myStudyRoomParticipantIdSelector } from 'recoil/room/selectors';
 import styled from 'styled-components/native';
 
 import PlanDeadline from './PlanDeadline';
+import { useNavigation } from '@react-navigation/core';
 
 ThisWeekDetailPlans.propTypes = {
   details: PropTypes.shape({
@@ -102,8 +103,11 @@ function ThisWeekDetailPlans({ details }) {
 const DetailPlanItem = ({ detailPlan }) => {
   const { content, complete } = detailPlan;
 
+  const navigation = useNavigation();
   return (
-    <DetailPlan>
+    <DetailPlan
+      onPress={() => navigation.navigate('plan-routes', { screen: 'detail', params: { detailPlan, isMyPlan: true } })}
+    >
       <CheckBox>{complete && <Feather name={'check'} color={'#000000'} size={RFValue(20)} />}</CheckBox>
       <Description numberOfLines={1}>{content}</Description>
     </DetailPlan>
@@ -144,7 +148,7 @@ const DetailPlanContainer = styled.View`
 
   margin-top: ${RFValue(12)}px;
 `;
-const DetailPlan = styled.View`
+const DetailPlan = styled.TouchableOpacity`
   padding-vertical: ${RFValue(12)}px;
   flex-direction: row;
 `;
