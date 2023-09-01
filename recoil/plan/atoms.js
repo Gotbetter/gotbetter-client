@@ -1,18 +1,5 @@
 import { atom } from 'recoil';
 
-const planFetchParamsState = atom({
-  key: 'planFetchParamsState',
-  default: {
-    participantId: null,
-    week: null,
-  },
-});
-
-const planState = atom({
-  key: 'planState',
-  default: null,
-});
-
 const planAddModeState = atom({
   key: 'PlanAddModeState',
   default: false,
@@ -28,11 +15,6 @@ const planOppositeModalState = atom({
   default: false,
 });
 
-const detailPlanState = atom({
-  key: 'detailPlanState',
-  default: [],
-});
-
 const detailPlanRecordRequest = atom({
   key: 'detailPlanRecordRequest',
   default: {
@@ -42,12 +24,4 @@ const detailPlanRecordRequest = atom({
   },
 });
 
-export {
-  detailPlanState,
-  planFetchParamsState,
-  planState,
-  detailPlanRecordRequest,
-  planOppositeModalState,
-  planAddModeState,
-  planModifyModeState,
-};
+export { detailPlanRecordRequest, planOppositeModalState, planAddModeState, planModifyModeState };
