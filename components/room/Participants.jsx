@@ -5,8 +5,7 @@ import React from 'react';
 import { Text } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { planFetchParamsState } from 'recoil/plan/atoms';
+import { useRecoilValue } from 'recoil';
 import { myStudyRoomAuthority } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
@@ -34,12 +33,14 @@ function Participants({ details, participants }) {
   const navigation = useNavigation();
 
   const isLeader = useRecoilValue(myStudyRoomAuthority);
-  const setPlanFetchParams = useSetRecoilState(planFetchParamsState);
 
   /** 프로필 누르면 해당 참여자의 계획 화면으로 이동 */
   const onPressProfile = (participantId, username) => {
-    navigation.navigate('plan-routes', { username });
-    setPlanFetchParams((prev) => ({ ...prev, participantId, week: details.current_week }));
+    navigation.navigate('plan-routes', {
+      planner: { username, participantId },
+      plan: { week: details.current_week },
+      studyRoomDetails: { ...details },
+    });
   };
 
   return (
