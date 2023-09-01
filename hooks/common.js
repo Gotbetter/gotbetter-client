@@ -1,4 +1,6 @@
-import { useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/core';
+import * as Clipboard from 'expo-clipboard';
+import { useCallback, useState } from 'react';
 import { useRecoilState, useResetRecoilState } from 'recoil';
 import { modalSelectorFamily } from 'recoil/common/modal/selector';
 import { refreshSelectorFamily } from 'recoil/common/refresh/selector';
@@ -36,4 +38,22 @@ const useRefresh = (refreshId) => {
   return { refresh, onRefresh };
 };
 
-export { useModal, useRefresh };
+const useStringClipboard = () => {
+  const [isCopied, setIsCopied] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  const copyToClipboard = async (data) => {
+    try {
+      await Clipboard.setStringAsync(data);
+      setIsCopied(true);
+      setIsError(false);
+    } catch {
+      setIsCopied(false);
+      setIsError(true);
+    }
+  };
+
+  return { copyToClipboard, isCopied, setIsCopied, isError };
+};
+
+export { useModal, useRefresh, useStringClipboard };
