@@ -58,7 +58,7 @@ function Participants({ details, participants }) {
             onPress={() => onPressProfile(participant.participant_id, participant.username)}
           >
             <Profile
-              style={{ width: 50, height: 50, borderRadius: 50 }}
+              style={{ width: wp(10), height: wp(10), borderRadius: wp(10) }}
               image={participant.profile}
               resizeMode="contain"
               alt="error"
@@ -105,7 +105,7 @@ const ParticipantsListContainer = styled.View`
 
 const Participant = styled.TouchableOpacity`
   width: 25%;
-  height: ${RFValue(80)}px;
+  height: ${hp(10)}px;
 
   justify-content: space-around;
   align-items: center;
