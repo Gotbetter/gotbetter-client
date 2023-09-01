@@ -1,22 +1,20 @@
 import BackButton from '@components/common/btn/BackButton';
 import { useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import PlanRecordFormScreen from '@screens/plan/PlanRecordFormScreen';
-import PlanRecordScreen from '@screens/plan/PlanRecordScreen';
-import PlanScreen from '@screens/plan/PlanScreen';
+import { PlanRecordFormScreen, PlanRecordScreen, PlanScreen } from '@screens/plan';
 import React from 'react';
 
 const Plan = createNativeStackNavigator();
 
 const PlanRoutes = () => {
-  const { username } = useRoute().params;
+  const { planner, studyRoomDetails } = useRoute().params;
 
   return (
     <Plan.Navigator initialRouteName="plan">
       <Plan.Screen
         name="plan"
         component={PlanScreen}
-        initialParams={{ username }}
+        initialParams={{ planner, studyRoomDetails }}
         options={{
           headerTitleAlign: 'center',
           headerBackVisible: false,
