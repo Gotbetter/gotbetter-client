@@ -7,12 +7,6 @@ const tabState = atom({
   default: '전체',
 });
 
-/** 홈 화면 스크롤 뷰 새로고침 요청 상태 */
-const studyRoomListRefreshingState = atom({
-  key: 'studyRoomListRefreshing',
-  default: false,
-});
-
 /** 스터디룸 만들기 request */
 const studyRoomCreateRequest = atom({
   key: 'studyRoomCreateRequest',
@@ -42,10 +36,4 @@ const myStudyRoomParticipantId = atom({
   default: -1,
 });
 
-export {
-  tabState,
-  studyRoomListRefreshingState,
-  studyRoomCreateRequest,
-  myStudyRoomAuthority,
-  myStudyRoomParticipantId,
-};
+export { tabState, studyRoomCreateRequest, myStudyRoomAuthority, myStudyRoomParticipantId };
