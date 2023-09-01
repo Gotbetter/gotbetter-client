@@ -1,8 +1,7 @@
 import { useRoute } from '@react-navigation/native';
 import React from 'react';
 
-import PlanRecordAdd from './PlanRecordAdd';
-import PlanRecordOpposite from './PlanRecordOpposite';
+import { PlanRecordAdd, PlanRecordOpposite } from './index';
 
 function PlanRecordActionButtonSelector() {
   const { isMyPlan, isEnd } = useRoute().params;

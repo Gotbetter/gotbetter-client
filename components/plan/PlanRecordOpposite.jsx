@@ -5,8 +5,8 @@ import Toast from 'react-native-root-toast';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components/native';
 
-import OppositeButton from './OppositeButton';
-import OppositeModal from './OppositeModal';
+import OppositeButton from './btn/OppositeButton';
+import OppositeModal from './modal/OppositeModal';
 
 function PlanRecordOpposite(props) {
   const { detailPlan, planId } = useRoute().params;

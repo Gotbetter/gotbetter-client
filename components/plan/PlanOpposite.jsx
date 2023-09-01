@@ -1,6 +1,6 @@
 import InfoView from '@components/common/InfoView';
-import OppositeButton from '@components/plan/OppositeButton';
-import OppositeModal from '@components/plan/OppositeModal';
+import OppositeButton from '@components/plan/btn/OppositeButton';
+import OppositeModal from '@components/plan/modal/OppositeModal';
 import { dislikePlan, fetchPlanDislike, undoDislikePlan } from 'api/plan';
 import { format } from 'pretty-format';
 import PropTypes from 'prop-types';

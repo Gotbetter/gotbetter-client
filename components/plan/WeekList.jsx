@@ -1,21 +1,21 @@
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Feather from 'react-native-vector-icons/Feather';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { planFetchParamsState } from 'recoil/plan/atoms';
-import { studyRoomDetail } from 'recoil/room/atoms';
 import styled from 'styled-components/native';
 
-function WeekList() {
-  /**
-   * @var current_week: 현재 스터디룸의 주차
-   * @var week: 스터디룸의 전체 주차
-   */
-  const { current_week: currentWeek, week: totalWeek } = useRecoilValue(studyRoomDetail);
+WeekList.propTypes = {
+  weekInfo: PropTypes.shape({
+    selectedWeek: PropTypes.number.isRequired,
+    totalWeek: PropTypes.number.isRequired,
+    currentWeek: PropTypes.number.isRequired,
+  }).isRequired,
+  onPress: PropTypes.func.isRequired,
+};
 
-  /** 현재 선택한 주차 정보 */
-  const [{ week: selectedWeek }, setSelectedWeek] = useRecoilState(planFetchParamsState);
+function WeekList({ weekInfo, onPress }) {
+  const { selectedWeek, totalWeek, currentWeek } = weekInfo;
   const [offset, setOffset] = useState(Math.ceil(selectedWeek / 5) - 1);
 
   const [weekList] = useState(() => {
@@ -51,7 +51,7 @@ function WeekList() {
         {weekList[offset].map((week) => (
           <Week
             key={week}
-            onPress={() => setSelectedWeek((prev) => ({ ...prev, week }))}
+            onPress={() => onPress(week)}
             border={week === selectedWeek ? 0 : '1px solid #C4C4C4'}
             backgroundColor={selectedWeek === week ? '#3333FF' : week < currentWeek ? '#D9D9D9' : '#ffffff'}
             disabled={week > currentWeek}

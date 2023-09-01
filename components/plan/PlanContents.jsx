@@ -1,8 +1,7 @@
-import PlanAdd from '@components/plan/PlanAdd';
-import PlanOpposite from '@components/plan/PlanOpposite';
 import { useRoute } from '@react-navigation/native';
 import { fetchDetailPlan, fetchPlan } from 'api/plan';
 import { format } from 'pretty-format';
+import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 import { Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -10,18 +9,23 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { useQuery } from 'react-query';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
 import { user } from 'recoil/auth/atoms';
-import { planAddModeState, planFetchParamsState, planModifyModeState } from 'recoil/plan/atoms';
+import { planAddModeState, planModifyModeState } from 'recoil/plan/atoms';
 import styled from 'styled-components/native';
 
+import { PlanAdd, PlanList, PlanOpposite } from './index';
 import InfoView from '../../components/common/InfoView';
-import PlanList from '../../components/plan/PlanList';
 
-function PlanContents() {
-  const { username } = useRoute().params;
+PlanContents.propTypes = {
+  fetchWeek: PropTypes.number.isRequired,
+};
+
+function PlanContents({ fetchWeek }) {
+  const {
+    planner: { username, participantId },
+  } = useRoute().params;
+
   const myInfo = useRecoilValue(user);
   const isMyPlan = useMemo(() => username === myInfo.username, [myInfo.username, username]);
-
-  const { participantId, week } = useRecoilValue(planFetchParamsState);
 
   const resetPlanInputMode = useResetRecoilState(planAddModeState);
   const resetPlanModifyMode = useResetRecoilState(planModifyModeState);
@@ -42,14 +46,14 @@ function PlanContents() {
     isLoading: planLoading,
     isError: planError,
     data: plan,
-  } = useQuery(['plan', participantId, week], () => fetchPlan(participantId, week), {
+  } = useQuery(['plan', participantId, fetchWeek], () => fetchPlan(participantId, fetchWeek), {
     staleTime: 500000,
     onError: (err) => {
       console.log(format(err.response.status));
-      console.log(format(`[PlanFetcher] error fetching plan participant_id=${participantId} week=${week}`));
+      console.log(format(`[PlanFetch] error fetching plan participant_id=${participantId} week=${fetchWeek}`));
     },
     onSuccess: (data) => {
-      console.log(format(`[PlanFetcher] fetching plan participant_id=${participantId} week=${week}`));
+      console.log(format(`[PlanFetch] fetching plan participant_id=${participantId} week=${fetchWeek}`));
     },
     select: (res) => res.data,
   });
@@ -99,8 +103,8 @@ function PlanContents() {
           }}
           showsVerticalScrollIndicator={false}
         >
-          <PlanList plan={plan} detailPlans={detailPlans} isMyPlan={isMyPlan} />
-          <PlanAdd plan={plan} isMyPlan={isMyPlan} />
+          <PlanList fetchWeek={fetchWeek} plan={plan} detailPlans={detailPlans} isMyPlan={isMyPlan} />
+          <PlanAdd fetchWeek={fetchWeek} plan={plan} isMyPlan={isMyPlan} />
         </KeyboardAwareScrollView>
         <PlanOpposite plan={plan} detailPlans={detailPlans} isMyPlan={isMyPlan} />
       </ContentContainer>

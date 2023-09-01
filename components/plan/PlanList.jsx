@@ -1,5 +1,5 @@
 import InfoView from '@components/common/InfoView';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { completeDetailPlanRequest, completeUndoDetailPlanRequest, updateDetailPlan } from 'api/plan';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
@@ -9,22 +9,23 @@ import Toast from 'react-native-root-toast';
 import { Shadow } from 'react-native-shadow-2';
 import Feather from 'react-native-vector-icons/Feather';
 import { useMutation, useQueryClient } from 'react-query';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { planFetchParamsState, planModifyModeState } from 'recoil/plan/atoms';
-import { studyRoomDetail } from 'recoil/room/atoms';
+import { useRecoilState } from 'recoil';
+import { planModifyModeState } from 'recoil/plan/atoms';
 import styled from 'styled-components/native';
 
 import DropDown from './DropDown';
 
 PlanList.propTypes = {
+  fetchWeek: PropTypes.number.isRequired,
   plan: PropTypes.shape({ plan_id: PropTypes.number, three_days_passed: PropTypes.bool }),
   detailPlans: PropTypes.arrayOf(PropTypes.object),
   isMyPlan: PropTypes.bool,
 };
 
-function PlanList({ plan, detailPlans, isMyPlan }) {
-  const studyRoom = useRecoilValue(studyRoomDetail);
-  const { week } = useRecoilValue(planFetchParamsState);
+function PlanList({ fetchWeek, plan, detailPlans, isMyPlan }) {
+  const {
+    studyRoomDetails: { current_week },
+  } = useRoute().params;
 
   const queryClient = useQueryClient();
   const navigation = useNavigation();
@@ -39,6 +40,7 @@ function PlanList({ plan, detailPlans, isMyPlan }) {
     setModifyPlanId(detailPlanId);
   };
 
+  /** 세부계획 수정하기 */
   const { mutate: update } = useMutation(() => updateDetailPlan(plan.plan_id, modifyPlanId, modifyRequest), {
     onSuccess: (res) => {
       console.log(`success update detailPlan complete detailPlanId=${modifyPlanId}`);
@@ -47,6 +49,7 @@ function PlanList({ plan, detailPlans, isMyPlan }) {
     },
   });
 
+  /** 세부계획 완료처리 */
   const { mutate: completeDetailPlan } = useMutation(
     (detailPlanId) => completeDetailPlanRequest(plan.plan_id, detailPlanId),
     {
@@ -62,6 +65,7 @@ function PlanList({ plan, detailPlans, isMyPlan }) {
     },
   );
 
+  /** 세부계획 완료 취소하기 */
   const { mutate: completeUndoDetailPlan } = useMutation(
     (detailPlanId) => completeUndoDetailPlanRequest(plan.plan_id, detailPlanId),
     {
@@ -103,12 +107,12 @@ function PlanList({ plan, detailPlans, isMyPlan }) {
                   detailPlan,
                   planId: plan.plan_id,
                   isMyPlan,
-                  isEnd: week < studyRoom.current_week,
+                  isEnd: fetchWeek < current_week,
                 })
               }
             >
               <CheckBox
-                disabled={!isMyPlan || week < studyRoom.current_week}
+                disabled={!isMyPlan || fetchWeek < current_week}
                 onPress={() =>
                   detailPlan.complete
                     ? completeUndoDetailPlan(detailPlan.detail_plan_id)
@@ -128,7 +132,7 @@ function PlanList({ plan, detailPlans, isMyPlan }) {
               ) : (
                 <Description numberOfLines={1}>{detailPlan.content}</Description>
               )}
-              {week >= studyRoom.current_week && !plan.three_days_passed ? (
+              {fetchWeek >= current_week && !plan.three_days_passed ? (
                 <DropDown
                   plan={plan}
                   detailPlanId={detailPlan.detail_plan_id}
