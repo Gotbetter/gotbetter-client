@@ -1,4 +1,3 @@
-import { useFocusEffect } from '@react-navigation/core';
 import * as Clipboard from 'expo-clipboard';
 import { useCallback, useState } from 'react';
 import { useRecoilState, useResetRecoilState } from 'recoil';
