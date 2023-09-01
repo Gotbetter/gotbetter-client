@@ -1,13 +1,27 @@
 import ModalButton from '@components/common/btn/ModalButton';
 import ListModal from '@components/common/modal/ListModal';
 import { useModal } from '@hooks/common';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Shadow } from 'react-native-shadow-2';
 import styled from 'styled-components/native';
 
+StudyRoomInfoModal.propTypes = {
+  details: PropTypes.shape({
+    title: PropTypes.string,
+    room_code: PropTypes.string,
+    account: PropTypes.string,
+    start_date: PropTypes.string,
+    max_user_num: PropTypes.number,
+    current_user_num: PropTypes.number,
+    entry_fee: PropTypes.number,
+    rule: PropTypes.string,
+  }),
+};
+
 function StudyRoomInfoModal({ details }) {
-  const { title, room_code, account, start_date, max_user_num, current_user_num, entry_fee } = details;
+  const { title, rule, room_code, account, start_date, max_user_num, current_user_num, entry_fee } = details;
 
   const {
     modal: { visible },
@@ -23,6 +37,10 @@ function StudyRoomInfoModal({ details }) {
             <InfoGroup>
               <InfoLabel>방 이름</InfoLabel>
               <Description>{title}</Description>
+            </InfoGroup>
+            <InfoGroup>
+              <InfoLabel>방 규칙</InfoLabel>
+              <Description>{rule}</Description>
             </InfoGroup>
             <InfoGroup>
               <InfoLabel>방 코드</InfoLabel>
