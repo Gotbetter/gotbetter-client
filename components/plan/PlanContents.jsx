@@ -112,7 +112,7 @@ function PlanContents({ fetchWeek }) {
           <AddButtonIcon onPress={openModal} />
         </KeyboardAwareScrollView>
         <PlanOpposite plan={plan} detailPlans={detailPlans} isMyPlan={isMyPlan} />
-        <PlanAddModal plan={plan} />
+        <PlanAddModal week={fetchWeek} />
       </ContentContainer>
     </TouchableWithoutFeedback>
   );

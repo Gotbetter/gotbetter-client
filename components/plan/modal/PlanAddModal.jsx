@@ -1,7 +1,6 @@
 import ModalButton from '@components/common/btn/ModalButton';
 import ListModal from '@components/common/modal/ListModal';
 import { useModal } from '@hooks/common';
-import { useRoute } from '@react-navigation/core';
 import { createDetailPlan } from 'api/plan';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
@@ -14,12 +13,10 @@ PlanAddModal.propTypes = {
   plan: PropTypes.shape({
     plan_id: PropTypes.number.isRequired,
   }),
+  week: PropTypes.number.isRequired,
 };
 
-function PlanAddModal({ plan }) {
-  const {
-    studyRoomDetails: { current_week },
-  } = useRoute().params;
+function PlanAddModal({ plan, week }) {
   const { modal, hideModal } = useModal('planAddModal');
 
   const queryClient = useQueryClient();
@@ -48,7 +45,7 @@ function PlanAddModal({ plan }) {
   return (
     <ListModal visible={modal.visible} onRequestClose={onPressHide}>
       <Container>
-        <Title>{current_week}주차 계획 세우기</Title>
+        <Title>{week}주차 계획 세우기</Title>
         <Input value={request} onChangeText={setRequest} placeholder={'계획을 입력해주세요...'} multiline={true} />
         <ModalButton title={'닫기'} width={wp(20)} height={hp(4)} color={'#979797'} onPress={onPressHide} />
         <ModalButton

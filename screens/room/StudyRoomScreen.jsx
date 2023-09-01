@@ -57,7 +57,7 @@ function StudyRoomScreen() {
     }
     navigation.setOptions({
       title: studyRoomDetails.title,
-      headerRight: () => <Feather name={'info'} size={30} onPress={openModal} />,
+      headerRight: () => <Feather name={'info'} size={RFValue(20)} onPress={openModal} />,
     });
   }, [navigation, openModal, roomId, studyRoomDetails]);
 
