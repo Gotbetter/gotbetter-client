@@ -1,3 +1,5 @@
+import AddButtonIcon from '@components/common/icon/AddButtonIcon';
+import { useModal } from '@hooks/common';
 import { useRoute } from '@react-navigation/native';
 import { fetchDetailPlan, fetchPlan } from 'api/plan';
 import { format } from 'pretty-format';
@@ -12,7 +14,8 @@ import { user } from 'recoil/auth/atoms';
 import { planAddModeState, planModifyModeState } from 'recoil/plan/atoms';
 import styled from 'styled-components/native';
 
-import { PlanAdd, PlanList, PlanOpposite } from './index';
+import { PlanList, PlanOpposite } from './index';
+import PlanAddModal from './modal/PlanAddModal';
 import InfoView from '../../components/common/InfoView';
 
 PlanContents.propTypes = {
@@ -26,6 +29,8 @@ function PlanContents({ fetchWeek }) {
 
   const myInfo = useRecoilValue(user);
   const isMyPlan = useMemo(() => username === myInfo.username, [myInfo.username, username]);
+
+  const { openModal } = useModal('planAddModal');
 
   const resetPlanInputMode = useResetRecoilState(planAddModeState);
   const resetPlanModifyMode = useResetRecoilState(planModifyModeState);
@@ -104,9 +109,10 @@ function PlanContents({ fetchWeek }) {
           showsVerticalScrollIndicator={false}
         >
           <PlanList fetchWeek={fetchWeek} plan={plan} detailPlans={detailPlans} isMyPlan={isMyPlan} />
-          <PlanAdd fetchWeek={fetchWeek} plan={plan} isMyPlan={isMyPlan} />
+          <AddButtonIcon onPress={openModal} />
         </KeyboardAwareScrollView>
         <PlanOpposite plan={plan} detailPlans={detailPlans} isMyPlan={isMyPlan} />
+        <PlanAddModal plan={plan} />
       </ContentContainer>
     </TouchableWithoutFeedback>
   );

@@ -70,17 +70,18 @@ function PlanRecordFormScreen() {
           <TitleInput
             value={request.recordTitle}
             onChangeText={(text) => onChange('recordTitle', text)}
-            placeholder="계획 제목을 작성해주세요."
+            placeholder="인증 내역을 요약할 수 있는 글을 적어주세요."
           />
         </InputGroup>
         <InputGroup>
           <Label>내용</Label>
+          <TextLimit fulfiled={request.recordBody.length === 60}>{request.recordBody.length} / 60</TextLimit>
           <ContentInput
             value={request.recordBody}
             maxLength={60}
             multiline={true}
             onChangeText={(text) => onChange('recordBody', text)}
-            placeholder="구체적으로 계획 내용을 작성해주세요."
+            placeholder="구체적으로 인증 내용을 작성해주세요."
           />
         </InputGroup>
         <ActionButton
@@ -104,6 +105,10 @@ const Form = styled.View`
 `;
 
 const InputGroup = styled.View`
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+
   width: ${wp(90)}px;
 `;
 
@@ -112,12 +117,19 @@ const Label = styled.Text`
   font-size: ${RFValue(20)}px;
 `;
 
+const TextLimit = styled.Text`
+  margin-left: ${wp(2)}px;
+
+  color: ${({ fulfiled }) => (fulfiled ? 'red' : '#979797')};
+  font-size: ${RFValue(16)}px;
+`;
+
 const TitleInput = styled.TextInput`
   width: 100%;
-  height: ${RFValue(56)}px;
+  height: ${hp(7)}px;
 
   padding: ${RFValue(12)}px;
-  margin-top: ${RFValue(12)}px;
+  margin-top: ${hp(4)}px;
 
   background-color: #ffffff;
   border-radius: 10px;
@@ -125,15 +137,11 @@ const TitleInput = styled.TextInput`
 `;
 
 const ContentInput = styled.TextInput`
-  width: ${wp(90)}px;
-  height: ${RFValue(140)}px;
-
+  width: 100%;
   border: 1px solid #e0e0e0;
   border-radius: 10px;
   background-color: #ffffff;
-
-  margin-top: ${RFValue(12)}px;
-  text-align-vertical: top;
+  margin-top: ${hp(4)}px;
 
   padding: ${RFValue(12)}px;
 `;

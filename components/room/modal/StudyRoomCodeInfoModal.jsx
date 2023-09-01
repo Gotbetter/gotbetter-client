@@ -1,10 +1,10 @@
 import ModalButton from '@components/common/btn/ModalButton';
 import SmallInfoModal from '@components/common/modal/SmallInfoModal';
-import { useModal } from '@hooks/common';
-import * as Clipboard from 'expo-clipboard';
+import { useModal, useStringClipboard } from '@hooks/common';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
+import Toast from 'react-native-root-toast';
 import styled from 'styled-components/native';
 
 StudyRoomCodeInfoModal.propTypes = {
@@ -20,12 +20,19 @@ function StudyRoomCodeInfoModal({ details }) {
     hideModal,
   } = useModal('studyRoomCodeInfo');
 
-  const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(room_code);
+  const { copyToClipboard, isCopied, setIsCopied, isError } = useStringClipboard();
+
+  const hide = () => {
+    hideModal();
+    setIsCopied(false);
   };
 
+  useEffect(() => {
+    if (isError) Toast.show('클립보드 복사 실패', { duration: Toast.durations.SHORT });
+  }, [isError]);
+
   return (
-    <SmallInfoModal visible={visible} onRequestClose={hideModal}>
+    <SmallInfoModal visible={visible} onRequestClose={hide}>
       <Container>
         <Label>초대하기</Label>
         <CodeNumber>코드번호: {room_code}</CodeNumber>
@@ -34,8 +41,8 @@ function StudyRoomCodeInfoModal({ details }) {
           <Description> 친구에게 전달해주세요.</Description>
         </DescriptionContainer>
         <ButtonContainer>
-          <ModalButton title={'닫기'} onPress={hideModal} />
-          <ModalButton title={'복사하기'} highlight onPress={copyToClipboard} />
+          <ModalButton title={'닫기'} onPress={hide} />
+          <ModalButton title={'복사하기'} highlight={isCopied} onPress={() => copyToClipboard(room_code)} />
         </ButtonContainer>
       </Container>
     </SmallInfoModal>
