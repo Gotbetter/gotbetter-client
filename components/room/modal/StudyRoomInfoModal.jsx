@@ -1,10 +1,12 @@
 import ModalButton from '@components/common/btn/ModalButton';
 import ListModal from '@components/common/modal/ListModal';
-import { useModal } from '@hooks/common';
+import { useModal, useStringClipboard } from '@hooks/common';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
+import Toast from 'react-native-root-toast';
 import { Shadow } from 'react-native-shadow-2';
+import Feather from 'react-native-vector-icons/Feather';
 import styled from 'styled-components/native';
 
 StudyRoomInfoModal.propTypes = {
@@ -28,8 +30,19 @@ function StudyRoomInfoModal({ details }) {
     hideModal,
   } = useModal('studyRoomInfo');
 
+  const { copyToClipboard, isCopied, setIsCopied, isError } = useStringClipboard();
+
+  useEffect(() => {
+    if (isError) Toast.show('클립보드 복사 실패', { duration: Toast.durations.SHORT });
+  }, [isError]);
+
+  const hide = () => {
+    hideModal();
+    setIsCopied(false);
+  };
+
   return (
-    <ListModal visible={visible} onRequestClose={hideModal}>
+    <ListModal visible={visible} onRequestClose={hide}>
       <Container>
         <Label>방 정보</Label>
         <Shadow style={{ borderRadius: 10 }} distance={1} offset={[0, 2]}>
@@ -62,14 +75,22 @@ function StudyRoomInfoModal({ details }) {
               <InfoLabel>시작 날짜</InfoLabel>
               <Description>{start_date}</Description>
             </InfoGroup>
-            <InfoGroup>
-              <InfoLabel>계좌 번호</InfoLabel>
-              <Description>{account}</Description>
-            </InfoGroup>
+            <AccountWrapper>
+              <InfoGroup>
+                <InfoLabel>계좌 번호</InfoLabel>
+                <Description>{account}</Description>
+              </InfoGroup>
+              <CopyIcon
+                name={'copy'}
+                size={20}
+                color={isCopied ? '#3333ff' : '#979797'}
+                onPress={() => copyToClipboard(account)}
+              />
+            </AccountWrapper>
           </InfoContainer>
         </Shadow>
         <ButtonContainer>
-          <ModalButton title={'닫기'} onPress={hideModal} />
+          <ModalButton title={'닫기'} onPress={hide} />
         </ButtonContainer>
       </Container>
     </ListModal>
@@ -92,6 +113,16 @@ const InfoContainer = styled.View`
   border-color: #f3f3f3;
   border-radius: 10px;
   background-color: #ffffff;
+`;
+
+const AccountWrapper = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const CopyIcon = styled(Feather)`
+  margin-right: ${RFValue(12)}px;
 `;
 
 const InfoGroup = styled.View`
