@@ -16,6 +16,8 @@ PlanAddModal.propTypes = {
   week: PropTypes.number.isRequired,
 };
 
+// TODO 주차 넘어가면 추가 버튼 안나오게 하기
+
 function PlanAddModal({ plan, week }) {
   const { modal, hideModal } = useModal('planAddModal');
 

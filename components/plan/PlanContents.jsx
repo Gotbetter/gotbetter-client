@@ -24,6 +24,7 @@ PlanContents.propTypes = {
 
 function PlanContents({ fetchWeek }) {
   const {
+    studyRoomDetails: { current_week },
     planner: { username, participantId },
   } = useRoute().params;
 
@@ -109,10 +110,10 @@ function PlanContents({ fetchWeek }) {
           showsVerticalScrollIndicator={false}
         >
           <PlanList fetchWeek={fetchWeek} plan={plan} detailPlans={detailPlans} isMyPlan={isMyPlan} />
-          <AddButtonIcon onPress={openModal} />
+          {fetchWeek === current_week && isMyPlan && !plan.three_days_passed && <AddButtonIcon onPress={openModal} />}
         </KeyboardAwareScrollView>
         <PlanOpposite plan={plan} detailPlans={detailPlans} isMyPlan={isMyPlan} />
-        <PlanAddModal week={fetchWeek} />
+        <PlanAddModal plan={plan} week={fetchWeek} />
       </ContentContainer>
     </TouchableWithoutFeedback>
   );
