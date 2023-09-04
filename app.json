@@ -2,7 +2,7 @@
   "expo": {
     "name": "gotbetter-client",
     "slug": "gotbetter-client",
-    "version": "0.0.3",
+    "version": "0.0.3.1",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
@@ -22,7 +22,7 @@
         "backgroundColor": "#ffffff"
       },
 
-      "versionCode": 5,
+      "versionCode": 6,
       "package": "com.jjinyeok.gotbetterclient"
     },
     "web": {
