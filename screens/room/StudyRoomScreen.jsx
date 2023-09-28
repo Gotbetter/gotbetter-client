@@ -1,12 +1,11 @@
 import Description from '@components/room/Description';
 import Participants from '@components/room/Participants';
 import Schedules from '@components/room/Schedules';
-import StudyRoomCodeInfoModal from '@components/room/modal/StudyRoomCodeInfoModal';
 import { useModal, useRefresh } from '@hooks/common';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { fetchStudyRoomDetail, fetchStudyRoomParticipants } from 'api/room';
 import React, { useEffect, useMemo } from 'react';
-import { RefreshControl, ScrollView, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Feather from 'react-native-vector-icons/Feather';
 import { useQuery } from 'react-query';
@@ -14,7 +13,6 @@ import { useSetRecoilState } from 'recoil';
 import { myStudyRoomAuthoritySelector, myStudyRoomParticipantIdSelector } from 'recoil/room/selectors';
 import styled from 'styled-components/native';
 
-import InviteButton from '../../components/room/InviteButton';
 import ThisWeekDetailPlans from '../../components/room/ThisWeekDetailPlans';
 import StudyRoomInfoModal from '../../components/room/modal/StudyRoomInfoModal';
 
@@ -134,12 +132,8 @@ function StudyRoomScreen() {
         <ThisWeekDetailPlans details={studyRoomDetails} />
       </ScrollView>
 
-      {/* 초대하기 버튼 방장에게만 보임 */}
-      <InviteButton />
       {/* 방 정보 모달 */}
       <StudyRoomInfoModal details={studyRoomDetails} />
-      {/* 초대코드 정보 모달 */}
-      <StudyRoomCodeInfoModal details={studyRoomDetails} />
     </Container>
   );
 }
