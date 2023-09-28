@@ -2,13 +2,15 @@ import InfoView from '@components/common/InfoView';
 import PlanRecordActionButtonSelector from '@components/plan/PlanRecordActionButtonSelector';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { fetchDetailPlanRecords } from 'api/plan';
-import React, { useEffect, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, TouchableOpacity } from 'react-native';
 import ImageView from 'react-native-image-viewing';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { Shadow } from 'react-native-shadow-2';
 import { useQuery } from 'react-query';
+import { useSetRecoilState } from 'recoil';
+import { detailPlanRecordRequest } from 'recoil/plan/atoms';
 import styled from 'styled-components/native';
 
 function PlanRecordScreen() {
@@ -18,15 +20,23 @@ function PlanRecordScreen() {
   const [visible, setVisible] = useState(false);
   const [selectedImage, selectImage] = useState(null);
 
-  useEffect(() => {
-    navigation.setOptions({
-      title: detailPlan.content,
-    });
-  }, [detailPlan.content, navigation]);
+  const setRecordRequest = useSetRecoilState(detailPlanRecordRequest);
 
   const onPressPreview = (url) => {
     setVisible(true);
     selectImage(url);
+  };
+
+  const onPressRecord = (record) => {
+    const { record_title, record_body, record_photo, record_id } = record;
+
+    setRecordRequest({
+      recordTitle: record_title,
+      recordBody: record_body,
+      recordPhoto: { uri: null, base64: record_photo },
+    });
+
+    navigation.navigate('confirm', { recordId: record_id, detailPlan });
   };
 
   /**
@@ -67,7 +77,7 @@ function PlanRecordScreen() {
         showsVerticalScrollIndicator={false}
       >
         {records.map((plan, index) => (
-          <View key={index} style={{ marginBottom: RFValue(12) }}>
+          <TouchableOpacity key={index} style={{ marginBottom: RFValue(12) }} onPress={() => onPressRecord(plan)}>
             <Shadow style={{ borderRadius: 10 }} distance={2} offset={[0, 2]}>
               <Plan>
                 <Date>{plan.last_update_date}</Date>
@@ -80,7 +90,7 @@ function PlanRecordScreen() {
                 </InfoGroup>
               </Plan>
             </Shadow>
-          </View>
+          </TouchableOpacity>
         ))}
         <PlanRecordActionButtonSelector />
       </ScrollView>
