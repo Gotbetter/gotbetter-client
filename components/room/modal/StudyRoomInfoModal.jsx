@@ -30,15 +30,27 @@ function StudyRoomInfoModal({ details }) {
     hideModal,
   } = useModal('studyRoomInfo');
 
-  const { copyToClipboard, isCopied, setIsCopied, isError } = useStringClipboard();
+  const {
+    copyToClipboard: copyRoomCode,
+    isCopied: isRoomCodeCopied,
+    isError: roomCodeError,
+    reset: resetRoomCode,
+  } = useStringClipboard('roomCode');
+  const {
+    copyToClipboard: copyAccount,
+    isCopied: isAccountCopied,
+    isError: accountError,
+    reset: resetAccount,
+  } = useStringClipboard('account');
 
   useEffect(() => {
-    if (isError) Toast.show('클립보드 복사 실패', { duration: Toast.durations.SHORT });
-  }, [isError]);
+    if (roomCodeError || accountError) Toast.show('클립보드 복사 실패', { duration: Toast.durations.SHORT });
+  }, [accountError, roomCodeError]);
 
   const hide = () => {
     hideModal();
-    setIsCopied(false);
+    resetRoomCode();
+    resetAccount();
   };
 
   return (
@@ -55,10 +67,18 @@ function StudyRoomInfoModal({ details }) {
               <InfoLabel>방 규칙</InfoLabel>
               <Description>{rule}</Description>
             </InfoGroup>
-            <InfoGroup>
-              <InfoLabel>방 코드</InfoLabel>
-              <Description>{room_code}</Description>
-            </InfoGroup>
+            <RowDirectionWrapper>
+              <InfoGroup>
+                <InfoLabel>방 코드</InfoLabel>
+                <Description>{room_code}</Description>
+              </InfoGroup>
+              <CopyIcon
+                name={'copy'}
+                size={20}
+                color={isRoomCodeCopied ? '#3333ff' : '#979797'}
+                onPress={() => copyRoomCode(room_code)}
+              />
+            </RowDirectionWrapper>
             <InfoGroup>
               <InfoLabel>현재 인원</InfoLabel>
               <Description>{current_user_num}명</Description>
@@ -75,7 +95,7 @@ function StudyRoomInfoModal({ details }) {
               <InfoLabel>시작 날짜</InfoLabel>
               <Description>{start_date}</Description>
             </InfoGroup>
-            <AccountWrapper>
+            <RowDirectionWrapper>
               <InfoGroup>
                 <InfoLabel>계좌 번호</InfoLabel>
                 <Description>{account}</Description>
@@ -83,10 +103,10 @@ function StudyRoomInfoModal({ details }) {
               <CopyIcon
                 name={'copy'}
                 size={20}
-                color={isCopied ? '#3333ff' : '#979797'}
-                onPress={() => copyToClipboard(account)}
+                color={isAccountCopied ? '#3333ff' : '#979797'}
+                onPress={() => copyAccount(account)}
               />
-            </AccountWrapper>
+            </RowDirectionWrapper>
           </InfoContainer>
         </Shadow>
         <ButtonContainer>
@@ -115,7 +135,7 @@ const InfoContainer = styled.View`
   background-color: #ffffff;
 `;
 
-const AccountWrapper = styled.View`
+const RowDirectionWrapper = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;

@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { fetchUser } from 'api/auth';
 import format from 'pretty-format';
-import React from 'react';
+import React, { useCallback } from 'react';
 import Toast from 'react-native-root-toast';
 import { useQuery } from 'react-query';
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
@@ -19,20 +19,20 @@ function HomeScreen() {
   const setUser = useSetRecoilState(user);
 
   const resetCreateStudyRoomRequest = useResetRecoilState(studyRoomCreateRequest);
-  useFocusEffect(() => {
-    resetCreateStudyRoomRequest();
+  useFocusEffect(
+    useCallback(() => {
+      resetCreateStudyRoomRequest();
 
-    if (data !== undefined) {
-      console.log('caching user info');
-      setUser({ ...data });
-    }
-  });
+      if (data !== undefined) {
+        setUser({ ...data });
+      }
+    }, [data, resetCreateStudyRoomRequest, setUser]),
+  );
 
   const { data } = useQuery(['user'], fetchUser, {
     retry: 1,
     staleTime: 500000,
     onSuccess: (data) => {
-      console.log('[HomeScreen]: fetching user info');
       setUser({ ...data });
     },
     onError: async (err) => {

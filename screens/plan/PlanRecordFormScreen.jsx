@@ -1,30 +1,35 @@
 import AddPhoto from '@components/common/AddPhoto';
 import ActionButton from '@components/common/btn/ActionButton';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { createDetailPlanRecord } from 'api/plan';
+import { createDetailPlanRecord, deleteDetailPlanRecord, updateDetailPlanRecord } from 'api/plan';
 import format from 'pretty-format';
 import React, { useEffect } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import Toast from 'react-native-root-toast';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useMutation, useQueryClient } from 'react-query';
 import { useRecoilState, useResetRecoilState } from 'recoil';
 import { detailPlanRecordRequest } from 'recoil/plan/atoms';
 import styled from 'styled-components/native';
-
 function PlanRecordFormScreen() {
   const queryClient = useQueryClient();
-  const { detailPlan } = useRoute().params;
+  const { detailPlan, recordId } = useRoute().params;
 
   const [request, setRequest] = useRecoilState(detailPlanRecordRequest);
   const resetRequest = useResetRecoilState(detailPlanRecordRequest);
   const navigation = useNavigation();
 
   useEffect(() => {
-    return () => resetRequest();
-  }, [resetRequest]);
+    navigation.setOptions({
+      headerRight: recordId && (() => <FontAwesome name={'trash-o'} size={RFValue(20)} onPress={deleteRecord} />),
+    });
 
-  const { mutate } = useMutation((data) => createDetailPlanRecord(detailPlan.detail_plan_id, data), {
+    return () => resetRequest();
+  }, [navigation, recordId, resetRequest, deleteRecord]);
+
+  const { mutate: create } = useMutation((data) => createDetailPlanRecord(detailPlan.detail_plan_id, data), {
     onError: (err) => {
       console.log('에러 발생');
       console.log(format(err.response));
@@ -32,7 +37,30 @@ function PlanRecordFormScreen() {
     },
     onSuccess: (res) => {
       console.log('[PlanRecordFormScreen] success createDetailPlanrecord');
-      console.log(format(res.data));
+      navigation.goBack();
+      queryClient.invalidateQueries(['planRecords', detailPlan.detail_plan_id]);
+    },
+  });
+  const { mutate: update } = useMutation((data) => updateDetailPlanRecord(detailPlan.detail_plan_id, recordId, data), {
+    onError: (err) => {
+      console.log('에러 발생');
+      console.log(format(err));
+      console.log('[PlanRecordFormScreen] failed updateDetailPlanrecord');
+    },
+    onSuccess: (res) => {
+      console.log('[PlanRecordFormScreen] success updateDetailPlanrecord');
+      navigation.goBack();
+      queryClient.invalidateQueries(['planRecords', detailPlan.detail_plan_id]);
+    },
+  });
+  const { mutate: deleteRecord } = useMutation((data) => deleteDetailPlanRecord(detailPlan.detail_plan_id, recordId), {
+    onError: (err) => {
+      console.log('에러 발생');
+      console.log(format(err));
+      console.log('[PlanRecordFormScreen] failed deleteDetailPlanrecord');
+    },
+    onSuccess: (res) => {
+      console.log('[PlanRecordFormScreen] success deleteDetailPlanrecord');
       navigation.goBack();
       queryClient.invalidateQueries(['planRecords', detailPlan.detail_plan_id]);
     },
@@ -46,6 +74,13 @@ function PlanRecordFormScreen() {
   };
 
   const onPressComplete = () => {
+    for (const key in request) {
+      if (request[key] === null || request[key] === '') {
+        Toast.show('모든 항목을 입력해 주세요.', { duration: Toast.durations.SHORT });
+        return;
+      }
+    }
+
     const formData = new FormData();
 
     const filename = request.recordPhoto.uri.split('/').pop();
@@ -55,7 +90,9 @@ function PlanRecordFormScreen() {
     formData.append('record_title', request.recordTitle);
     formData.append('record_body', request.recordBody);
     formData.append('record_photo', { name: filename, type, uri: request.recordPhoto.uri });
-    mutate(formData);
+
+    if (recordId) update(formData);
+    else create(formData);
   };
 
   return (

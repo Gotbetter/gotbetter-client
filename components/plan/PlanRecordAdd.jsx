@@ -8,7 +8,7 @@ function PlanRecordAdd(props) {
   const { detailPlan } = useRoute().params;
 
   return (
-    <ButtonContainer onPress={() => navigation.navigate('confirm', { detailPlan })}>
+    <ButtonContainer onPress={() => navigation.navigate('confirm', { detailPlan, isUpdate: false })}>
       <AddButtonIcon />
     </ButtonContainer>
   );

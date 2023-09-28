@@ -54,22 +54,18 @@ function RuleScreen(props) {
     <RoomCreateForm>
       <Label>방 규칙</Label>
       <RuleList>
-        {data.map((rule, index) => (
+        {data.slice(0, 1).map((rule, index) => (
           <Rule key={rule.rule_code}>
             <RuleLabel>{rule.rule_description}</RuleLabel>
             <RadioButton
               value={index}
               status={selected === index ? 'checked' : 'unchecked'}
               onPress={() => selectRule(index, rule.rule_code)}
-              disabled={index !== 0}
             />
           </Rule>
         ))}
-        <Rule>
-          <RuleLabel> 규칙 만들기</RuleLabel>
-          <RadioButton disabled />
-        </Rule>
       </RuleList>
+      <Info>(더 많은 규칙이 추가 될 예정입니다.)</Info>
       {selected != null ? (
         <MarginTop>
           <Shadow style={{ borderRadius: 18 }} distance={1} offset={[0, 5]}>
@@ -105,11 +101,24 @@ const Label = styled.Text`
 
 const RuleLabel = styled.Text``;
 
+const Info = styled.Text`
+  align-self: center;
+
+  width: ${wp(95)}px;
+
+  margin-top: ${hp(0.625)}px;
+
+  color: #979797;
+  font-size: ${RFValue(8)}px;
+  font-weight: 600;
+`;
+
 const RuleList = styled.View`
   width: ${wp(95)}px;
   margin-top: ${RFValue(8)}px;
 
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-self: center;
 `;
