@@ -1,6 +1,7 @@
 import * as Clipboard from 'expo-clipboard';
 import { useCallback, useState } from 'react';
 import { useRecoilState, useResetRecoilState } from 'recoil';
+import { clipboardSelectorFamily } from 'recoil/common/clipboard/selector';
 import { modalSelectorFamily } from 'recoil/common/modal/selector';
 import { refreshSelectorFamily } from 'recoil/common/refresh/selector';
 
@@ -37,22 +38,23 @@ const useRefresh = (refreshId) => {
   return { refresh, onRefresh };
 };
 
-const useStringClipboard = () => {
-  const [isCopied, setIsCopied] = useState(false);
+const useStringClipboard = (clipboardId) => {
+  const [isCopied, setIsCopied] = useRecoilState(clipboardSelectorFamily(clipboardId));
+  const resetClipboard = useResetRecoilState(clipboardSelectorFamily(clipboardId));
   const [isError, setIsError] = useState(false);
 
   const copyToClipboard = async (data) => {
     try {
       await Clipboard.setStringAsync(data);
-      setIsCopied(true);
+      setIsCopied((prev) => ({ ...prev, isCopied: true }));
       setIsError(false);
     } catch {
-      setIsCopied(false);
+      setIsCopied((prev) => ({ ...prev, isCopied: false }));
       setIsError(true);
     }
   };
 
-  return { copyToClipboard, isCopied, setIsCopied, isError };
+  return { copyToClipboard, isCopied: isCopied.isCopied, setIsCopied, isError, reset: resetClipboard };
 };
 
 export { useModal, useRefresh, useStringClipboard };

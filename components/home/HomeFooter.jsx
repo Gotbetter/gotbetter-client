@@ -1,13 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import format from 'pretty-format';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Toast from 'react-native-root-toast';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { useQueryClient } from 'react-query';
 import styled from 'styled-components/native';
 
@@ -15,9 +13,31 @@ function HomeFooter() {
   const queryClient = useQueryClient();
   const navigation = useNavigation();
 
-  const iconSize = useMemo(() => RFValue(24), []);
+  const iconSize = useMemo(() => RFValue(20), []);
+  const iconColor = useMemo(() => '#979797', []);
 
-  const logout = async () => {
+  const footerItems = useMemo(
+    () => [
+      {
+        label: '방 만들기',
+        icon: <AntDesign name="pluscircleo" size={iconSize} color={iconColor} />,
+        onPress: () => navigation.navigate('room-create'),
+      },
+      {
+        label: '참가 요청',
+        icon: <AntDesign name="enter" size={iconSize} color={iconColor} />,
+        onPress: () => navigation.navigate('join'),
+      },
+      {
+        label: '로그아웃',
+        icon: <AntDesign name="logout" size={iconSize} color={iconColor} />,
+        onPress: () => logout(),
+      },
+    ],
+    [iconColor, iconSize, logout, navigation],
+  );
+
+  const logout = useCallback(async () => {
     try {
       await AsyncStorage.removeItem('access_token');
       await AsyncStorage.removeItem('refresh_token');
@@ -27,18 +47,16 @@ function HomeFooter() {
     } catch (e) {
       console.log(format(e));
     }
-  };
+  }, [navigation, queryClient]);
+
   return (
     <Container>
-      <IconGroup onPress={() => navigation.navigate('room-create')}>
-        <SimpleLineIcons name="plus" size={iconSize} color={'#979797'} />
-      </IconGroup>
-      <IconGroup onPress={() => navigation.navigate('join')}>
-        <Ionicons name="md-search-sharp" size={iconSize} color={'#979797'} />
-      </IconGroup>
-      <IconGroup onPress={() => logout()}>
-        <AntDesign name="logout" size={iconSize} color={'#979797'} />
-      </IconGroup>
+      {footerItems.map((item) => (
+        <IconGroup key={item.label} onPress={item.onPress}>
+          {item.icon}
+          <IconLabel>{item.label}</IconLabel>
+        </IconGroup>
+      ))}
     </Container>
   );
 }
@@ -56,6 +74,11 @@ const Container = styled.View`
 const IconGroup = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
+`;
+
+const IconLabel = styled.Text`
+  margin-top: ${hp(0.625)}px;
+  font-size: ${RFValue(8)}px;
 `;
 
 export default HomeFooter;

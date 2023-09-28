@@ -24,15 +24,14 @@ const PlanRoutes = () => {
       <Plan.Group
         navigationKey="plan-detail"
         screenOptions={{
-          title: '계획 인증하기',
           headerLeft: () => <BackButton />,
           headerTitleAlign: 'center',
           headerBackVisible: false,
           headerTitleStyle: { color: '#000000', fontWeight: '700' },
         }}
       >
-        <Plan.Screen name="confirm" component={PlanRecordFormScreen} />
-        <Plan.Screen name="detail" component={PlanRecordScreen} />
+        <Plan.Screen name="confirm" component={PlanRecordFormScreen} options={{ title: '계획 인증하기' }} />
+        <Plan.Screen name="detail" component={PlanRecordScreen} options={{ title: '계획 인증 목록' }} />
       </Plan.Group>
     </Plan.Navigator>
   );

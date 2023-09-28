@@ -29,7 +29,7 @@ function AddPhoto() {
     });
 
     const photo = result.assets[0];
-    setRequest((prev) => ({ ...prev, recordPhoto: { ...photo } }));
+    setRequest((prev) => ({ ...prev, recordPhoto: { uri: photo.uri, base64: photo.base64 } }));
   };
 
   return (
@@ -40,12 +40,16 @@ function AddPhoto() {
           <PhotoInfo>사진을 첨부해주세요.</PhotoInfo>
         </>
       ) : (
-        <Image source={{ uri: recordPhoto.uri }} resizeMode="contain" style={{ width: '100%', height: '100%' }} />
+        <Image
+          source={{ uri: recordPhoto?.uri ?? `data:image/png;base64,${recordPhoto.base64}` }}
+          resizeMode="contain"
+          style={{ width: '100%', height: '100%' }}
+        />
       )}
     </PhotoContainer>
   );
 }
-// 4 3 
+// 4 3
 const PhotoContainer = styled(Pressable)`
   width: ${wp(56)}px;
   height: ${wp(42)}px;
