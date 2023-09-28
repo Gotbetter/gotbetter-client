@@ -7,6 +7,7 @@ import React, { useEffect } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import Toast from 'react-native-root-toast';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useMutation, useQueryClient } from 'react-query';
 import { useRecoilState, useResetRecoilState } from 'recoil';
@@ -73,6 +74,13 @@ function PlanRecordFormScreen() {
   };
 
   const onPressComplete = () => {
+    for (const key in request) {
+      if (request[key] === null || request[key] === '') {
+        Toast.show('모든 항목을 입력해 주세요.', { duration: Toast.durations.SHORT });
+        return;
+      }
+    }
+
     const formData = new FormData();
 
     const filename = request.recordPhoto.uri.split('/').pop();

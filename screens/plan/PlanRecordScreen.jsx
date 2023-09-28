@@ -28,12 +28,12 @@ function PlanRecordScreen() {
   };
 
   const onPressRecord = (record) => {
-    const { record_title, record_body, record_photo, record_id } = record;
+    const { record_title, record_body, record_id } = record;
 
     setRecordRequest({
       recordTitle: record_title,
       recordBody: record_body,
-      recordPhoto: { uri: null, base64: record_photo },
+      recordPhoto: null,
     });
 
     navigation.navigate('confirm', { recordId: record_id, detailPlan });
