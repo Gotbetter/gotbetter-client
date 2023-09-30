@@ -16,7 +16,7 @@ function LoginScreen() {
   const navigation = useNavigation();
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: '771187190490-4d9d8ivudtv4lv3njdb8hhu08uuh1heu.apps.googleusercontent.com',
+    androidClientId: process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
   });
 
   useEffect(() => {
