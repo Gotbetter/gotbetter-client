@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.rpdyddns.gotbetter-client"
@@ -21,7 +23,6 @@
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
       },
-
       "versionCode": 5,
       "package": "com.jjinyeok.gotbetterclient"
     },
@@ -32,6 +33,9 @@
       "eas": {
         "projectId": "769b0c09-83fb-43c6-a514-fe7fc34e10bc"
       }
-    }
+    },
+    "plugins": [
+      "expo-build-properties"
+    ]
   }
 }
